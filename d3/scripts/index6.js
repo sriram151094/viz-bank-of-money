@@ -239,7 +239,7 @@ function Draw1(){
 	d3.selectAll(".arc")
 		.transition().delay(9*700).duration(2100)
 		.style("opacity", 0)
-		.each("end", function() {d3.selectAll(".arc").remove();});
+		.on("end", function() {d3.selectAll(".arc").remove();});
 		
 };/*Draw1*/
 
@@ -458,7 +458,7 @@ function Draw5(){
 			.transition().duration(700)
 			.attr("fill", colors[5])
 			.style('stroke', colors[5])
-			.each("end", repeat)
+			.on("end", repeat)
 			;
 	};
 	
@@ -524,7 +524,7 @@ function Draw7(){
 			.transition().duration(700)
 			.attr("fill", colors[4])
 			.style("stroke", colors[4])
-			.each("end", repeat)
+			.on("end", repeat)
 			;
 	};
 				
@@ -574,12 +574,12 @@ function Draw9(){
 	d3.selectAll(".NokiaToSamsungArc")
 		.transition().duration(2000)
 		.attr("opacity", 0)
-		.each("end", function() {d3.selectAll(".NokiaToSamsungArc").remove();});
+		.on("end", function() {d3.selectAll(".NokiaToSamsungArc").remove();});
 
 	d3.selectAll(".SamsungToNokiaArc")
 		.transition().duration(2000)
 		.attr("opacity", 0)
-		.each("end", function() {d3.selectAll(".SamsungToNokiaArc").remove();});
+		.on("end", function() {d3.selectAll(".SamsungToNokiaArc").remove();});
 		
 	/*Show only the loyal chords*/
 	chords.transition().duration(2000)
@@ -651,7 +651,7 @@ function Draw10(){
 			.transition().duration(700)
 			.attr("fill", colors[4])
 			.style("stroke", colors[4])
-			.each("end", repeat);
+			.on("end", repeat);
 	};
 	
 	/*Show only the Nokia loyal chord*/
@@ -694,7 +694,7 @@ function Draw11(){
 	d3.selectAll(".NokiaLoyalArc")
 		.transition().duration(1000)
 		.attr("opacity", 0)
-		.each("end", function() {d3.selectAll(".NokiaLoyalArc").remove();});
+		.on("end", function() {d3.selectAll(".NokiaLoyalArc").remove();});
 			
 	/*Only show the chords of Apple*/
 	chords.transition().duration(2000)
@@ -772,7 +772,7 @@ function Draw13(){
 				if(d.source.index == 0) {return opacityValueBase;}
 				else {return 0;}
 			})
-			.each("end", repeat);
+			.on("end", repeat);
 	};	
 };/*Draw13*/
 
@@ -905,7 +905,10 @@ function endall(transition, callback) {
     var n = 0; 
     transition 
         .each(function() { ++n; }) 
-        .each("end", function() { if (!--n) callback.apply(this, arguments); }); 
+        .on("end", function() { 
+			if (!--n) 
+				callback.apply(this, arguments); 
+			}); 
 };/*endall*/ 
 
 /*Taken from http://bl.ocks.org/mbostock/7555321
@@ -954,7 +957,7 @@ function changeTopText (newText, loc, delayDisappear, delayAppear, finalText, xl
 			middleTextTop.text(newText)
 			.attr("y", -24*loc + "px")
 			.attr("x", xloc + "px")
-			.call(wrap, w);	
+			//.call(wrap, w);	
 		})
 		.transition().delay(700 * delayAppear).duration(700)
 		.attr('opacity', 1)
@@ -980,7 +983,7 @@ function changeBottomText (newText, loc, delayDisappear, delayAppear) {
 		.call(endall,  function() {
 			middleTextBottom.text(newText)
 			.attr("y", 24*loc + "px")
-			.call(wrap, 350);	
+			//.call(wrap, 350);	
 		})
 		.transition().delay(700 * delayAppear).duration(700)
 		.attr('opacity', 1);
