@@ -2,20 +2,19 @@
 ////////////////// Set up the Data /////////////////////////
 //////////////////////////////////////////////////////////*/
 
-var NameProvider = ["SQLAttack","DataOutage","DNSAttack","PortScanning","SSH/FTPAttack","DataOutage","Sony"];
+var NameProvider = ["SQLAttack","DataOutage","DNSAttack","PortScanning","SSH/FTPAttack"];
 	
 var matrix = [
-[9.6899,0.8859,0.0554,0.443,2.5471,2.4363,0.5537,2.5471], /*Apple 19.1584*/
-[0.1107,1.8272,0,0.4983,1.1074,1.052,0.2215,0.4983], /*HTC 5.3154*/
+[9.6899,0.8859,0.0554,0.443,2.5471,2.4363,0.5537,2.5471], /*Apple 24.4738*/
+
 [0.0554,0.2769,0.2215,0.2215,0.3876,0.8306,0.0554,0.3322], /*Huawei 2.3811*/
-[0.0554,0.1107,0.0554,1.2182,1.1628,0.6645,0.4983,1.052], /*LG 4.8173*/
-[0.2215,0.443,0,0.2769,10.4097,1.2182,0.4983,2.8239], /*Nokia 15.8915*/
+[0.2215,0.443,0,0.2769,10.4097,1.2182,0.4983,2.8239], /*Nokia 20.7088*/
 [1.1628,2.6024,0,1.3843,8.7486,16.8328,1.7165,5.5925], /*Samsung 38.0399*/
 [0.0554,0.4983,0,0.3322,0.443,0.8859,1.7719,0.443]
 ];
 /*Sums up to exactly 100*/
 
-var colors = ["#C4C4C4","#69B40F","#EC1D25","#C8125C","#008FC8","#10218B","#134B24","#737373"];
+var colors = ["#C8125C","#008FC8","#10218B","#134B24","#737373"];
 
 /*Initiate the color scale*/
 var fill = d3.scale.ordinal()
@@ -123,14 +122,14 @@ g.append("svg:text")
 //////////////// Initiate inner chords /////////////////////
 //////////////////////////////////////////////////////////*/
 
-var chords = svg.selectAll("path.chord")
-	.data(chord.chords)
-	.enter().append("svg:path")
-	.attr("class", "chord")
-	.style("stroke", function(d) { return d3.rgb(fill(d.source.index)).darker(); })
-	.style("fill", function(d) { return fill(d.source.index); })
-	.attr("d", d3.svg.chord().radius(innerRadius))
-	.attr('opacity', 0);
+// var chords = svg.selectAll("path.chord")
+// 	.data(chord.chords)
+// 	.enter().append("svg:path")
+// 	.attr("class", "chord")
+// 	.style("stroke", function(d) { return d3.rgb(fill(d.source.index)).darker(); })
+// 	.style("fill", function(d) { return fill(d.source.index); })
+// 	.attr("d", d3.svg.chord().radius(innerRadius))
+// 	.attr('opacity', 0);
 
 /*//////////////////////////////////////////////////////////	
 ///////////// Initiate Progress Bar ////////////////////////
@@ -420,12 +419,12 @@ function Draw4(){
 		.selectAll(".titles").style("opacity", function(d) { if(d.index == 4 || d.index == 5) {return 1;} else {return opacityValue;}});
 
 	/*Show only the Samsung Nokia chord*/
-	chords.transition().duration(2000)
-		.attr("opacity", function(d, i) { 
-			if(d.source.index == 5 && d.target.index == 4) 
-				{return opacityValueBase;}
-			else {return 0;}
-		});
+	// chords.transition().duration(2000)
+	// 	.attr("opacity", function(d, i) { 
+	// 		if(d.source.index == 5 && d.target.index == 4) 
+	// 			{return opacityValueBase;}
+	// 		else {return 0;}
+	// 	});
 	
 };/*Draw4*/
 
@@ -864,9 +863,9 @@ function finalChord() {
 		.on("mouseover", fade(.02))
 		.on("mouseout", fade(.80));
 		
-	/*Show all chords*/
-	chords.transition().duration(1000)
-		.style("opacity", opacityValueBase);
+	// /*Show all chords*/
+	// chords.transition().duration(1000)
+	// 	.style("opacity", opacityValueBase);
 
 	/*Show all the text*/
 	d3.selectAll("g.group").selectAll("line")
