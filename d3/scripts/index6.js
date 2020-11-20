@@ -151,24 +151,28 @@ var textCenter = svg.append("g")
 /*Starting text middle top*/
 var middleTextTop = textCenter.append("text")
 	.attr("class", "explanation")
+	.attr("id","text1")
 	.attr("text-anchor", "middle")
 	.attr("x", 0 + "px")
 	.attr("y", -24*10/2 + "px")
 	.attr("dy", "1em")
 	.attr("opacity", 1)
 	.text("Our organization Bank Of Money hosts about a million devices/workstations. ")
-	//.call(wrap, 350);
+	.call(wrap, 350,"#text1");
 
 /*Starting text middle bottom*/
 var middleTextBottom = textCenter.append("text")
+     
 	.attr("class", "explanation")
+	.attr("id","text2")
 	.attr("text-anchor", "middle")
+	
 	.attr("x", 0 + "px")
 	.attr("y", 24*3/2 + "px")
 	.attr("dy", "1em")
 	.attr('opacity', 1)
 	.text("It is imperative that we have a cyber security system that prevents the organization from getting compromised by attackers.")
-	//.call(wrap, 350);
+	.call(wrap, 350,"#text2");
 
 /*//////////////////////////////////////////////////////////
 //////////////// Storyboarding Steps ///////////////////////
@@ -471,9 +475,9 @@ function endall(transition, callback) {
 
 /*Taken from http://bl.ocks.org/mbostock/7555321
 //Wraps SVG text*/
-function wrap(text, width) {
-	console.log(d3.select(this))
-    var text = d3.select(this)[0][0],
+function wrap(text, width,id) {
+
+    var text = d3.select(id),
         words = text.text().split(/\s+/).reverse(),
         word,
         line = [],
@@ -513,9 +517,10 @@ function changeTopText (newText, loc, delayDisappear, delayAppear, finalText, xl
 		/*New text appear*/
 		.call(endall,  function() {
 			middleTextTop.text(newText)
+			.attr("id","middleText")
 			.attr("y", -24*loc + "px")
 			.attr("x", xloc + "px")
-			//.call(wrap, w);	
+			.call(wrap, w,"#middleText");	
 		})
 		.transition().delay(700 * delayAppear).duration(700)
 		.attr('opacity', 1)
@@ -537,11 +542,13 @@ function changeBottomText (newText, loc, delayDisappear, delayAppear) {
 		/*Current text disappear*/
 		.transition().delay(700 * delayDisappear).duration(700)
 		.attr('opacity', 0)
+		.attr("id","bottomText")
 		/*New text appear*/
 		.call(endall,  function() {
 			middleTextBottom.text(newText)
+			
 			.attr("y", 24*loc + "px")
-			//.call(wrap, 350);	
+			.call(wrap, 350,"#bottomText");	
 		})
 		.transition().delay(700 * delayAppear).duration(700)
 		.attr('opacity', 1);
