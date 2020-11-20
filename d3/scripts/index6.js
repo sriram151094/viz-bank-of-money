@@ -2,16 +2,23 @@
 ////////////////// Set up the Data /////////////////////////
 //////////////////////////////////////////////////////////*/
 
-var NameProvider = ["Port Scanning","SQL Attack","FTP/SSH Attack","Data Outage","DNS Attack"];
+var NameProvider = ["Port Scanning","FTP/SSH Attack","SQL Attack","Data Outage","DNS Attack"];
 	
-var matrix = [
-[9.6899,0.8859,0.0554,0.443,2.5471,2.4363,0.5537,2.5471], /*Apple 24.4738*/
-[0.0554,0.2769,0.2215,0.2215,0.3876,0.8306,0.0554,0.3322], /*Huawei 2.3811*/
-[0.2215,0.443,0,0.2769,10.4097,1.2182,0.4983,2.8239], /*Nokia 20.7088*/
-[1.1628,2.6024,0,1.3843,8.7486,16.8328,1.7165,5.5925], /*Samsung 38.0399*/
-[0.0554,0.4983,0,0.3322,0.443,0.8859,1.7719,0.443]
-];
+// var matrix = [
+// [9.6899,0.8859,0.0554,0.443,2.5471,2.4363,0.5537,2.5471], /*Apple 24.4738*/
+// [0.0554,0.2769,0.2215,0.2215,0.3876,0.8306,0.0554,0.3322], /*Huawei 2.3811*/
+// [0.2215,0.443,0,0.2769,10.4097,1.2182,0.4983,2.8239], /*Nokia 20.7088*/
+// [1.1628,2.6024,0,1.3843,8.7486,16.8328,1.7165,5.5925], /*Samsung 38.0399*/
+// [0.0554,0.4983,0,0.3322,0.443,0.8859,1.7719,0.443]
+// ];
 /*Sums up to exactly 100*/
+var matrix = [
+	[0,0,0,1,1],
+	[0,0,0,0,1],
+	[1,1,1,1,1],
+	[1,1,1,0,0],
+	[0,0,0,0,1]
+];
 
 var colors = ["#C8125C","#008FC8","#10218B","#134B24","#737373"];
 
@@ -40,11 +47,11 @@ var arc = d3.arc()
 	.outerRadius(outerRadius);
 	
 /*Initiate the SVG*/
-var svg = d3.select("#chart").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
+var svg = d3.select("#chart")
+    .attr("width", 720)
+    .attr("height",665)
 	.append("g")
-	.attr("transform", "translate(" + (margin.left + width/2) + "," + (margin.top + height/2) + ")")
+	.attr("transform", "translate(" + (margin.left + margin.bottom + width/2) + "," + (margin.top + margin.top + height/2) + ")")
 	.datum(chord(matrix));
 
 /*//////////////////////////////////////////////////////////
