@@ -259,7 +259,7 @@ function Draw2(){
 	/*Show and run the progressBar*/
 	runProgressBar(time=700*2);
 				
-	/*Initiate all arcs but only show the Apple arc (d.index = 0)*/
+	/*Initiate all arcs but only show the Port Scanning arc (d.index = 0)*/
 	g.append("path")
 	  .style("stroke", function(d) { return fill(d.index); })
 	  .style("fill", function(d) { return fill(d.index); })
