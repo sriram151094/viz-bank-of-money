@@ -2,7 +2,7 @@
 ////////////////// Set up the Data /////////////////////////
 //////////////////////////////////////////////////////////*/
 
-var NameProvider = ["Portscanning","SQLAttack","FTP/SSHAttack","DataOutage","DNSAttack"];
+var NameProvider = ["Port Scanning","SQL Attack","FTP/SSH Attack","Data Outage","DNS Attack"];
 	
 var matrix = [
 [9.6899,0.8859,0.0554,0.443,2.5471,2.4363,0.5537,2.5471], /*Apple 24.4738*/
@@ -218,7 +218,7 @@ d3.select("#clicker")
 //Introduction
 ///////////////////////////////////////////////////////////*/
 function Draw1(){
-
+	console.log("Draw1 function")
 	/*First disable click event on clicker button*/
 	stopClicker();
 		
@@ -232,7 +232,7 @@ function Draw1(){
 	changeTopText(newText = "In the next few steps we would like to introduce you to the issues faced by our organization ",
 	loc = 8/2, delayDisappear = 9, delayAppear = 10, finalText = true);
 	
-	changeBottomText(newText = "Let's start by drawing out the attack faced over the course of two days",
+	changeBottomText(newText = "Let's start by drawing out the attacks faced over the past two days",
 	loc = 1/2, delayDisappear = 0, delayAppear = 10);
 	
 	//Remove arcs again
@@ -244,9 +244,10 @@ function Draw1(){
 };/*Draw1*/
 
 /*//////////////////////////////////////////////////////////	
-//Show Arc of Apple
+//Show Arc of Port Scanning
 //////////////////////////////////////////////////////////*/
 function Draw2(){ 
+	console.log("Draw2 function")
 
 	/*First disable click event on clicker button*/
 	stopClicker();
@@ -255,7 +256,7 @@ function Draw2(){
 	runProgressBar(time=700*2);
 				
 	/*Initiate all arcs but only show the Apple arc (d.index = 0)*/
-	g.append("svg:path")
+	g.append("path")
 	  .style("stroke", function(d) { return fill(d.index); })
 	  .style("fill", function(d) { return fill(d.index); })
 	  .transition().duration(700)
@@ -270,23 +271,23 @@ function Draw2(){
 		}
 	  });
 	  
-	/*Show the tick around the Apple arc*/
+	/*Show the tick around the arc*/
 	d3.selectAll("g.group").selectAll("line")
 		.transition().delay(700).duration(1000)
 		.style("stroke", function(d, i, j) {return j ? 0 : "#000"; });
 
-	/*Add the labels for the %'s at Apple*/
+	/*Add the labels for the %'s*/
 	d3.selectAll("g.group").selectAll(".tickLabels")
 		.transition().delay(700).duration(2000)
 		.attr("opacity", function(d, i, j) {return j ? 0 : 1; });
 
-	/*Show the Apple name*/
+	/*Show the  name*/
 	d3.selectAll(".titles")
 	  .transition().duration(2000)
 	  .attr("opacity", function(d, i) {return d.index ? 0 : 1; });
 	  
-	/*Switch  text*/
-	changeTopText(newText = "According to the survey 19% owns an iPhone as their main phone",
+	/*Switch  texts*/
+	changeTopText(newText = "Firstly, a series of Port scanning events occur implying the presence of some external botnet trying to compromise the system",
 	loc = 1/2, delayDisappear = 0, delayAppear = 1, finalText = true);
 	
 	changeBottomText(newText = "",
@@ -298,7 +299,7 @@ function Draw2(){
 //Draw the other arcs as well
 //////////////////////////////////////////////////////////*/
 function Draw3(){
-
+	console.log("Draw3 function")
 	/*First disable click event on clicker button*/
 	stopClicker();
 
@@ -370,447 +371,6 @@ function Draw3(){
 
 
 /*///////////////////////////////////////////////////////////
-//Show the chord between Samsung and Nokia
-//////////////////////////////////////////////////////////*/
-function Draw4(){
-
-	/*First disable click event on clicker button*/
-	stopClicker();
-	/*Show and run the progressBar*/
-	runProgressBar(time=700*2);	
-	
-	/*Samsung and Nokia intro text*/
-	changeTopText(newText = "First, let's only look at the respondents that now own a Samsung, but whose previous phone was a Nokia and vice versa",
-		loc = 5, delayDisappear = 0, delayAppear = 1, finalText = true);
-		
-	/*Bottom text disappear*/
-	changeBottomText(newText = "",
-		loc = 0, delayDisappear = 0, delayAppear = 1);	
-	
-    /*Make the non Samsung & Nokia arcs less visible*/
-    svg.selectAll("g.group").select("path")
-		.transition().duration(1000)
-		.style("opacity", function(d) {
-			if(d.index != 4 && d.index != 5) {return opacityValue;}
-		});		
-	
-	/*Make the other strokes less visible*/
-	d3.selectAll("g.group").selectAll("line")
-		.transition().duration(700)
-		.style("stroke",function(d,i,j) {if (j == 5 || j == 4) {return "#000";} else {return "#DBDBDB";}});
-	/*Same for the %'s*/
-	svg.selectAll("g.group")
-		.transition().duration(700)
-		.selectAll(".tickLabels").style("opacity",function(d,i,j) {if (j == 5 || j == 4) {return 1;} else {return opacityValue;}});
-	/*And the Names of each Arc*/	
-	svg.selectAll("g.group")
-		.transition().duration(700)
-		.selectAll(".titles").style("opacity", function(d) { if(d.index == 4 || d.index == 5) {return 1;} else {return opacityValue;}});
-
-	/*Show only the Samsung Nokia chord*/
-	// chords.transition().duration(2000)
-	// 	.attr("opacity", function(d, i) { 
-	// 		if(d.source.index == 5 && d.target.index == 4) 
-	// 			{return opacityValueBase;}
-	// 		else {return 0;}
-	// 	});
-	
-};/*Draw4*/
-
-/*//////////////////////////////////////////////////////////////////////////*/
-function Draw5(){
-
-	/*First disable click event on clicker button*/
-	stopClicker();
-	/*Show and run the progressBar*/
-	runProgressBar(time=700*2);	
-	
-	/*Samsung and Nokia text*/
-	changeTopText(newText = "On the left, touching the arc of Samsung, we can see that the chord runs from 17% to almost 26%. Which is a thickness spanning 9%",
-		loc = 5, delayDisappear = 0, delayAppear = 1, finalText = true);
-	
-    /*Make the non Samsung & Nokia arcs less visible*/
-    svg.selectAll("g.group").select("path")
-		.transition().duration(1000)
-		.style("opacity", opacityValue);		
-
-	/*Show only the Samsung Nokia part at Samsung*/
-	var arcSamsung = d3.svg.arc()
-				.innerRadius(innerRadius)
-				.outerRadius(outerRadius)
-				.startAngle(4.040082626337902)
-				.endAngle(4.561777856121815);
-				
-	svg.append("path")
-		.attr("class","SamsungToNokiaArc")
-		.attr("d", arcSamsung)
-		.attr("fill", colors[5])
-		.style('stroke', colors[5]);
-		
-	repeat();
-	
-	/*Repeatedly let an arc change colour*/
-	function repeat() {
-		d3.selectAll(".SamsungToNokiaArc")
-			.transition().duration(700)
-			.attr("fill", "#9FA6D0")
-			.style('stroke', "#9FA6D0")
-			.transition().duration(700)
-			.attr("fill", colors[5])
-			.style('stroke', colors[5])
-			.on("end", repeat)
-			;
-	};
-	
-};/*Draw5*/
-
-/*//////////////////////////////////////////////////////////////////////////*/
-function Draw6(){
-
-	/*First disable click event on clicker button*/
-	stopClicker();
-	/*Show and run the progressBar*/
-	runProgressBar(time=700*2);	
-	
-	/*Samsung and Nokia text*/
-	changeTopText(newText = "These 9% of the respondents now own a Samsung and by following the chord we can see what brand they used to own, which in this case, is Nokia",
-		loc = 5, delayDisappear = 0, delayAppear = 1, finalText = true);
-
-	/*Show only the Samsung Nokia part at Nokia*/
-	var arcNokia = d3.svg.arc()
-				.innerRadius(innerRadius)
-				.outerRadius(outerRadius)
-				.startAngle(2.837816067671451)
-				.endAngle(2.9104595910835127);
-
-	svg.append("path")
-		.attr("class","NokiaToSamsungArc")
-		.attr("d", arcNokia)
-		.attr("opacity", 0)
-		.attr("fill", colors[4])
-		.transition().duration(700)
-		.attr("opacity", 1)
-		.attr("stroke", colors[4]);				
-		
-};/*Draw6*/
-
-/*//////////////////////////////////////////////////////////////////////////*/
-function Draw7(){
-
-	/*First disable click event on clicker button*/
-	stopClicker();
-	/*Show and run the progressBar*/
-	runProgressBar(time=700*11);	
-	
-	/*Samsung and Nokia text*/
-	changeTopText(newText = "At the Nokia side, the arc is much thinner, only spanning 1.2% (of respondents)",
-		loc = 4, delayDisappear = 0, delayAppear = 1);
-	changeTopText(newText = "These 1.2% now own a Nokia, but by following the chord we can see that they had a Samsung before",
-		loc = 4, delayDisappear = 9, delayAppear = 10, finalText = true);
-		
-	/*Stop the color changing on the Samsung side*/
-	d3.selectAll(".SamsungToNokiaArc")
-		.transition().duration(700)
-		.attr("fill", colors[5])
-		.style("stroke", colors[5]);
-
-	/*Repeatedly let an arc change colour*/		
-	repeat();
-	function repeat() {
-		d3.selectAll(".NokiaToSamsungArc")
-			.transition().duration(700)
-			.attr("fill", "#99D2E9")
-			.style('stroke', "#99D2E9")
-			.transition().duration(700)
-			.attr("fill", colors[4])
-			.style("stroke", colors[4])
-			.on("end", repeat)
-			;
-	};
-				
-};/*Draw7*/
-
-/*//////////////////////////////////////////////////////////////////////////*/
-function Draw8(){
-
-	/*First disable click event on clicker button*/
-	stopClicker();
-	/*Show and run the progressBar*/
-	runProgressBar(time=700*11);	
-	
-	/*Samsung and Nokia text*/
-	changeTopText(newText = "Since the chord is much wider at the Samsung side, Samsung has taken a lot more clients from Nokia than Nokia managed to take from Samsung",
-		loc = 5, delayDisappear = 0, delayAppear = 1);
-	changeTopText(newText = "Therefore, the chord is the color of Samsung blue, since Samsung has the net gain from the exchange of people between Nokia and Samsung",
-		loc = 5, delayDisappear = 9, delayAppear = 10, finalText = true);
-		
-	/*Stop the colour changing on the Nokia side*/
-	d3.selectAll(".NokiaToSamsungArc")
-		.transition().duration(700)
-		.attr("fill", colors[4])
-		.style("stroke", colors[4]);
-				
-};/*Draw8*/
-
-/*///////////////////////////////////////////////////////////	
-//Show Loyalty hills
-//////////////////////////////////////////////////////////*/
-function Draw9(){
-
-	/*First disable click event on clicker button*/
-	stopClicker();
-	/*Show and run the progressBar*/
-	runProgressBar(time=700*20);	
-	
-	/*Samsung Loyal text*/
-	changeTopText(newText = "There are also people that stay loyal and did not switch brands between their previous and current phone",
-		loc = 4/2, delayDisappear = 0, delayAppear = 1, finalText = false, xloc=-50, w=300);
-	changeTopText(newText = "These loyal respondents are represented by the hills at each brand",
-		loc = 3/2, delayDisappear = 9, delayAppear = 10, finalText = false, xloc=-50, w=300);
-	changeTopText(newText = "You can also envision this as a chord beginning and ending on itself",
-		loc = 2/2, delayDisappear = 18, delayAppear = 19, finalText = true, xloc=-50, w=300);
-		
-	/*Remove the arcs*/
-	d3.selectAll(".NokiaToSamsungArc")
-		.transition().duration(2000)
-		.attr("opacity", 0)
-		.on("end", function() {d3.selectAll(".NokiaToSamsungArc").remove();});
-
-	d3.selectAll(".SamsungToNokiaArc")
-		.transition().duration(2000)
-		.attr("opacity", 0)
-		.on("end", function() {d3.selectAll(".SamsungToNokiaArc").remove();});
-		
-	/*Show only the loyal chords*/
-	chords.transition().duration(2000)
-		.attr("opacity", function(d, i) { 
-			if(d.source.index == 0 && d.target.index == 0) {return opacityValueBase;}
-			else if(d.source.index == 1 && d.target.index == 1) {return opacityValueBase;}
-			else if(d.source.index == 2 && d.target.index == 2) {return opacityValueBase;}
-			else if(d.source.index == 3 && d.target.index == 3) {return opacityValueBase;}
-			else if(d.source.index == 4 && d.target.index == 4) {return opacityValueBase;}
-			else if(d.source.index == 5 && d.target.index == 5) {return opacityValueBase;}
-			else if(d.source.index == 6 && d.target.index == 6) {return opacityValueBase;}
-			else if(d.source.index == 7 && d.target.index == 7) {return opacityValueBase;}
-			else {return 0;}
-		});
-	
-		
-	/*Show all ticks and texts again*/
-	/*Ticks*/
-	d3.selectAll("g.group").selectAll("line")
-		.transition().duration(700)
-		.style("stroke", "#000");
-	/*Same for the %'s*/
-	svg.selectAll("g.group")
-		.transition().duration(700)
-		.selectAll(".tickLabels").style("opacity", 1);
-	/*And the Names of each Arc*/	
-	svg.selectAll("g.group")
-		.transition().duration(700)
-		.selectAll(".titles").style("opacity", 1);
-				
-};/*Draw9*/
-
-/*//////////////////////////////////////////////////////////////////////////*/
-function Draw10(){
-
-	/*First disable click event on clicker button*/
-	stopClicker();
-	/*Show and run the progressBar*/
-	runProgressBar(time=700*11);
-	
-	changeTopText(newText = "10% of respondents have a Nokia right now, but also used to own a Nokia before that",
-		loc = 7/2, delayDisappear = 0, delayAppear = 1);
-		changeTopText(newText = "Seeing that currently Nokia is owned by almost 16% of respondents, this means "+ 
-								"that about 2/3 of current Nokia owners are people who stayed loyal",
-		loc = 7/2, delayDisappear = 9, delayAppear = 10, finalText = true);
-		
-	/*Show only the Nokia Loyal arc*/
-	var arcNokia = d3.svg.arc()
-				.innerRadius(innerRadius)
-				.outerRadius(outerRadius)
-				.startAngle(2.048671976860533)
-				.endAngle(2.6694216777820063);
-
-	svg.append("path")
-		.attr("class","NokiaLoyalArc")
-		.attr("d", arcNokia)
-		.attr("opacity", 1)
-		.attr("stroke", colors[4])
-		.attr("fill", colors[4]);	
-
-	/*Repeatedly let an arc change colour*/		
-	repeat();
-	
-	function repeat() {
-		d3.selectAll(".NokiaLoyalArc")
-			.transition().duration(700)
-			.attr("fill", "#99D2E9")
-			.style('stroke', "#99D2E9")
-			.transition().duration(700)
-			.attr("fill", colors[4])
-			.style("stroke", colors[4])
-			.on("end", repeat);
-	};
-	
-	/*Show only the Nokia loyal chord*/
-	chords.transition().duration(2000)
-		.attr("opacity", function(d, i) { 
-			if(d.source.index == 4 && d.target.index == 4) {return opacityValueBase;}
-			else {return 0;}
-		});		
-
-	/*Make the other strokes less visible*/
-	d3.selectAll("g.group").selectAll("line")
-		.transition().duration(700)
-		.style("stroke",function(d,i,j) {if (j == 4) {return "#000";} else {return "#DBDBDB";}});
-	/*Same for the %'s*/
-	svg.selectAll("g.group")
-		.transition().duration(700)
-		.selectAll(".tickLabels").style("opacity",function(d,i,j) {if (j == 4) {return 1;} else {return opacityValue;}});
-	/*And the Names of each Arc*/	
-	svg.selectAll("g.group")
-		.transition().duration(700)
-		.selectAll(".titles").style("opacity", function(d) { if(d.index == 4) {return 1;} else {return opacityValue;}});
-
-};/*Draw10*/
-
-/*//////////////////////////////////////////////////////////
-//Show all chords that are connected to Apple
-//////////////////////////////////////////////////////////*/
-function Draw11(){
-
-	/*First disable click event on clicker button*/
-	stopClicker();
-	/*Show and run the progressBar*/
-	runProgressBar(time=700*2);	
-	
-	changeTopText(newText = "Here are all the chords for those respondents that currently own "+ 
-							"an iPhone or that used to own an iPhone",
-		loc = 3/2, delayDisappear = 0, delayAppear = 1, finalText = true, xloc=-80, w=200);
-		
-	/*Remove the Nokia arc*/
-	d3.selectAll(".NokiaLoyalArc")
-		.transition().duration(1000)
-		.attr("opacity", 0)
-		.on("end", function() {d3.selectAll(".NokiaLoyalArc").remove();});
-			
-	/*Only show the chords of Apple*/
-	chords.transition().duration(2000)
-    .attr("opacity", function(d, i) { 
-		if(d.source.index == 0 || d.target.index == 0) {return opacityValueBase;}
-		else {return 0;}
-	});
-
-	/*Highlight arc of Apple*/
-	svg.selectAll("g.group").select("path")
-		.transition().duration(2000)
-		.style("opacity", function(d) {
-			if(d.index != 0) {return opacityValue;}
-		});	
-		
-	/*Show only the ticks and text at Apple*/
-	/*Make the other strokes less visible*/
-	d3.selectAll("g.group").selectAll("line")
-		.transition().duration(700)
-		.style("stroke",function(d,i,j) {if (j == 0) {return "#000";} else {return "#DBDBDB";}});
-	/*Same for the %'s*/
-	svg.selectAll("g.group")
-		.transition().duration(700)
-		.selectAll(".tickLabels").style("opacity",function(d,i,j) {if (j == 0) {return 1;} else {return opacityValue;}});
-	/*And the Names of each Arc*/	
-	svg.selectAll("g.group")
-		.transition().duration(700)
-		.selectAll(".titles").style("opacity", function(d) { if(d.index == 0) {return 1;} else {return opacityValue;}});
-
-};/*Draw11*/
-
-function Draw12(){
-
-	/*First disable click event on clicker button*/
-	stopClicker();
-	/*Show and run the progressBar*/
-	runProgressBar(time=700*11);	
-
-	changeTopText(newText = "One thing that stands out for Apple is that all chords connected to " +
-							"Apple are the color of the Apple arc: grey",
-		loc = 3/2, delayDisappear = 0, delayAppear = 1, finalText = false, xloc=-80, w=210);
-	changeTopText(newText = "This means that Apple has always had the net gain. " + 
-							"They received more customers from other brands than they lost to them",
-		loc = 3/2, delayDisappear = 9, delayAppear = 10, finalText = true, xloc=-80, w=210);
-
-};/*Draw12*/
-  
-  
-function Draw13(){
-
-	/*First disable click event on clicker button*/
-	stopClicker();
-	/*Show and run the progressBar*/
-	runProgressBar(time=700*11);	
-
-	changeTopText(newText = "Even more so, apart from the chord to Samsung, all other chords are extremely narrow at the other end from Apple",
-		loc = 3/2, delayDisappear = 0, delayAppear = 1, finalText = false, xloc=-80, w=200);
-	changeTopText(newText = "This means that Apple has lost virtually nobody to any other brand",
-		loc = 3/2, delayDisappear = 9, delayAppear = 10, finalText = true, xloc=-80, w=200);	
-	
-	/*Repeatedly let specific chords change colour*/
-	repeat();
-	
-	function repeat() {
-		chords
-			.transition().duration(1000)
-			.style("opacity",function (d){
-				if(d.source.index == 0) {
-					if(d.target.index == 0 || d.target.index == 5) {return opacityValueBase;}
-					else {return 0.2;}
-				} else {return 0;}
-			})
-			.transition().duration(1000)
-			.style("opacity",function (d){
-				if(d.source.index == 0) {return opacityValueBase;}
-				else {return 0;}
-			})
-			.on("end", repeat);
-	};	
-};/*Draw13*/
-
-
-function Draw14(){
-
-	/*First disable click event on clicker button*/
-	stopClicker();
-	/*Show and run the progressBar*/
-	/*runProgressBar(time=700*2);*/
-
-	changeTopText(newText = "Thank you for staying with me so far! After these examples I think you're absolutely " + 
-							"ready to face the full impact of all chords simultaneously",
-		loc = 8/2, delayDisappear = 0, delayAppear = 1, finalText = true);
-		
-	changeBottomText(newText = "I'm looking forward to hearing about the insights that you have discovered on your own",
-		loc = 3/2, delayDisappear = 0, delayAppear = 1);		
-	
-	/*Only show the chords of Apple*/
-	chords.transition().duration(1000)
-		.style("opacity", 0.1);
-
-	/*Hide all the text*/
-	d3.selectAll("g.group").selectAll("line")
-		.transition().duration(700)
-		.style("stroke","#DBDBDB");
-	/*Same for the %'s*/
-	svg.selectAll("g.group")
-		.transition().duration(700)
-		.selectAll(".tickLabels").style("opacity",0.4);
-	/*And the Names of each Arc*/	
-	svg.selectAll("g.group")
-		.transition().duration(700)
-		.selectAll(".titles").style("opacity",0.4);	
-		
-};/*Draw14*/
-
-/*///////////////////////////////////////////////////////////
 //Draw the original Chord diagram
 ///////////////////////////////////////////////////////////*/
 /*Go to the final bit*/
@@ -870,8 +430,6 @@ function finalChord() {
 		.selectAll(".titles").style("opacity",1);		
 
 };/*finalChord*/
-
-
 
 /*//////////////////////////////////////////////////////////
 ////////////////// Extra Functions /////////////////////////
@@ -1008,7 +566,7 @@ function runProgressBar(time) {
 	/*Linearly increase the width of the bar
 	//After it is done, hide div again*/
 	d3.selectAll(".prgsFront")
-		.transition().duration(time)//.ease("linear")
+		.transition().duration(time).ease(d3.easeLinear)
 		.attr("width", prgsWidth)
 		.call(endall,  function() {
 			d3.selectAll("#progress")
