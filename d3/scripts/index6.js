@@ -48,8 +48,8 @@ var arc = d3.arc()
 	
 /*Initiate the SVG*/
 var svg = d3.select("#chart")
-    .attr("width", 720)
-    .attr("height",665)
+    .attr("width", 1040)
+    .attr("height",565)
 	.append("g")
 	.attr("transform", "translate(" + (margin.left + margin.bottom + width/2) + "," + (margin.top + margin.top + height/2) + ")")
 	.datum(chord(matrix));
@@ -198,11 +198,12 @@ d3.select("#reset")
 /*Skip to final visual right away*/
 d3.select("#skip")
 	.on("click", finalChord);
-	
+
+
 /*Order of steps when clicking button*/
 d3.select("#clicker")      
 	.on("click", function(e){
-	
+	    updateReadings(10);
 		if(counter == 1) Draw1();
 		else if(counter == 2) Draw2();
 		else if(counter == 3) Draw3();
@@ -224,12 +225,12 @@ d3.select("#clicker")
 
 
 
-
 /*//////////////////////////////////////////////////////////	
 //Introduction
 ///////////////////////////////////////////////////////////*/
 function Draw1(){
 	console.log("Draw1 function")
+	
 	/*First disable click event on clicker button*/
 	stopClicker();
 		
@@ -247,10 +248,10 @@ function Draw1(){
 	loc = 1/2, delayDisappear = 0, delayAppear = 10);
 	
 	//Remove arcs again
-	d3.selectAll(".arc")
-		.transition().delay(9*700).duration(2100)
-		.style("opacity", 0)
-		.on("end", function() {d3.selectAll(".arc").remove();});
+	// d3.selectAll(".arc")
+	// 	.transition().delay(9*700).duration(2100)
+	// 	.style("opacity", 0)
+	// 	.on("end", function() {d3.selectAll(".arc").remove();});
 		
 };/*Draw1*/
 
@@ -304,6 +305,8 @@ function Draw2(){
 	changeBottomText(newText = "",
 	loc = 0/2, delayDisappear = 0, delayAppear = 1)	;
 
+	updateReadings(8);
+
 };/*Draw2*/
 
 /*///////////////////////////////////////////////////////////  
@@ -353,7 +356,7 @@ function Draw3(){
    
 	changeBottomText(newText = "Huawei came from practically no share in 2013 to 2.4% in 2014 thereby taking its place in the biggest 7 brands in the Netherlands",
 	  loc = -2/2, delayDisappear = 0, delayAppear = arcDelay[2]);
-	
+	  updateReadings(6);
 };/*Draw3*/
 
 function Draw4(){
@@ -400,7 +403,7 @@ function Draw4(){
    
 	changeBottomText(newText = "Nokia is still owned by 15% of the respondents. However practically all of these phones are ordinary phones, not smartphones",
 	  loc = -2/2, delayDisappear = 0, delayAppear = 3);
-	
+	  updateReadings(4);
 };
 
 function Draw5(){
@@ -446,7 +449,7 @@ function Draw5(){
    
 	changeBottomText(newText = "Nokia is still owned by 15% of the respondents. However practically all of these phones are ordinary phones, not smartphones",
 	  loc = -2/2, delayDisappear = 0, delayAppear = 4);
-	
+	  updateReadings(2);
 };
 
 function Draw6(){
@@ -492,7 +495,7 @@ function Draw6(){
    
 	changeBottomText(newText = "Nokia is still owned by 15% of the respondents. However practically all of these phones are ordinary phones, not smartphones",
 	  loc = -2/2, delayDisappear = 0, delayAppear = 5);
-	
+	updateReadings(0);
 };
 // function Draw3(){
 // 	console.log("Draw3 function")
@@ -777,3 +780,198 @@ function runProgressBar(time) {
 		
 };/*runProgressBar*/
 
+var gauge = function(container, configuration) {
+	var that = {};
+	var config = {
+		size						: 200,
+		clipWidth					: 200,
+		clipHeight					: 110,
+		ringInset					: 20,
+		ringWidth					: 20,
+		
+		pointerWidth				: 10,
+		pointerTailLength			: 5,
+		pointerHeadLengthPercent	: 0.9,
+		
+		minValue					: 100,
+		maxValue					: 0,
+		
+		minAngle					: -90,
+		maxAngle					: +90,
+		
+		transitionMs				: 750,
+		
+		majorTicks					: 5,
+		labelFormat					: d3.format(''),
+		labelInset					: 11,
+		
+		arcColorFn					: d3.interpolateHsl(d3.rgb('#eb1313'), d3.rgb('#ed8a9c'))
+	};
+	var rangeGauge = undefined;
+	var r = undefined;
+	var pointerHeadLength = undefined;
+	var value = 0;
+	
+	var arc_gauge = undefined;
+	var scale_gauge = undefined;
+	var ticks_gauge = undefined;
+	var tickData_gauge = undefined;
+	var pointer = undefined;
+
+	var donut = d3.pie();
+	
+	function deg2rad(deg) {
+		return deg * Math.PI / 180;
+	}
+	
+	function newAngle(d) {
+		var ratio = scale_gauge(d);
+		var newAngle = config.minAngle + (ratio * rangeGauge);
+		return newAngle;
+	}
+	
+	function configure(configuration) {
+		var prop = undefined;
+		for ( prop in configuration ) {
+			config[prop] = configuration[prop];
+		}
+		
+		rangeGauge = config.maxAngle - config.minAngle;
+		r = config.size / 2;
+		pointerHeadLength = Math.round(r * config.pointerHeadLengthPercent);
+		// a linear scale that maps domain values to a percent from 0..1
+		scale_gauge = d3.scaleLinear()
+			//.range([0,1])
+            .domain([100,0]);
+        
+
+		ticks_gauge = scale_gauge.ticks(config.majorTicks);
+		tickData_gauge = d3.range(config.majorTicks).map(function() {var x =1/config.majorTicks; return Number(x);});
+		
+		arc_gauge = d3.arc()
+			.innerRadius(r - config.ringWidth - config.ringInset)
+			.outerRadius(r - config.ringInset)
+			.startAngle(function(d, i) {
+				var ratio = d * i;
+				return deg2rad(config.minAngle + (ratio * rangeGauge));
+			})
+			.endAngle(function(d, i) {
+				var ratio = d * (i+1);
+				return deg2rad(config.minAngle + (ratio * rangeGauge));
+			});
+	}
+	that.configure = configure;
+	
+	function centerTranslation() {
+		console.log("Radius");
+		console.log(r);
+		return 'translate('+(r+400) +','+ (r-300) +')';
+	}
+	
+	function isRendered() {
+		return (svg !== undefined);
+	}
+	that.isRendered = isRendered;
+	
+	function render(newValue) {
+		
+		// svg = d3.select(container)
+		// 	.append('svg:svg')
+		// 		.attr('class', 'gauge')
+		// 		.attr('width', config.clipWidth)
+		// 		.attr('height', config.clipHeight);
+		
+		var centerTx = centerTranslation();
+		
+		var arcs_gauge = svg.append('g')
+				.attr('class', 'arc')
+				.attr('transform', centerTx);
+		
+		arcs_gauge.selectAll('path')
+				.data(tickData_gauge)
+			.enter().append('path')
+				.attr('fill', function(d, i) {
+					return config.arcColorFn(d * i);
+				})
+				.attr('d', arc_gauge);
+		
+		var lg = svg.append('g')
+				.attr('class', 'label')
+				.attr('transform', centerTx);
+		lg.selectAll('text')
+				.data(ticks_gauge)
+			.enter().append('text')
+				.attr('transform', function(d) {
+					var ratio = scale_gauge(d);
+					var newAngle = config.minAngle + (ratio * rangeGauge);
+					return 'rotate(' +newAngle +') translate(0,' +(config.labelInset-r) +')';
+				})
+                .text(config.labelFormat);
+
+		var lineData = [ [config.pointerWidth / 2, 0], 
+						[0, -pointerHeadLength],
+						[-(config.pointerWidth / 2), 0],
+						[0, config.pointerTailLength],
+						[config.pointerWidth / 2, 0] ];
+		var pointerLine = d3.line().curve(d3.curveMonotoneX);
+		var pg = svg.append('g').data([lineData])
+				.attr('class', 'pointer')
+				.attr('transform', centerTx);
+				
+		
+		pointer = pg.append('path')
+			.attr('d', pointerLine/*function(d) { return pointerLine(d) +'Z';}*/ )
+			.attr('transform', 'rotate(' +config.maxAngle +')');
+			
+		update(newValue === undefined ? 0 : newValue);
+	}
+	that.render = render;
+	
+	function update(newValue, newConfiguration) {
+		if ( newConfiguration  !== undefined) {
+			configure(newConfiguration);
+		}
+		var ratio = scale_gauge(newValue);
+		var newAngle = config.minAngle + (ratio * rangeGauge);
+		console.log("Min angle ::: "+newAngle+"ratio:::::"+ratio+"newAngle:::::"+newAngle);
+		pointer.transition()
+			.duration(config.transitionMs)
+			//.ease('elastic')
+			.attr('transform', 'rotate(' +newAngle +')');
+	}
+	that.update = update;
+
+	configure(configuration);
+	
+	return that;
+};
+
+
+
+var powerGauge = gauge('#power-gauge', {
+	size: 300,
+	clipWidth: 300,
+	clipHeight: 300,
+	ringWidth: 60,
+	maxValue: 0,
+	transitionMs: 4000,
+});
+powerGauge.render();
+//var i =10;
+
+function updateReadings(i) {
+	// just pump in random data here...
+	if(i>=0){
+	powerGauge.update(i * 10);
+	i--;
+	}else{
+		i=10;
+	}
+}
+
+
+// every few seconds update reading values
+// updateReadings();
+// setInterval(function() {
+// 	updateReadings();
+// }, 5 * 1000);

@@ -10,7 +10,7 @@ body {
 #chart {
   margin-top:30px;
 }
-  #clickerWrapper {
+#clickerWrapper {
     top: 0;
     z-index: 1;
     display: block;
@@ -120,3 +120,18 @@ margin-top: 30px;
       text-decoration: none;
       color: #6B6B6B;
   }
+  #power-gauge g.arc {
+		fill: steelblue;
+	}
+
+	#power-gauge g.pointer {
+		fill: #56e451;
+		stroke: #11b650;
+	}
+	
+	#power-gauge g.label text {
+		text-anchor: middle;
+		font-size: 14px;
+		font-weight: bold;
+		fill: #666;
+	}
