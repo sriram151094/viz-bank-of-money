@@ -97,15 +97,6 @@ ticks.append("svg:line")
 	.attr("class", "ticks")
 	.style("stroke", "#FFF");
 	
-/*Add the labels for the %'s*/
-ticks.append("svg:text")
-	.attr("x", 8)
-	.attr("dy", ".35em")
-	.attr("class", "tickLabels")
-	.attr("transform", function(d) { return d.angle > Math.PI ? "rotate(180)translate(-16)" : null; })
-	.style("text-anchor", function(d) { return d.angle > Math.PI ? "end" : null; })
-	.text(function(d) { return d.label; })
-	.attr('opacity', 0);
 
 /*//////////////////////////////////////////////////////////
 ////////////////// Initiate Names //////////////////////////
@@ -209,15 +200,7 @@ d3.select("#clicker")
 		else if(counter == 4) Draw4();
 		else if(counter == 5) Draw5();
 		else if(counter == 6) Draw6();
-		// else if(counter == 7) Draw7();
-		// else if(counter == 8) Draw8();
-		// else if(counter == 9) Draw9();
-		// else if(counter == 10) Draw10();
-		// else if(counter == 11) Draw11();
-		// else if(counter == 12) Draw12();
-		// else if(counter == 13) Draw13();
-		// else if(counter == 14) Draw14();
-		// else if(counter == 15) finalChord();
+		else if(counter == 7) finalChord();
 		
 		counter = counter + 1;
 	});
@@ -240,11 +223,11 @@ function Draw1(){
 							"and it’s becoming difficult to drill down the issue causing it.",
 	loc = 4/2, delayDisappear = 0, delayAppear = 1);
 
-	changeTopText(newText = "In the next few steps we would like to introduce you to the issues faced by our organization ",
-	loc = 8/2, delayDisappear = 9, delayAppear = 10, finalText = true);
-	
 	changeBottomText(newText = "Let's start by drawing out the attacks faced over the past two days",
 	loc = 1/2, delayDisappear = 0, delayAppear = 10);
+
+	changeTopText(newText = "In the next few steps we would like to introduce you to the issues faced by our organization ",
+	loc = 8/2, delayDisappear = 9, delayAppear = 1, finalText = true);
 	
 	//Remove arcs again
 	d3.selectAll(".arc")
@@ -287,15 +270,10 @@ function Draw2(){
 		.transition().delay(700).duration(1000)
 		.style("stroke", function(d, i, j) {return j ? 0 : "#000"; });
 
-	/*Add the labels for the %'s*/
-	d3.selectAll("g.group").selectAll(".tickLabels")
-		.transition().delay(700).duration(2000)
-		.attr("opacity", function(d, i, j) {return j ? 0 : 1; });
-
 	/*Show the  name*/
 	d3.selectAll(".titles")
 	  .transition().duration(2000)
-	  .attr("opacity", function(d, i) {console.log(d.index);return d.index ? 0 : 1; });
+	  .attr("opacity", function(d, i) {return d.index ? 0 : 1; });
 	  
 	/*Switch  texts*/
 	changeTopText(newText = "Firstly, a series of Port scanning events occur implying the presence of some external botnet trying to compromise the system",
@@ -307,14 +285,13 @@ function Draw2(){
 };/*Draw2*/
 
 /*///////////////////////////////////////////////////////////  
-//Draw the other arcs as well
+//Draw arc for FTP/SSH Attack
 //////////////////////////////////////////////////////////*/
 function Draw3(){
 	console.log("Draw3 function")
 	/*First disable click event on clicker button*/
 	stopClicker();
 
-	var arcDelay = [0,1,2,12,13,23,33,34,35,40,47];
 	/*Show and run the progressBar*/
 	runProgressBar(time=700*2);	
 		
@@ -338,30 +315,27 @@ function Draw3(){
 	.transition().delay(700).duration(1000)
 	.style("stroke", function(d, i, j) {return j ? 0 : "#000"; });
 
-	/*Add the labels for the %'s*/
-	d3.selectAll("g.group").selectAll(".tickLabels")
-		.transition().delay(700).duration(2000)
-		.attr("opacity", 0);
-
 	/*Show the  name*/
 	d3.selectAll(".titles")
 	  .transition().duration(2000)
-	  .attr("opacity",1);
+	  .attr("opacity", function(d, i) {return d.index == 0 || d.index ==1 ? 1 : 0; });
 	 
 	changeTopText(newText = "HTC has 5% of the market share",
-	  loc = 6/2, delayDisappear = 0, delayAppear = 2,finalText = true);
+	  loc = 6/2, delayDisappear = 0, delayAppear = 1,finalText = true);
    
 	changeBottomText(newText = "Huawei came from practically no share in 2013 to 2.4% in 2014 thereby taking its place in the biggest 7 brands in the Netherlands",
-	  loc = -2/2, delayDisappear = 0, delayAppear = arcDelay[2]);
+	  loc = -2/2, delayDisappear = 0, delayAppear = 1);
 	
 };/*Draw3*/
 
+/*///////////////////////////////////////////////////////////  
+//Draw arc for SQL Attack
+//////////////////////////////////////////////////////////*/
 function Draw4(){
 	console.log("Draw4 function")
 	/*First disable click event on clicker button*/
 	stopClicker();
 
-	var arcDelay = [0,1,2,12,13,23,33,34,35,40,47];
 	/*Show and run the progressBar*/
 	runProgressBar(time=700*2);	
 		
@@ -393,16 +367,20 @@ function Draw4(){
 	/*Show the  name*/
 	d3.selectAll(".titles")
 	  .transition().duration(2000)
-	  .attr("opacity",1);
+	  .attr("opacity", function(d, i) {return d.index == 0 || d.index ==1 || d.index ==2 ? 1 : 0; });
 
 	changeTopText(newText = "LG has almost 5% of the market",
-	  loc = 6/2, delayDisappear = 0, delayAppear = 3,finalText = true);
+	loc = 6/2, delayDisappear = 0, delayAppear = 1,finalText = true);
    
 	changeBottomText(newText = "Nokia is still owned by 15% of the respondents. However practically all of these phones are ordinary phones, not smartphones",
-	  loc = -2/2, delayDisappear = 0, delayAppear = 3);
+	loc = -2/2, delayDisappear = 0, delayAppear = 1);
 	
 };
 
+
+/*///////////////////////////////////////////////////////////  
+//Draw arc for Data Outage
+//////////////////////////////////////////////////////////*/
 function Draw5(){
 	console.log("Draw5 function")
 	/*First disable click event on clicker button*/
@@ -431,24 +409,22 @@ function Draw5(){
 	.transition().delay(700).duration(1000)
 	.style("stroke", function(d, i, j) {return j ? 0 : "#000"; });
 
-	/*Add the labels for the %'s*/
-	d3.selectAll("g.group").selectAll(".tickLabels")
-		.transition().delay(700).duration(2000)
-		.attr("opacity", 0);
+/*Show the  name*/
+d3.selectAll(".titles")
+.transition().duration(2000)
+.attr("opacity", function(d, i) {return d.index == 0 || d.index ==1 || d.index ==2 || d.index==3? 1 : 0; });
 
-	/*Show the  name*/
-	d3.selectAll(".titles")
-	  .transition().duration(2000)
-	  .attr("opacity",1);
 
 	changeTopText(newText = "LG has almost 5% of the market",
-	  loc = 6/2, delayDisappear = 0, delayAppear = 4,finalText = true);
+	loc = 6/2, delayDisappear = 0, delayAppear = 1,finalText = true);
    
 	changeBottomText(newText = "Nokia is still owned by 15% of the respondents. However practically all of these phones are ordinary phones, not smartphones",
-	  loc = -2/2, delayDisappear = 0, delayAppear = 4);
+	loc = -2/2, delayDisappear = 0, delayAppear = 1);
 	
 };
-
+/*///////////////////////////////////////////////////////////  
+//Draw arc for DNS attack
+//////////////////////////////////////////////////////////*/
 function Draw6(){
 	console.log("Draw6 function")
 	/*First disable click event on clicker button*/
@@ -477,10 +453,6 @@ function Draw6(){
 	.transition().delay(700).duration(1000)
 	.style("stroke", function(d, i, j) {return j ? 0 : "#000"; });
 
-	/*Add the labels for the %'s*/
-	d3.selectAll("g.group").selectAll(".tickLabels")
-		.transition().delay(700).duration(2000)
-		.attr("opacity", 0);
 
 	/*Show the  name*/
 	d3.selectAll(".titles")
@@ -488,86 +460,13 @@ function Draw6(){
 	  .attr("opacity",1);
 
 	changeTopText(newText = "LG has almost 5% of the market",
-	  loc = 6/2, delayDisappear = 0, delayAppear = 5,finalText = true);
+	loc = 6/2, delayDisappear = 0, delayAppear = 1,finalText = true);
    
 	changeBottomText(newText = "Nokia is still owned by 15% of the respondents. However practically all of these phones are ordinary phones, not smartphones",
-	  loc = -2/2, delayDisappear = 0, delayAppear = 5);
+	loc = -2/2, delayDisappear = 0, delayAppear = 1);
 	
 };
-// function Draw3(){
-// 	console.log("Draw3 function")
-// 	/*First disable click event on clicker button*/
-// 	stopClicker();
 
-// 	var arcDelay = [0,1,2,12,13,23,33,34,35,40,47];
-// 	/*Show and run the progressBar*/
-// 	runProgressBar(time=700*(arcDelay[(arcDelay.length-1)]+1));	
-		
-//    /*Fill in the other arcs*/
-//    svg.selectAll("g.group").select("path")
-// 	.transition().delay(function(d, i) { return 700*arcDelay[i];}).duration(1000)
-// 	.attrTween("d", function(d) {
-// 		if(d.index != 0) {
-// 		   var i = d3.interpolate(d.startAngle, d.endAngle);
-// 		   return function(t) {
-// 			   d.endAngle = i(t);
-// 			 return arc(d);
-// 		   }
-// 		}
-//     });
- 
-//   /*Make the other strokes black as well*/
-//   svg.selectAll("g.group")
-// 	.transition().delay(function(d,i) { return 700*arcDelay[i]; }).duration(700)
-// 	.selectAll("g").selectAll("line").style("stroke", "#000");
-//   /*Same for the %'s*/
-//   svg.selectAll("g.group")
-// 	.transition().delay(function(d,i) { return 700*arcDelay[i]; }).duration(700)
-// 	.selectAll("g").selectAll("text").style("opacity", 1);
-//   /*And the Names of each Arc*/	
-//   svg.selectAll("g.group")
-// 	.transition().delay(function(d,i) { return 700*arcDelay[i]; }).duration(700)
-// 	.selectAll("text").style("opacity", 1);
-
-// 	/*Change the text of the top section inside the circle accordingly*/
-// 	/*HTC*/
-// 	changeTopText(newText = "HTC has 5% of the market share",
-// 		loc = 6/2, delayDisappear = 0, delayAppear = arcDelay[2]);
-// 	/*LG*/
-// 	changeTopText(newText = "LG has almost 5% of the market",
-// 		loc = 6/2, delayDisappear = arcDelay[3], delayAppear = arcDelay[4]);
-// 	/*Samsung*/
-// 	changeTopText(newText = "Samsung has the biggest share by far, with 38% of respondents using a Samsung as their main phone",
-// 		loc = 3/2, delayDisappear = (arcDelay[5]-1), delayAppear = arcDelay[5]);
-// 	/*Sony*/
-// 	changeTopText(newText = "Sony has slightly more than 4% share",
-// 		loc = 4/2, delayDisappear = arcDelay[6], delayAppear = (arcDelay[8]-1));		
-// 	/*100%*/
-// 	changeTopText(newText = "Together that sums up to 100%",
-// 		loc = 1/2, delayDisappear = (arcDelay[9]-1), delayAppear = arcDelay[9]);		
-// 	/*Chord intro*/
-// 	changeTopText(newText = "This circle shows how the respondents are currently divided between the brands",
-// 		loc = 8/2, delayDisappear = (arcDelay[10]-1), delayAppear = arcDelay[10], finalText = true);					
-	
-// 	/*Change the text of the bottom section inside the circle accordingly*/
-// 	/*Huawei*/
-// 	changeBottomText(newText = "Huawei came from practically no share in 2013 to 2.4% in 2014 thereby taking its place in the biggest 7 brands in the Netherlands",
-// 		loc = -2/2, delayDisappear = 0, delayAppear = arcDelay[2]);
-// 	/*Nokia*/
-// 	changeBottomText(newText = "Nokia is still owned by 15% of the respondents. However practically all of these phones are ordinary phones, not smartphones",
-// 		loc = -1/2, delayDisappear = arcDelay[3], delayAppear = arcDelay[4]);	
-// 	/*Other*/
-// 	changeBottomText(newText = "Brands combined in \"Other\" are Blackberry, Motorola, Google Nexus and Operator branded",
-// 		loc = -1/2, delayDisappear = (arcDelay[5]-1), delayAppear = (arcDelay[8]-1));	
-// 	/*Chord intro*/
-// 	changeBottomText(newText = "Now we're going to look at how these respondents flowed from their previous phone to their present one",
-// 		loc = 1/2, delayDisappear = (arcDelay[9]-1), delayAppear = arcDelay[10]);	
-
-// };/*Draw3*/
-
-/*///////////////////////////////////////////////////////////
-//Draw the original Chord diagram
-///////////////////////////////////////////////////////////*/
 /*Go to the final bit*/
 function finalChord() {
 	
@@ -607,24 +506,18 @@ function finalChord() {
 		.on("mouseover", fade(.02))
 		.on("mouseout", fade(.80));
 		
-	// /*Show all chords*/
-	// chords.transition().duration(1000)
-	// 	.style("opacity", opacityValueBase);
 
 	/*Show all the text*/
 	d3.selectAll("g.group").selectAll("line")
 		.transition().duration(100)
 		.style("stroke","#000");
-	/*Same for the %'s*/
-	svg.selectAll("g.group")
-		.transition().duration(100)
-		.selectAll(".tickLabels").style("opacity",1);
+
 	/*And the Names of each Arc*/	
 	svg.selectAll("g.group")
 		.transition().duration(100)
 		.selectAll(".titles").style("opacity",1);		
 
-};/*finalChord*/
+};
 
 /*//////////////////////////////////////////////////////////
 ////////////////// Extra Functions /////////////////////////
@@ -667,7 +560,6 @@ function endall(transition, callback) {
 /*Taken from http://bl.ocks.org/mbostock/7555321
 //Wraps SVG text*/
 function wrap(text, width,id) {
-
     var text = d3.select(id),
         words = text.text().split(/\s+/).reverse(),
         word,
@@ -694,7 +586,6 @@ function wrap(text, width,id) {
 
 /*Transition the top circle text*/
 function changeTopText (newText, loc, delayDisappear, delayAppear, finalText, xloc, w) {
-
 	/*If finalText is not provided, it is not the last text of the Draw step*/
 	if(typeof(finalText)==='undefined') finalText = false;
 	
@@ -706,7 +597,7 @@ function changeTopText (newText, loc, delayDisappear, delayAppear, finalText, xl
 		.transition().delay(700 * delayDisappear).duration(700)
 		.attr('opacity', 0)	
 		/*New text appear*/
-		.call(endall,  function() {
+		.call(endall,  function() {			
 			middleTextTop.text(newText)
 			.attr("id","middleText")
 			.attr("y", -24*loc + "px")
@@ -736,6 +627,7 @@ function changeBottomText (newText, loc, delayDisappear, delayAppear) {
 		.attr("id","bottomText")
 		/*New text appear*/
 		.call(endall,  function() {
+			console.log(d3.select(this))
 			middleTextBottom.text(newText)
 			
 			.attr("y", 24*loc + "px")
