@@ -4,6 +4,15 @@
     <h2>
         Bank of Money - Visual Analytics (Fall 2020)
     </h2>
+    <script src="https://d3js.org/d3.v6.js"></script>
+    <script src="./scripts/networkchart.js"></script>
 </head>
+<body>
+    <input type="date" id="date" value="2012-04-05" min="2012-04-05" max="2012-04-06" onchange="timechange()">
+    <input type='time' name='starttime' id='starttime' value='20:20' onchange="timechange()">
+    <input type='time' name='endtime' id='endtime' value='20:50' onchange="timechange()">
+    <button onclick="buttonclick()">Change</button>
+    <div id='networkChart'></div>
+</body>
 
 <html
