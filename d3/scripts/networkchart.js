@@ -106,18 +106,6 @@ function drawNetworkChart(starttime, endtime) {
     getFireWallData(starttime, endtime).then(data => {
         console.log("network data ", data)
 
-        networkSvg.append('g')
-            .attr('transform', 'translate(100,100)')
-            .call(g => g.append('circle')
-                .attr('r', 10)
-                .attr('fill', 'white')
-            )
-            .call(g => g.append('path')
-                .attr("d", d3.symbol().size(1000).type(d3.symbolSquare))
-                .style('fill', function (d) {
-                    return `url(${location}#laptop)`
-                }))
-
         const link = networkSvg.append("g")
             .attr("stroke", "#999")
             .attr("stroke-opacity", 0.6)
@@ -126,38 +114,33 @@ function drawNetworkChart(starttime, endtime) {
             .join("line")
             .attr("stroke-width", 1);
 
+        const node = networkSvg.append("g")
+            .attr("stroke", "#fff")
+            .attr("stroke-width", 1.5)
+            .selectAll("circle")
+            .data(data.nodes)
+            .join("circle")
+            .attr("r", 5)
+            .attr("fill", d => color(d.type))
+            .call(drag(simulation));
+
+
         // const node = networkSvg.append("g")
         //     .attr("stroke", "#fff")
         //     .attr("stroke-width", 1.5)
-        //     .selectAll("circle")
+        //     .selectAll("g")
         //     .data(data.nodes)
-        //     .join("circle")
-        //     .attr("r", 5)
-        //     .attr("fill", d => color(d.type))
+        //     .join("g")
+        //     .call(g => g.append('circle')
+        //         .attr("r", 5)
+        //         .attr("fill", "white")
+        //     )
         //     .call(g => g.append('path')
-        //         .attr("d", d3.symbol().size(2500).type(d3.symbolSquare))
+        //         .attr("d", d3.symbol().size(500).type(d3.symbolSquare))
         //         .style('fill', function (d) {
         //             return `url(${location}#laptop)`
         //         }))
         //     .call(drag(simulation));
-
-
-        const node = networkSvg.append("g")
-            .attr("stroke", "#fff")
-            .attr("stroke-width", 1.5)
-            .selectAll("g")
-            .data(data.nodes)
-            .join("g")
-            .call(g => g.append('circle')
-                .attr("r", 5)
-                .attr("fill", "white")
-            )
-            .call(g => g.append('path')
-                .attr("d", d3.symbol().size(500).type(d3.symbolSquare))
-                .style('fill', function (d) {
-                    return `url(${location}#laptop)`
-                }))
-            .call(drag(simulation));
 
         node.append("title")
             .text(d => d.id);
@@ -177,9 +160,9 @@ function drawNetworkChart(starttime, endtime) {
                 .attr("y2", d => d.target.y + height / 2);
 
             node
-                // .attr("cx", d => d.x + width / 2)
-                // .attr("cy", d => d.y + height / 2)
-                .attr("transform", d => "translate(" + (d.x + width / 2) + "," + (d.y + height / 2) + ")")
+                .attr("cx", d => d.x + width / 2)
+                .attr("cy", d => d.y + height / 2)
+                //.attr("transform", d => "translate(" + (d.x + width / 2) + "," + (d.y + height / 2) + ")")
         });
 
         //invalidation.then(() => simulation.stop());
