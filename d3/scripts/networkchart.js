@@ -8,6 +8,7 @@ var endTime = '20:50';
 var date = '2012-04-05';
 var defs
 var toolTip
+var margin = { top: 10, bottom: 10, left: 10, right: 10 }
 
 function network() {
 
@@ -176,6 +177,8 @@ function drawNetworkChart(starttime, endtime) {
 
         //invalidation.then(() => simulation.stop());
     })
+
+    drawLegend()
 }
 
 function drag(simulation) {
@@ -213,6 +216,21 @@ let color = type => {
     else
         return 'red'
 
+}
+
+function drawLegend() {
+    networkSvg.append("g")
+        .attr('id', 'lengend1')
+        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+        .call(g => g.append('circle')
+            .attr('r', 5)
+            .attr('fill', 'blue')
+        )
+        .call(g => g.append('text')
+            .attr('x', margin.left + 5)
+            .attr('y', margin.top)
+            .text('Workstation')
+        )
 }
 
 function drawTooltip(event, data, eventType) {
