@@ -1,3 +1,5 @@
+export { network, drawNetworkChart };
+
 var networkSvg;
 var width = 500;
 var height = 500;
@@ -5,19 +7,27 @@ var startTime = '20:20';
 var endTime = '20:50';
 var date = '2012-04-05';
 var defs
+var toolTip
 
-window.addEventListener('DOMContentLoaded', (event) => {
-    var chartWindow = d3.select('#networkChart');
-    networkSvg = chartWindow.append('svg')
-        .attr('id', 'network')
-        //.attr("viewBox", [-width / 4, -height / 4, width, height])
-        .attr('width', width)
-        .attr('height', height)
+function network() {
+
+    window.addEventListener('DOMContentLoaded', (event) => {
+        var chartWindow = d3.select('#networkChart');
+        networkSvg = chartWindow.append('svg')
+            .attr('id', 'network')
+            //.attr("viewBox", [-width / 4, -height / 4, width, height])
+            .attr('width', width)
+            .attr('height', height)
 
 
-    importExternalSVGs();
-    drawNetworkChart(Date.parse(date + ' ' + startTime), Date.parse(date + ' ' + endTime));
-});
+        importExternalSVGs();
+        drawNetworkChart(Date.parse(date + ' ' + startTime), Date.parse(date + ' ' + endTime));
+    });
+
+    toolTip = d3.select("body").append("div")
+        .attr("class", "tooltip")
+}
+
 
 
 function importExternalSVGs() {
@@ -45,9 +55,9 @@ function getFireWallData(start, end) {
         console.log(start)
         console.log(end)
 
-        d3.csv('../data/sshftp_firewall.csv').then(res => {
+        d3.csv('../data/aggregated_data.csv').then(res => {
             console.log(res)
-            filteredData = res.filter(log => {
+            let filteredData = res.filter(log => {
                 let d = Date.parse(log['date_time'])
                 return (d >= start && d <= end)
             })
@@ -65,9 +75,9 @@ function getFireWallData(start, end) {
                 d['id'] = ip;
                 if (ip.includes('172.23.'))
                     d['type'] = 'Workstation'
-                else if (ip.includes('10.32.'))
+                if (ip.includes('10.32.'))
                     d['type'] = 'External Websites'
-                else if (ip == '10.32.0.100' || ip == '172.23.0.1')
+                if (ip == '10.32.0.100' || ip == '172.23.0.1')
                     d['type'] = 'Firewall'
                 else if (ip == '172.23.0.10')
                     d['type'] = 'DNS'
@@ -83,7 +93,11 @@ function getFireWallData(start, end) {
             for (const row of filteredData) {
                 links.push({
                     source: row['source_ip'],
-                    target: row['destination_ip']
+                    target: row['destination_ip'],
+                    // source_port : row['source_port'],
+                    // destination_port : row['destination_port'],
+                    operation: row['operation'],
+                    date_time: row['date_time']
                 })
             }
 
@@ -112,7 +126,14 @@ function drawNetworkChart(starttime, endtime) {
             .selectAll("line")
             .data(data.links)
             .join("line")
-            .attr("stroke-width", 1);
+            .attr("stroke-width", 1)
+            .call(g =>
+                g.on('mouseover', function (event, d) {
+                    drawTooltip(event, d, "link")
+                }
+                )
+                    .on('mouseout', function (event) { removeTooltip(this) })
+            );
 
         const node = networkSvg.append("g")
             .attr("stroke", "#fff")
@@ -122,28 +143,17 @@ function drawNetworkChart(starttime, endtime) {
             .join("circle")
             .attr("r", 5)
             .attr("fill", d => color(d.type))
+            .call(g =>
+                g.on('mouseover', function (event, d) {
+                    drawTooltip(event, d, "node")
+                }
+                )
+                    .on('mouseout', function (event) { removeTooltip(this) })
+            )
             .call(drag(simulation));
 
-
-        // const node = networkSvg.append("g")
-        //     .attr("stroke", "#fff")
-        //     .attr("stroke-width", 1.5)
-        //     .selectAll("g")
-        //     .data(data.nodes)
-        //     .join("g")
-        //     .call(g => g.append('circle')
-        //         .attr("r", 5)
-        //         .attr("fill", "white")
-        //     )
-        //     .call(g => g.append('path')
-        //         .attr("d", d3.symbol().size(500).type(d3.symbolSquare))
-        //         .style('fill', function (d) {
-        //             return `url(${location}#laptop)`
-        //         }))
-        //     .call(drag(simulation));
-
-        node.append("title")
-            .text(d => d.id);
+        // node.append("title")
+        //     .text(d => d.id);
 
 
         var simulation = d3.forceSimulation(data.nodes)
@@ -162,14 +172,13 @@ function drawNetworkChart(starttime, endtime) {
             node
                 .attr("cx", d => d.x + width / 2)
                 .attr("cy", d => d.y + height / 2)
-                //.attr("transform", d => "translate(" + (d.x + width / 2) + "," + (d.y + height / 2) + ")")
         });
 
         //invalidation.then(() => simulation.stop());
     })
 }
 
-drag = simulation => {
+function drag(simulation) {
 
     function dragstarted(event, d) {
         if (!event.active) simulation.alphaTarget(0.3).restart();
@@ -194,28 +203,48 @@ drag = simulation => {
         .on("end", dragended);
 }
 
-color = type => {
+let color = type => {
     if (type == 'Firewall')
-        return 'red'
+        return 'green'
     else if (type == 'Workstation')
         return 'blue'
     else if (type == 'DNS')
-        return 'green'
+        return 'orange'
     else
-        return 'yellow'
+        return 'red'
 
 }
 
-buttonclick = () => {
-    console.log("Change")
+function drawTooltip(event, data, eventType) {
+    console.log(data);
+    toolTip.transition()
+        .duration(50)
+        .style("opacity", 1);
+
+    if (eventType == 'link') {
+        toolTip.html("<span class='badge badge-pill badge-secondary' style='font-size:1em;'> Connection </span> <br>" +
+            "From: " + data['source'].id + "<br>" +
+            "To: " + data['target'].id + "<br>" +
+            "Status: " + data.operation + "<br>" +
+            "Time: " + data.date_time
+        )
+    }
+    else {
+        toolTip.html("<span class='badge badge-pill badge-secondary' style='font-size:1em;'> Node </span> <br>" +
+            "IP address: " + data.id + "<br>" +
+            "Type: " + data.type
+        )
+    }
+
+    toolTip.style("left", (event.pageX + 20) + "px")
+        .style("top", (event.pageY - 10) + "px")
+        .style("text-align", "left");
 }
 
-timechange = () => {
-    startTime = d3.select('#starttime').property('value')
-    endTime = d3.select('#endtime').property('value')
-    date = d3.select('#date').property('value')
-    console.log(Date.parse(date + ' ' + startTime));
-    console.log(Date.parse(date + ' ' + endTime));
-    drawNetworkChart(Date.parse(date + ' ' + startTime), Date.parse(date + ' ' + endTime))
+function removeTooltip() {
+    toolTip.transition()
+        .duration('50')
+        .style("opacity", 0)
 }
+
 
