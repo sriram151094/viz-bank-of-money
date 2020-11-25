@@ -1,21 +1,22 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Arimo', sans-serif;
-}
-
-#my_dataviz {
-    position: relative;
+.network-wrapper {
+    margin: 60px 0px;
+    box-shadow: 0 8px 6px -6px #0000008c;
 }
 
 div.tooltip {
     position: absolute;
-    padding: .5rem;
-    background: #FFFFFF;
-    color: #313639;
-    border: 1px solid #313639;
-    border-radius: 8px;
-    pointer-events: none;
-    font-size: 1rem;
+       text-align: center;
+       padding: .5rem;
+       background: #FFFFFF;
+       color: #313639;
+       border: 1px solid #313639;
+       border-radius: 8px;
+       pointer-events: none;
+       font-size: 1rem;
+       font-family: monospace;
+       opacity: 0;
+  }
+
+.navbar-input {
+    margin-right: 25px;
 }

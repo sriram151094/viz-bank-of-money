@@ -1,15 +1,108 @@
 <html>
-    
+
 <head>
-    
-    <script src="https://d3js.org/d3.v6.js"></script>
-    <link rel="stylesheet" href="./style/main.css"/>
-</head>
-<body>
-    <h2>
+    <!-- <h2>
         Bank of Money - Visual Analytics (Fall 2020)
-    </h2>
-    <div id="my_dataviz"></div>
-    <script type="module" src="./scripts/index.js"></script>
+    </h2> -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+        crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="style/main.css" />
+    <script src="https://d3js.org/d3.v6.js"></script>
+    <script src="./scripts/index.js" type="module"></script>
+    <script type="module">
+        import { buttonclick, timechange } from './scripts/index.js';
+        window.buttonclick = buttonclick;
+        window.timechange = timechange;
+    </script>
+    <nav class="navbar navbar-expand-lg navbar-light bg-dark fixed-top">
+        <a class="navbar-brand" href="#" style="color: white;">Bank of Money - Visual Analytics</a>
+        <div id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="navbar-input">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text" id="btnGroupAddon">Event</div>
+                        </div>
+                        <select id='y-attr-select' class="form-control">
+                            <option value='population'>SQL Attack</option>
+                            <option value='gdp'>SSH and FTP Attack</option>
+                            <option value='mortality'>DNS Attack</option>
+                            <option value='lifeexpectancy'>Data Outage</option>
+                            <option value='fertility' selected="selected">Port Scanning</option>
+                        </select>
+                    </div>
+                </li>
+                <li class="navbar-input">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text" id="btnGroupAddon">Date</div>
+                        </div>
+                        <input type="date" class="form-control" id="date" value="2012-04-05" min="2012-04-05"
+                            max="2012-04-06" onchange="timechange()">
+                    </div>
+                </li>
+                <li class="navbar-input">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text" id="btnGroupAddon">Start Time</div>
+                        </div>
+                        <input type='time' class="form-control" name='starttime' id='starttime' value='20:20'
+                            onchange="timechange()">
+                    </div>
+                </li>
+
+                <li class="navbar-input">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text" id="btnGroupAddon">End Time</div>
+                        </div>
+                        <input type='time' class="form-control" name='endtime' id='endtime' value='20:50'
+                            onchange="timechange()">
+                    </div>
+                </li>
+
+            </ul>
+        </div>
+    </nav>
+</head>
+
+<body style="margin-top:60px;">
+
+    <svg id="chart"></svg>
+    <div id="clickerWrapper">
+        <div id="progress"></div>
+        <div id="clicker">Let's Start</div>
+    </div>
+    <div id="buttonWrapper">
+        <div id="buttonWrapperInner">
+            <div id="skip" class="sideButton">SKIP INTRO</div>
+            <div id="reset" class="sideButton">RESET</div>
+            <div id="link" class="sideButton"><a href="http://bl.ocks.org/nbremer/raw/94db779237655907b907/"
+                    target="_blank">GO TO SOURCE</a></div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="network-wrapper card" id='networkChart'></div>
+            </div>
+            <div class="col">
+                2 of 2
+            </div>
+        </div>
+    </div>
+    <!-- <input type="date" id="date" value="2012-04-05" min="2012-04-05" max="2012-04-06" onchange="timechange()">
+    <input type='time' name='starttime' id='starttime' value='20:20' onchange="timechange()">
+    <input type='time' name='endtime' id='endtime' value='20:50' onchange="timechange()">
+    <button onclick="buttonclick()">Change</button> -->
+    <div class="network-wrapper" id='networkChart'></div>
 </body>
-</html>
+
+<html
