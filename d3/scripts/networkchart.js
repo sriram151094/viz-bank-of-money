@@ -8,7 +8,7 @@ var endTime = '20:50';
 var date = '2012-04-05';
 var defs
 var toolTip
-var margin = { top: 10, bottom: 10, left: 10, right: 10 }
+var margin = { top: 15, bottom: 10, left: 15, right: 10 }
 
 function network() {
 
@@ -82,6 +82,8 @@ function getFireWallData(start, end) {
                     d['type'] = 'Firewall'
                 else if (ip == '172.23.0.10')
                     d['type'] = 'DNS'
+                if (ip.includes('172.28.'))
+                    d['type'] = 'Potentially Harmful Websites'
 
                 nodes.push(d)
             }
@@ -171,8 +173,8 @@ function drawNetworkChart(starttime, endtime) {
                 .attr("y2", d => d.target.y + height / 2);
 
             node
-                .attr("cx", d => d.x + width / 2)
-                .attr("cy", d => d.y + height / 2)
+                .attr("cx", d => Math.max(5, Math.min(width - 5, d.x + width / 2)))
+                .attr("cy", d => Math.max(5, Math.min(height - 5, d.y + height / 2)))
         });
 
         //invalidation.then(() => simulation.stop());
@@ -219,22 +221,55 @@ let color = type => {
 }
 
 function drawLegend() {
-    networkSvg.append("g")
-        .attr('id', 'lengend1')
-        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
-        .call(g => g.append('circle')
-            .attr('r', 5)
-            .attr('fill', 'blue')
-        )
-        .call(g => g.append('text')
-            .attr('x', margin.left + 5)
-            .attr('y', margin.top)
-            .text('Workstation')
-        )
+    let legend_arr = [
+        {
+            name: 'Workstation',
+            color: 'blue'
+        },
+        {
+            name: 'Firewall',
+            color: 'green'
+        },
+        {
+            name: 'DNS',
+            color: 'orange'
+        },
+        {
+            name: 'External Websites',
+            color: 'red'
+        }
+    ]
+
+    for (let i = 0; i < legend_arr.length; i++) {
+        networkSvg.append("g")
+            .attr('id', 'lengend1')
+            //.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+            .call(g => g.append('circle')
+                .attr('r', 5)
+                .attr('cx', margin.left)
+                .attr('cy', margin.top + (i * 15))
+                .attr('fill', legend_arr[i]['color'])
+            )
+            .call(g => g.append('text')
+                .attr('x', margin.left + 10)
+                .attr('y', margin.top + 5 + (i * 15))
+                .attr('font-size', '12px')
+                .text(legend_arr[i]['name'])
+            )
+    }
+
+    networkSvg.append('rect')
+        .attr('x', 2)
+        .attr('y', 2)
+        .attr('width', 125)
+        .attr('height', 72)
+        .attr('stroke', 'black')
+        .attr('stroke-dasharray', 1)
+        .attr('fill', 'transparent')
+
 }
 
 function drawTooltip(event, data, eventType) {
-    console.log(data);
     toolTip.transition()
         .duration(50)
         .style("opacity", 1);
