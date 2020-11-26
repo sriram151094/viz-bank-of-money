@@ -14,6 +14,7 @@
         crossorigin="anonymous"></script>
 
     <link rel="stylesheet" href="style/main.css" />
+    <link rel="stylesheet" href="style/style.css" />
     <script src="https://d3js.org/d3.v6.js"></script>
     <script src="./scripts/index.js" type="module"></script>
     <script type="module">
@@ -74,20 +75,27 @@
 </head>
 
 <body style="margin-top:60px;">
-
-    <svg id="chart"></svg>
-    <div id="clickerWrapper">
-        <div id="progress"></div>
-        <div id="clicker">Let's Start</div>
-    </div>
-    <div id="buttonWrapper">
-        <div id="buttonWrapperInner">
-            <div id="skip" class="sideButton">SKIP INTRO</div>
-            <div id="reset" class="sideButton">RESET</div>
-            <div id="link" class="sideButton"><a href="http://bl.ocks.org/nbremer/raw/94db779237655907b907/"
-                    target="_blank">GO TO SOURCE</a></div>
+    <div id="#storyContainer">
+        <svg id="chart"></svg>
+        <div id="clickerWrapper">
+            <div id="progress"></div>
+            <div id="clicker">Let's Start</div>
+        </div>
+        <div id="buttonWrapper">
+            <div id="skip" class="btn btn-outline-secondary small-btn">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-skip-forward-fill" fill="currentColor"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M15.5 3.5a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5z" />
+                    <path
+                        d="M7.596 8.697l-6.363 3.692C.693 12.702 0 12.322 0 11.692V4.308c0-.63.693-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z" />
+                    <path
+                        d="M15.096 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.693-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z" />
+                </svg>
+                SKIP INTRO</div>
+            <div id="reset" class="btn btn-outline-secondary small-btn">RESET</div>
         </div>
     </div>
+
     <div class="container">
         <div class="row">
             <div class="col">
@@ -102,7 +110,6 @@
     <input type='time' name='starttime' id='starttime' value='20:20' onchange="timechange()">
     <input type='time' name='endtime' id='endtime' value='20:50' onchange="timechange()">
     <button onclick="buttonclick()">Change</button> -->
-    <div class="network-wrapper" id='networkChart'></div>
 </body>
 
 <html

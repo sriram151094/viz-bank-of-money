@@ -137,8 +137,6 @@ function drawNetworkChart(starttime, endtime) {
                 }
                 )
                     .on('mouseout', function (event, d) {
-                        console.log("mouseout")
-                        console.log(event)
                         dehighlightSelected(this, "link", d)
                         //removeTooltip(this)
                     })
