@@ -1,5 +1,6 @@
 import { network, drawNetworkChart } from './networkchart.js'
 import { storyTellingChart } from './innovativechart.js'
+import {Heatmap} from './heatmap.js';
 
 export function buttonclick() {
     console.log("Change")
@@ -11,7 +12,8 @@ export function timechange() {
     let date = d3.select('#date').property('value')
     console.log(Date.parse(date + ' ' + startTime));
     console.log(Date.parse(date + ' ' + endTime));
-    drawNetworkChart(Date.parse(date + ' ' + startTime), Date.parse(date + ' ' + endTime))
+    drawNetworkChart(Date.parse(date + ' ' + startTime), Date.parse(date + ' ' + endTime));
+    Heatmap(Date.parse(date + ' ' + startTime), Date.parse(date + ' ' + endTime));
 }
 
 function init() {
