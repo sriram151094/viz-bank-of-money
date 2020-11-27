@@ -6,11 +6,11 @@
 }
 
 .network-wrapper {
-    margin: 60px 0px;
+    margin: 30px 0px;
     box-shadow: 0 8px 6px -6px #0000008c;
 }
 
-#my_dataviz {
+#heatmap_div {
     position: relative;
 }
 
@@ -37,4 +37,8 @@ div.tooltip {
     border-radius: 8px;
     pointer-events: none;
     font-size: 1rem;
+}
+
+.container {
+    max-width: 100%;
 }
