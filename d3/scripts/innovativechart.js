@@ -12,6 +12,7 @@ var matrix = [
 ];
 
 var colors = ["#C8125C", "#008FC8", "#10218B", "#134B24", "#737373"];
+var simulation;
 
 /*Initiate the color scale*/
 var fill = d3.scaleOrdinal()
@@ -189,7 +190,11 @@ function storyTellingChart() {
         .text("It is imperative that we have a cyber security system that prevents the organization from getting compromised by attackers.")
         .call(wrap, 350, "#text2");
 
-
+    /*Internal network glyph */
+    d3.csv("../data/Internalnetwork.csv").then(data => {
+        data = data.map(function (d) { d.value = +d["Type"]; return d; });
+        drawNetworkGlyph(data);
+    })
 
     /*Reload page*/
     d3.select("#reset")
@@ -693,198 +698,172 @@ function runProgressBar(time) {
 
 };/*runProgressBar*/
 
-// var gauge = function (container, configuration) {
-//     var that = {};
-//     var config = {
-//         size: 200,
-//         clipWidth: 200,
-//         clipHeight: 110,
-//         ringInset: 20,
-//         ringWidth: 20,
 
-//         pointerWidth: 10,
-//         pointerTailLength: 5,
-//         pointerHeadLengthPercent: 0.9,
+var workstationSvg;
+var firewallSvg;
+var dnsSvg;
+var databaseSvg;
+var defs;
 
-//         minValue: 100,
-//         maxValue: 0,
+function loadSvgs() {
+    defs = svg.append('svg:defs')
+    var workstationdefs = svg.append("defs");
 
-//         minAngle: -90,
-//         maxAngle: +90,
+    d3.xml("../d3/img/workstation.svg").then(res => {
+        workstationSvg = res;
 
-//         transitionMs: 750,
+        defs.append('pattern')
+            .attr('id', 'workstation')
+            .attr('patternUnits', 'objectBoundingBox')
+            .attr('width', 25)
+            .attr('height', 25)
+            // Append svg to pattern
+            .append('svg')
+            .attr('x', 12)
+            .attr('y', 13)
+            .attr('width', 25)
+            .attr('height', 25)
+            .append(() => res.getElementsByTagName("svg")[0])
+    })
 
-//         majorTicks: 5,
-//         labelFormat: d3.format(''),
-//         labelInset: 11,
+    d3.xml("../d3/img/firewall.svg").then(res => {
+        firewallSvg = res;
 
-//         arcColorFn: d3.interpolateHsl(d3.rgb('#eb1313'), d3.rgb('#ed8a9c'))
-//     };
-//     var rangeGauge = undefined;
-//     var r = undefined;
-//     var pointerHeadLength = undefined;
-//     var value = 0;
+        defs.append('pattern')
+            .attr('id', 'firewall')
+            .attr('patternUnits', 'objectBoundingBox')
+            .attr('width', 10)
+            .attr('height', 10)
+            // Append svg to pattern
+            .append('svg')
+            .attr('x', 12)
+            .attr('y', 13)
+            .attr('width', 25)
+            .attr('height', 25)
+            .append(() => res.getElementsByTagName("svg")[0])
+    })
 
-//     var arc_gauge = undefined;
-//     var scale_gauge = undefined;
-//     var ticks_gauge = undefined;
-//     var tickData_gauge = undefined;
-//     var pointer = undefined;
+    d3.xml("../d3/img/dns.svg").then(res => {
+        dnsSvg = res;
 
-//     var donut = d3.pie();
+        defs.append('pattern')
+            .attr('id', 'dns')
+            .attr('patternUnits', 'objectBoundingBox')
+            .attr('width', 10)
+            .attr('height', 10)
+            // Append svg to pattern
+            .append('svg')
+            .attr('x', 10)
+            .attr('y', 10)
+            .attr('width', 30)
+            .attr('height', 30)
+            .append(() => res.getElementsByTagName("svg")[0])
+    })
 
-//     function deg2rad(deg) {
-//         return deg * Math.PI / 180;
-//     }
+    d3.xml("../d3/img/database.svg").then(res => {
+        databaseSvg = res;
 
-//     function newAngle(d) {
-//         var ratio = scale_gauge(d);
-//         var newAngle = config.minAngle + (ratio * rangeGauge);
-//         return newAngle;
-//     }
+        defs.append('pattern')
+            .attr('id', 'database')
+            .attr('patternUnits', 'objectBoundingBox')
+            .attr('width', 10)
+            .attr('height', 10)
+            // Append svg to pattern
+            .append('svg')
+            .attr('x', 10)
+            .attr('y', 10)
+            .attr('width', 30)
+            .attr('height', 30)
+            .append(() => res.getElementsByTagName("svg")[0])
+    })
+}
 
-//     function configure(configuration) {
-//         var prop = undefined;
-//         for (prop in configuration) {
-//             config[prop] = configuration[prop];
-//         }
-
-//         rangeGauge = config.maxAngle - config.minAngle;
-//         r = config.size / 2;
-//         pointerHeadLength = Math.round(r * config.pointerHeadLengthPercent);
-//         // a linear scale that maps domain values to a percent from 0..1
-//         scale_gauge = d3.scaleLinear()
-//             //.range([0,1])
-//             .domain([100, 0]);
-
-
-//         ticks_gauge = scale_gauge.ticks(config.majorTicks);
-//         tickData_gauge = d3.range(config.majorTicks).map(function () { var x = 1 / config.majorTicks; return Number(x); });
-
-//         arc_gauge = d3.arc()
-//             .innerRadius(r - config.ringWidth - config.ringInset)
-//             .outerRadius(r - config.ringInset)
-//             .startAngle(function (d, i) {
-//                 var ratio = d * i;
-//                 return deg2rad(config.minAngle + (ratio * rangeGauge));
-//             })
-//             .endAngle(function (d, i) {
-//                 var ratio = d * (i + 1);
-//                 return deg2rad(config.minAngle + (ratio * rangeGauge));
-//             });
-//     }
-//     that.configure = configure;
-
-//     function centerTranslation() {
-//         console.log("Radius");
-//         console.log(r);
-//         return 'translate(' + (r + 400) + ',' + (r - 300) + ')';
-//     }
-
-//     function isRendered() {
-//         return (svg !== undefined);
-//     }
-//     that.isRendered = isRendered;
-
-//     function render(newValue) {
-
-//         // svg = d3.select(container)
-//         // 	.append('svg:svg')
-//         // 		.attr('class', 'gauge')
-//         // 		.attr('width', config.clipWidth)
-//         // 		.attr('height', config.clipHeight);
-
-//         var centerTx = centerTranslation();
-
-//         var arcs_gauge = svg.append('g')
-//             .attr('class', 'arc')
-//             .attr('transform', centerTx);
-
-//         arcs_gauge.selectAll('path')
-//             .data(tickData_gauge)
-//             .enter().append('path')
-//             .attr('fill', function (d, i) {
-//                 return config.arcColorFn(d * i);
-//             })
-//             .attr('d', arc_gauge);
-
-//         var lg = svg.append('g')
-//             .attr('class', 'label')
-//             .attr('transform', centerTx);
-//         lg.selectAll('text')
-//             .data(ticks_gauge)
-//             .enter().append('text')
-//             .attr('transform', function (d) {
-//                 var ratio = scale_gauge(d);
-//                 var newAngle = config.minAngle + (ratio * rangeGauge);
-//                 return 'rotate(' + newAngle + ') translate(0,' + (config.labelInset - r) + ')';
-//             })
-//             .text(config.labelFormat);
-
-//         var lineData = [[config.pointerWidth / 2, 0],
-//         [0, -pointerHeadLength],
-//         [-(config.pointerWidth / 2), 0],
-//         [0, config.pointerTailLength],
-//         [config.pointerWidth / 2, 0]];
-//         var pointerLine = d3.line().curve(d3.curveMonotoneX);
-//         var pg = svg.append('g').data([lineData])
-//             .attr('class', 'pointer')
-//             .attr('transform', centerTx);
+function drawNetworkGlyph(data) {
+    console.log(data)
 
 
-//         pointer = pg.append('path')
-//             .attr('d', pointerLine/*function(d) { return pointerLine(d) +'Z';}*/)
-//             .attr('transform', 'rotate(' + config.maxAngle + ')');
+    loadSvgs();
 
-//         update(newValue === undefined ? 0 : newValue);
-//     }
-//     that.render = render;
+    var forceXSeparate = function (force) {
+        return d3.forceX(force).strength(0.1)
+    }
 
-//     function update(newValue, newConfiguration) {
-//         if (newConfiguration !== undefined) {
-//             configure(newConfiguration);
-//         }
-//         var ratio = scale_gauge(newValue);
-//         var newAngle = config.minAngle + (ratio * rangeGauge);
-//         console.log("Min angle ::: " + newAngle + "ratio:::::" + ratio + "newAngle:::::" + newAngle);
-//         pointer.transition()
-//             .duration(config.transitionMs)
-//             //.ease('elastic')
-//             .attr('transform', 'rotate(' + newAngle + ')');
-//     }
-//     that.update = update;
+    // d3.forceX(function (d) {
+    //     if (d.Type == "Workstation")
+    //         return 200;
+    //     else
+    //         return 200;
+    // }).strength(0.1)
 
-//     configure(configuration);
+    var forceYSeparate = function (force) {
+        return d3.forceY(force).strength(0.1)
+    }
 
-//     return that;
-// };
+
+    // d3.forceY(function (d) {
+    //     if (d.Type == "Workstation")
+    //         return -250;
+    //     else
+    //         return -250;
+    // }).strength(0.1)
+
+    // simulation = d3.forceSimulation()
+    //     .force("x", forceXSeparate(200))
+    //     .force("y", forceYSeparate(-250))
+    //     .force("collide", d3.forceCollide(25))
 
 
 
-// var powerGauge = gauge('#power-gauge', {
-//     size: 300,
-//     clipWidth: 300,
-//     clipHeight: 300,
-//     ringWidth: 60,
-//     maxValue: 0,
-//     transitionMs: 4000,
-// });
-// powerGauge.render();
-// //var i =10;
+    let forces = [[200, -250], [300, -50], [-200, 250], [-300, -50], [-200, -250]]
+    for (let i = 0; i < 1; i++) {
 
-// function updateReadings(i) {
-//     // just pump in random data here...
-//     if (i >= 0) {
-//         powerGauge.update(i * 10);
-//         i--;
-//     } else {
-//         i = 10;
-//     }
-// }
+        let sim = d3.forceSimulation()
+            .force("x", forceXSeparate(forces[i][0]))
+            .force("y", forceYSeparate(forces[i][1]))
+            .force("collide", d3.forceCollide(25))
+
+        let elements = svg.selectAll('#cluster' + i)
+            .data(data)
+            .enter()
+            .append('g')
+            .attr('id', d => d.Name)
+
+        let circles = elements.append("circle")
+            .attr("class", "bubble")
+            .attr("r", "20")
+            .attr("fill", function (d) {
+                return "lightgreen"
+            })
+
+        let bg = elements.append('path')
+            .attr("d", d3.symbol().size(2500).type(d3.symbolSquare))
+            .style("fill", function (d) {
+                if (d.Type == "Workstation")
+                    return `url(${location}#workstation)`
+                else if (d.Type == "DNS")
+                    return `url(${location}#dns)`
+                else
+                    return `url(${location}#firewall)`
+            })
+
+        sim.nodes(data)
+            .on("tick", ticked(circles, bg))
+    }
 
 
-// // every few seconds update reading values
-// // updateReadings();
-// // setInterval(function() {
-// // 	updateReadings();
-// // }, 5 * 1000);
+
+    function ticked(circles, bg) {
+        circles
+            .attr("cx", function (d) {
+                return d.x;
+            })
+            .attr("cy", function (d) {
+                return d.y;
+            })
+
+        bg.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")" })
+
+    }
+
+
+}
