@@ -815,18 +815,21 @@ function drawNetworkGlyph(data) {
 
 
     let forces = [[200, -250], [300, -50], [-200, 250], [-300, -50], [-200, -250]]
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < 5; i++) {
 
         let sim = d3.forceSimulation()
             .force("x", forceXSeparate(forces[i][0]))
             .force("y", forceYSeparate(forces[i][1]))
             .force("collide", d3.forceCollide(25))
 
-        let elements = svg.selectAll('#cluster' + i)
+        let g = svg.append('g')
+        g.attr('id', '#cluster' + i)
+
+        let elements = g.selectAll('.bubble')
             .data(data)
             .enter()
             .append('g')
-            .attr('id', d => d.Name)
+            .attr('id', d => d.Name + i)
 
         let circles = elements.append("circle")
             .attr("class", "bubble")
@@ -847,7 +850,17 @@ function drawNetworkGlyph(data) {
             })
 
         sim.nodes(data)
-            .on("tick", ticked(circles, bg))
+            .on("tick", function (d) {
+                circles
+                    .attr("cx", function (d) {
+                        return d.x;
+                    })
+                    .attr("cy", function (d) {
+                        return d.y;
+                    })
+
+                bg.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")" })
+            })
     }
 
 
