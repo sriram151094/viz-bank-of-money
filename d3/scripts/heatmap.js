@@ -1,18 +1,19 @@
 export function Heatmap(startTime, endTime) {
-    var file = "../temp-data/aggregated_data.csv"
-    var tooltipDiv = d3.select('#my_dataviz').append('div').attr("class", "tooltip").style('opacity', '0');
+    var file = "../data/aggregated_data.csv"
+    var tooltipDiv = d3.select('div.tooltip');
     var svg;
     var heatmapData;
-    var margin = {top: 80, right: 0, bottom: 150, left: 150};
-    var width = 850 - margin.left - margin.right;
-    var height = 450 - margin.top - margin.bottom;
+    var margin = {top: 40, right: 10, bottom: 150, left: 80};
+    const svgScreenWidth = +d3.select("#heatmap_div").style("width").slice(0,-2);
+    var width = svgScreenWidth - margin.left - margin.right;
+    var height = 325 - margin.top - margin.bottom;
     const BAR_HEIGHT = 20;
     const COLOR_START = "#fac2c2", COLOR_END = "#f03434";
     const titlex = width / 2;
     const titley = -25;
     const xlabelx = width / 2;
-    const xlabely = height + 60;
-    const ylabelx = -100;
+    const xlabely = height + 45;
+    const ylabelx = -65;
     const ylabely = height / 2;
     loadChart();
 
@@ -64,7 +65,7 @@ export function Heatmap(startTime, endTime) {
             {start: '172.23.201.0', end: '172.23.213.255', machine: 'Workstation'},
             {start: '172.23.230.0', end: '172.23.255.255', machine: 'Workstation'},
             {start: '172.23.214.0', end: '172.23.229.255', machine: 'Financial Server'}
-        ]
+        ];
 
         let event_groups = d3.group(filteredData, 
             d => ipRanges[getIPBucket(d.sourceIP, ipRanges)].machine, 
@@ -110,7 +111,7 @@ export function Heatmap(startTime, endTime) {
             }
         }
 
-        svg = d3.select("body").append("svg")
+        svg = d3.select("#heatmap_div").append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
@@ -130,20 +131,20 @@ export function Heatmap(startTime, endTime) {
                     return portRangeMap[d];
                 return d;
               }))
-            .select(".domain").remove()
+            .select(".domain").remove();
 
         // Build Y scales and axis:
         var y = d3.scaleBand()
             .range([ height, 0 ])
             .domain(ip_addresses)
             .padding(0.05);
-            svg.append("g")
+        svg.append("g")
             .style("font-size", 15)
             .call(d3.axisLeft(y).tickSize(0))
-            .select(".domain").remove()
+            .select(".domain").remove();
 
         // Build color scale
-        var max = d3.max(events, function (d) { return d.numAttacks})
+        var max = d3.max(events, function (d) { return d.numAttacks});
 
         var colorScale = d3.scaleLinear()
         .range([COLOR_START, COLOR_END])
@@ -155,13 +156,13 @@ export function Heatmap(startTime, endTime) {
         var mouseover = function(e, d, elt) {
             drawTooltip(e, d);
             d3.select(elt)
-                .style("stroke", function(d) { return colorScale(d.numAttacks)})
-                .style("stroke-width", 2)
+                .style("stroke", "#aaa")
+                .style("stroke-width", 2);
         }
         var mousemove = function(e) {
             tooltipDiv
                 .style("left", (e.pageX + 20) + "px")
-                .style("top", (e.pageY - 10) + "px")
+                .style("top", (e.pageY - 10) + "px");
         }
         var mouseleave = function(elt) {
             tooltipDiv.html('');
@@ -170,11 +171,11 @@ export function Heatmap(startTime, endTime) {
                 .style("border-color", "transparent");
             
             
-            d3.select(elt)
-                .style("stroke", "none")
-                .attr("width", x.bandwidth())
-                .attr("height", y.bandwidth())
-                .style("opacity", 0.8)
+        d3.select(elt)
+            .style("stroke", "none")
+            .attr("width", x.bandwidth())
+            .attr("height", y.bandwidth())
+            .style("opacity", 0.8);
         }
 
         // add the squares
@@ -194,8 +195,7 @@ export function Heatmap(startTime, endTime) {
             .style("opacity", 1)
             .on("mouseover", function(e,d) { mouseover(e, d, this) })
             .on("mousemove", function(e) { mousemove(e)})
-            .on("mouseleave", function() { mouseleave(this)})
-
+            .on("mouseleave", function() { mouseleave(this)});
     }
 
     function readData() {
@@ -271,15 +271,15 @@ export function Heatmap(startTime, endTime) {
     }
 
     function drawTooltip(event, d) {
-        tooltipDiv.attr("class", "tooltip")
+        tooltipDiv.attr("class", "tooltip");
         tooltipDiv.transition()
             .duration(50)
             .style("opacity", 1);
-            tooltipDiv.html("<span class='badge badge-pill badge-secondary' style='font-size:1em;'> Connection </span> <br>" +
+        tooltipDiv.html(
                 "From: " + d.ip + "<br>" +
                 "To: " + d.port + "<br>" +
-                "No. of Connections: " + d.numAttacks
-            )
+                "Num of Connections: " + d.numAttacks
+            );
         tooltipDiv
             .style("left", (event.pageX + 20) + "px")
             .style("top", (event.pageY - 10) + "px")
@@ -287,20 +287,21 @@ export function Heatmap(startTime, endTime) {
     }
 
     function drawLegend(colorScale) {
-        const defs = svg.append("defs")
+
+        const defs = svg.append("defs");
         const axisScale = d3.scaleLinear()
             .domain(colorScale.domain())
-            .range([0, width])
+            .range([0, width]);
 
         const axisBottom = g => g
             .attr("class", `x-axis`)
-            .attr("transform", `translate(0,320)`)
+            .attr("transform", `translate(0,${(height + margin.top + 2 * BAR_HEIGHT)})`)
             .call(d3.axisBottom(axisScale)
-            .ticks(width/100)
-            .tickSize(-BAR_HEIGHT));
+                    .ticks(width/100)
+                    .tickSize(-BAR_HEIGHT)
+                );
 
         const linearGradient = defs.append("linearGradient").attr("id", "linear-gradient");
-        
         linearGradient.selectAll("stop")
           .data(colorScale.ticks().map((t, i, n) => ({ offset: `${100*i/n.length}%`, color: colorScale(t) })))
           .enter()
@@ -309,12 +310,22 @@ export function Heatmap(startTime, endTime) {
           .attr("stop-color", d => d.color);
 
         svg.append('g')
-          .attr("transform", `translate(0,${height + margin.top})`)
+          .attr("transform", `translate(0,${height + margin.top + BAR_HEIGHT})`)
           .append("rect")
           .attr("width", width)
           .attr("height", BAR_HEIGHT)
           .style("fill", "url(#linear-gradient)")
           .style("position", "absolute");
+        
+        svg.append("text")
+            .attr("x", "-15px")
+            .attr("y", (height + margin.top + 3 * BAR_HEIGHT))
+            .text("Connections")
+        svg.append("text")
+            .attr("x", (width - 50))
+            .attr("y", (height + margin.top + 3 * BAR_HEIGHT))
+            .text("Connections")
+
         
         svg.append('g').call(axisBottom);
     }
@@ -325,15 +336,14 @@ export function Heatmap(startTime, endTime) {
             .attr("x", titlex)
             .attr("y", titley)
             .attr("text-anchor", "middle")
-            .style("font-size", "22px")
+            .style("font-size", "1.25em")
             .text("Connections made from machines to ports");
 
         svg.append("text")
             .attr("x", xlabelx)
             .attr("y", xlabely)
             .attr("text-anchor", "middle")
-            .style("font-size", "18px")
-            .style("max-width", 400)
+            .style("font-size", "1em")
             .text("Ports connected/attacked");
 
         // adapted from https://stackoverflow.com/a/30417969
@@ -342,8 +352,8 @@ export function Heatmap(startTime, endTime) {
             .append('text')
             .attr("text-anchor", "middle")
             .attr("transform", "rotate(-90)")
-            .style("font-size", "18px")
-            .text("IP Addresses");
+            .style("font-size", "1em")
+            .text("Machine");
     }
 
     return;

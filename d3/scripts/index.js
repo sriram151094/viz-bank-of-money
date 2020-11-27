@@ -17,8 +17,12 @@ export function timechange() {
 }
 
 function init() {
+    let startTime = d3.select('#starttime').property('value')
+    let endTime = d3.select('#endtime').property('value')
+    let date = d3.select('#date').property('value')
     network();
     storyTellingChart();
+    Heatmap(Date.parse(date + ' ' + startTime), Date.parse(date + ' ' + endTime));
 }
 
 init()
