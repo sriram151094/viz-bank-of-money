@@ -11,6 +11,20 @@ var matrix = [
     [0, 0, 0, 0, 1]
 ];
 
+//Scroll to top button
+var mybutton = document.getElementById("scrollTopBtn");
+
+// When the user scrolls down 20px from the top of the document, show the button
+window.onscroll = function() {scrollFunction()};
+
+function scrollFunction() {
+  if (document.body.scrollTop > 35 || document.documentElement.scrollTop > 35) {
+    mybutton.style.display = "block";
+  } else {
+    mybutton.style.display = "none";
+  }
+}
+
 var colors = ["#C8125C", "#008FC8", "#10218B", "#134B24", "#737373"];
 var simulation;
 
@@ -60,7 +74,7 @@ var outerRadius;
 
 function storyTellingChart() {
     /*Initiate the SVG*/
-    const svgScreenWidth = +d3.select("[id='#storyContainer']").style("width").slice(0, -2);
+    const svgScreenWidth = +d3.select("[id='storyContainer']").style("width").slice(0, -2);
     width = svgScreenWidth - margin.left - margin.right;
     height = window.innerHeight - 250
 
@@ -312,6 +326,7 @@ function Draw2() {
     // Call other charts changes from here on click of a chord/event    
     g.on('click', (event, d) => {
         console.log(d);
+        document.getElementById("chartsContainer").scrollIntoView();
         drawNetworkChart(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"))
     });
 
@@ -352,6 +367,7 @@ function Draw3() {
         .style("fill", function (d) { return fill(d.index); })
         .transition().duration(700)
         .attr("d", arc)
+        .attr('cursor', 'pointer')
         .attrTween("d", function (d) {
             if (d.index == 1) {
                 var i = d3.interpolate(d.startAngle, d.endAngle);
@@ -366,6 +382,13 @@ function Draw3() {
     d3.selectAll("g.group")
         .transition().delay(700).duration(1000)
         .style("stroke", function (d, i, j) { return j ? 0 : "#000"; });
+
+    // Call other charts changes from here on click of a chord/event    
+    g.on('click', (event, d) => {
+            console.log(d);
+            document.getElementById("chartsContainer").scrollIntoView();
+            drawNetworkChart(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"))
+    });
 
     /*Show the  name*/
     d3.selectAll(".titles")
@@ -396,6 +419,7 @@ function Draw4() {
         .style("fill", function (d) { return fill(d.index); })
         .transition().duration(700)
         .attr("d", arc)
+        .attr('cursor', 'pointer')
         .attrTween("d", function (d) {
             if (d.index == 2) {
                 var i = d3.interpolate(d.startAngle, d.endAngle);
@@ -411,10 +435,12 @@ function Draw4() {
         .transition().delay(700).duration(1000)
         .style("stroke", function (d, i, j) { return j ? 0 : "#000"; });
 
-    /*Add the labels for the %'s*/
-    d3.selectAll("g.group").selectAll(".tickLabels")
-        .transition().delay(700).duration(2000)
-        .attr("opacity", 0);
+    // Call other charts changes from here on click of a chord/event    
+    g.on('click', (event, d) => {
+        console.log(d);
+        document.getElementById("chartsContainer").scrollIntoView();
+        drawNetworkChart(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"))
+    });
 
     /*Show the  name*/
     d3.selectAll(".titles")
@@ -447,6 +473,7 @@ function Draw5() {
         .style("fill", function (d) { return fill(d.index); })
         .transition().duration(700)
         .attr("d", arc)
+        .attr('cursor', 'pointer')
         .attrTween("d", function (d) {
             if (d.index == 3) {
                 var i = d3.interpolate(d.startAngle, d.endAngle);
@@ -461,6 +488,13 @@ function Draw5() {
     d3.selectAll("g.group")
         .transition().delay(700).duration(1000)
         .style("stroke", function (d, i, j) { return j ? 0 : "#000"; });
+    
+    // Call other charts changes from here on click of a chord/event    
+    g.on('click', (event, d) => {
+        console.log(d);
+        document.getElementById("chartsContainer").scrollIntoView();
+        drawNetworkChart(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"))
+    });
 
     /*Show the  name*/
     d3.selectAll(".titles")
@@ -492,6 +526,7 @@ function Draw6() {
         .style("fill", function (d) { return fill(d.index); })
         .transition().duration(700)
         .attr("d", arc)
+        .attr('cursor', 'pointer')
         .attrTween("d", function (d) {
             if (d.index == 4) {
                 var i = d3.interpolate(d.startAngle, d.endAngle);
@@ -507,6 +542,12 @@ function Draw6() {
         .transition().delay(700).duration(1000)
         .style("stroke", function (d, i, j) { return j ? 0 : "#000"; });
 
+    // Call other charts changes from here on click of a chord/event    
+    g.on('click', (event, d) => {
+            console.log(d);
+            document.getElementById("chartsContainer").scrollIntoView();
+            drawNetworkChart(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"))
+    });
 
     /*Show the  name*/
     d3.selectAll(".titles")
@@ -542,7 +583,36 @@ function finalChord() {
             .style("stroke", function (d) { return fill(d.index); })
             .style("fill", function (d) { return fill(d.index); })
             .attr("d", arc)
+            .attr('cursor', 'pointer')
             .style("opacity", 0)
+            .on('click', (event, d) => {  
+                document.getElementById("chartsContainer").scrollIntoView();
+                switch(d.index)
+                {
+                    /* Port scanning event*/ 
+                    case 0:
+                        drawNetworkChart(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"));
+                        break;
+                    /* FTP/SSH Event event*/ 
+                    case 1:
+                        drawNetworkChart(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"));
+                        break;
+                    /* SQL Attack event*/ 
+                    case 2:
+                        drawNetworkChart(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"));
+                        break;
+                    /* Data Outage event*/ 
+                    case 3:
+                        drawNetworkChart(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"));
+                        break;
+                    /* DNS attack event*/ 
+                    case 4:
+                        drawNetworkChart(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"));
+                        break;
+    
+                }
+                
+            })
             .transition().duration(1000)
             .style("opacity", 1);
 
@@ -550,7 +620,12 @@ function finalChord() {
         /*Make all arc visible*/
         svg.selectAll("g.group").select("path")
             .transition().duration(1000)
-            .style("opacity", 1);
+            .style("opacity", 1)
+            .on('click', (event, d) => {
+                console.log(d.index);
+                document.getElementById("chartsContainer").scrollIntoView();
+                drawNetworkChart(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"))
+        });
     };
 
     /*Make mouse over and out possible*/
