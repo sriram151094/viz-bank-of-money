@@ -32,10 +32,6 @@ var chord = d3.chord()
     .sortSubgroups(d3.descending) /*sort the chords inside an arc from high to low*/
     .sortChords(d3.descending); /*which chord should be shown on top when chords cross. Now the biggest chord is at the bottom*/
 
-var arc = d3.arc()
-    .innerRadius(innerRadius)
-    .outerRadius(outerRadius);
-
 
 /*//////////////////////////////////////////////////////////
 //////////////// Storyboarding Steps ///////////////////////
@@ -58,15 +54,40 @@ var prgsHeight;
 var textCenter;
 var middleTextTop;
 var middleTextBottom;
+var arc;
+var innerRadius;
+var outerRadius;
 
 function storyTellingChart() {
     /*Initiate the SVG*/
+    const svgScreenWidth = +d3.select("[id='#storyContainer']").style("width").slice(0, -2);
+    width = svgScreenWidth - margin.left - margin.right;
+    height = window.innerHeight - 250
+
+    innerRadius = (Math.min(width, height) - 100) * .30,
+        outerRadius = innerRadius * 1.04;
+
+    arc = d3.arc()
+        .innerRadius(innerRadius)
+        .outerRadius(outerRadius);
+
     svg = d3.select("#chart")
         .attr("width", width)
         .attr("height", height)
         .append("g")
         .attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
         .datum(chord(matrix));
+
+
+    console.log(svg)
+    svg.append('circle')
+        .attr('cx', 0)
+        .attr('cy', 0)
+        .attr('r', 300)
+        .attr('fill', 'transparent')
+        .attr('stroke', 'black')
+        .attr('stroke-dasharray', 5)
+        .attr('opacity', 0.4)
 
     /*//////////////////////////////////////////////////////////
 ////////////////// Draw outer Arcs /////////////////////////
@@ -174,7 +195,7 @@ function storyTellingChart() {
         .attr("dy", "1em")
         .attr("opacity", 1)
         .text("Our organization Bank Of Money hosts about a million devices/workstations. ")
-        .call(wrap, 350, "#text1");
+        .call(wrap, 250, "#text1");
 
     /*Starting text middle bottom*/
     middleTextBottom = textCenter.append("text")
@@ -193,7 +214,7 @@ function storyTellingChart() {
     /*Internal network glyph */
     d3.csv("../data/Internalnetwork.csv").then(data => {
         data = data.map(function (d) { d.value = +d["Type"]; return d; });
-        drawNetworkGlyph(data);
+        drawCluster(data);
     })
 
     /*Reload page*/
@@ -246,7 +267,7 @@ function Draw1() {
         1 / 2, 0, 10);
 
     changeTopText("In the next few steps we would like to introduce you to the issues faced by our organization ",
-        8 / 2, 9, 1, true);
+        8 / 2, 9, 1, true, undefined, 250);
 
     //Remove arcs again
     // d3.selectAll(".arc")
@@ -267,6 +288,9 @@ function Draw2() {
 
     /*Show and run the progressBar*/
     runProgressBar(700 * 2);
+
+    /*Animate the cluster*/
+    animateCluster("cluster0")
 
     /*Initiate all arcs but only show the Port Scanning arc (d.index = 0)*/
     g.append("path")
@@ -699,13 +723,12 @@ function runProgressBar(time) {
 };/*runProgressBar*/
 
 
-var workstationSvg;
-var firewallSvg;
-var dnsSvg;
-var databaseSvg;
-var defs;
-
 function loadSvgs() {
+    var workstationSvg;
+    var firewallSvg;
+    var dnsSvg;
+    var databaseSvg;
+    var defs;
     defs = svg.append('svg:defs')
     var workstationdefs = svg.append("defs");
 
@@ -778,105 +801,81 @@ function loadSvgs() {
     })
 }
 
-function drawNetworkGlyph(data) {
-    console.log(data)
-
-
+function drawCluster(data) {
+    let forces = [[200, -250], [320, -50], [0, 270], [-320, 50], [-200, -250]]
     loadSvgs();
 
+    for (let i = 0; i < 5; i++) {
+        drawNetworkGlyph(data, forces[i][0], forces[i][1], i)
+    }
+}
+
+
+function drawNetworkGlyph(data, forceX, forceY, id) {
+    let _data = data.map(datum => {
+        return { Name: datum.Name + id, Type: datum.Type }
+    })
     var forceXSeparate = function (force) {
         return d3.forceX(force).strength(0.1)
     }
-
-    // d3.forceX(function (d) {
-    //     if (d.Type == "Workstation")
-    //         return 200;
-    //     else
-    //         return 200;
-    // }).strength(0.1)
 
     var forceYSeparate = function (force) {
         return d3.forceY(force).strength(0.1)
     }
 
+    var sim = d3.forceSimulation()
+        .force("x", forceXSeparate(forceX))
+        .force("y", forceYSeparate(forceY))
+        .force("collide", d3.forceCollide(25))
 
-    // d3.forceY(function (d) {
-    //     if (d.Type == "Workstation")
-    //         return -250;
-    //     else
-    //         return -250;
-    // }).strength(0.1)
+    var g = svg.append('g')
+        .attr('id', "cluster" + id)
 
-    // simulation = d3.forceSimulation()
-    //     .force("x", forceXSeparate(200))
-    //     .force("y", forceYSeparate(-250))
-    //     .force("collide", d3.forceCollide(25))
+    var elements = g.selectAll('.bubble')
+        .data(_data)
+        .enter()
+        .append('g')
+        .attr('id', d => d.Name)
 
+    var circles = elements.append("circle")
+        .attr("class", "bubble")
+        .attr("r", "20")
+        .attr("fill", function (d) {
+            return "lightgreen"
+        })
 
+    var bg = elements.append('path')
+        .attr("d", d3.symbol().size(2500).type(d3.symbolSquare))
+        .style("fill", function (d) {
+            if (d.Type == "Workstation")
+                return `url(${location}#workstation)`
+            else if (d.Type == "DNS")
+                return `url(${location}#dns)`
+            else
+                return `url(${location}#firewall)`
+        })
 
-    let forces = [[200, -250], [300, -50], [-200, 250], [-300, -50], [-200, -250]]
-    for (let i = 0; i < 5; i++) {
-
-        let sim = d3.forceSimulation()
-            .force("x", forceXSeparate(forces[i][0]))
-            .force("y", forceYSeparate(forces[i][1]))
-            .force("collide", d3.forceCollide(25))
-
-        let g = svg.append('g')
-        g.attr('id', '#cluster' + i)
-
-        let elements = g.selectAll('.bubble')
-            .data(data)
-            .enter()
-            .append('g')
-            .attr('id', d => d.Name + i)
-
-        let circles = elements.append("circle")
-            .attr("class", "bubble")
-            .attr("r", "20")
-            .attr("fill", function (d) {
-                return "lightgreen"
-            })
-
-        let bg = elements.append('path')
-            .attr("d", d3.symbol().size(2500).type(d3.symbolSquare))
-            .style("fill", function (d) {
-                if (d.Type == "Workstation")
-                    return `url(${location}#workstation)`
-                else if (d.Type == "DNS")
-                    return `url(${location}#dns)`
-                else
-                    return `url(${location}#firewall)`
-            })
-
-        sim.nodes(data)
-            .on("tick", function (d) {
-                circles
-                    .attr("cx", function (d) {
-                        return d.x;
-                    })
-                    .attr("cy", function (d) {
-                        return d.y;
-                    })
-
-                bg.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")" })
-            })
-    }
+    sim.nodes(_data)
+        .on("tick", function (d) {
+            circles
+                .attr("cx", function (d) {
+                    return d.x;
+                })
+                .attr("cy", function (d) {
+                    return d.y;
+                })
+            bg.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")" })
+        })
+}
 
 
+function animateCluster(clusterid) {
+    let c = d3.select("[id='" + clusterid + "']").selectAll('g')
+    // d3.select("[id='cluster0']").selectAll('g').selectAll('circle').each(function (d) {
+    //     console.log(d3.select(d).attr('id'))
+    // })
 
-    function ticked(circles, bg) {
-        circles
-            .attr("cx", function (d) {
-                return d.x;
-            })
-            .attr("cy", function (d) {
-                return d.y;
-            })
-
-        bg.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")" })
-
-    }
-
-
+    d3.select("[id='cluster0']").selectAll('g').selectAll('circle').
+        transition(700).attr('fill', 'red')
+    console.log(c)
 }

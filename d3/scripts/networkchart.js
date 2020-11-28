@@ -3,15 +3,17 @@ export { network, drawNetworkChart };
 var networkSvg;
 var width = 500;
 var height = 500;
-var startTime = '20:20';
-var endTime = '20:50';
-var date = '2012-04-05';
+var startTime = '02:00';
+var endTime = '18:00';
+var date = '2012-04-06';
 var defs
 var toolTip
 var margin = { top: 15, bottom: 10, left: 15, right: 10 }
 
 function network() {
 
+    const svgScreenWidth = +d3.select("#heatmap_div").style("width").slice(0, -2);
+    width = svgScreenWidth - margin.left - margin.right;
     window.addEventListener('DOMContentLoaded', (event) => {
         var chartWindow = d3.select('#networkChart');
         networkSvg = chartWindow.append('svg')
@@ -20,34 +22,11 @@ function network() {
             .attr('width', width)
             .attr('height', height)
 
-
-        importExternalSVGs();
         drawNetworkChart(Date.parse(date + ' ' + startTime), Date.parse(date + ' ' + endTime));
     });
 
     toolTip = d3.select("body").append("div")
         .attr("class", "tooltip")
-}
-
-
-
-function importExternalSVGs() {
-    defs = networkSvg.append('svg:defs')
-
-    d3.xml("../img/laptop.svg").then(res => {
-        defs.append('pattern')
-            .attr('id', 'laptop')
-            .attr('patternUnits', 'objectBoundingBox')
-            .attr('width', 5)
-            .attr('height', 5)
-            // Append svg to pattern
-            .append('svg')
-            .attr('x', 5)
-            .attr('y', 5)
-            .attr('width', 10)
-            .attr('height', 10)
-            .append(() => res.getElementsByTagName("svg")[0])
-    })
 }
 
 
