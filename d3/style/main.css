@@ -89,3 +89,11 @@ div.tooltip {
   #labelright {
     text-anchor: start;
   }
+
+  .disable-button {
+    display: none;
+  }
+
+  .enable-button {
+    display: initial;
+  }

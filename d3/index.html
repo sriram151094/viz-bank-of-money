@@ -15,16 +15,21 @@
 
     <link rel="stylesheet" href="style/main.css" />
     <link rel="stylesheet" href="style/style.css" />
+    <!-- <link rel="stylesheet" href="./scripts/d3.slider.css"/> -->
+    <!-- <link rel="stylesheet" href="./scripts/dc.css"/> -->
+
     <script src="https://d3js.org/d3.v6.js"></script>
     <script src="./scripts/index.js" type="module"></script>
+    <!-- <script src="./scripts/d3-slider.js"></script> -->
+    <!-- <script src="dc.js"></script> -->
     <script type="module">
         import { buttonclick, timechange } from './scripts/index.js';
         window.buttonclick = buttonclick;
         window.timechange = timechange;
     </script>
     <script>
-        function scrollToTop() { 
-            window.scrollTo(0, 0); 
+        function scrollToTop() {
+            window.scrollTo(0, 0);
         } 
     </script>
     <nav class="navbar navbar-expand-lg navbar-light bg-dark fixed-top">
@@ -47,23 +52,17 @@
                 </li>
                 <li class="navbar-input">
                     <div class="input-group">
-                        <div class="input-group-prepend">
+                        <!-- <div class="input-group-prepend">
                             <div class="input-group-text" id="btnGroupAddon">Date</div>
                         </div>
                         <input type="date" class="form-control" id="date" value="2012-04-06" min="2012-04-05"
-                            max="2012-04-06" onchange="timechange()">
-                    </div>
-                </li>
-                <li class="navbar-input">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <div class="input-group-text" id="btnGroupAddon">Start Time</div>
+                            max="2012-04-06" onchange="timechange()"> -->
+                        <div id="eventhandler">
                         </div>
-                        <input type='time' class="form-control" name='starttime' id='starttime' value='02:00'
-                            onchange="timechange()">
+                        <button class="form-control disable-button" id='filter-apply' onclick="timechange()">Apply</button>
                     </div>
                 </li>
-
+                <!--
                 <li class="navbar-input">
                     <div class="input-group">
                         <div class="input-group-prepend">
@@ -72,7 +71,7 @@
                         <input type='time' class="form-control" name='endtime' id='endtime' value='18:00'
                             onchange="timechange()">
                     </div>
-                </li>
+                </li> -->
 
             </ul>
         </div>
@@ -137,15 +136,17 @@
             </div>
         </div>
         <button onclick="scrollToTop()" id="scrollTopBtn" title="Go to top">
-                <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-arrow-up-circle" fill="currentColor"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd"
-                        d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                    <path fill-rule="evenodd"
-                        d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5z" />
-                </svg>
-            </button>
+            <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-arrow-up-circle" fill="currentColor"
+                xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                <path fill-rule="evenodd"
+                    d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5z" />
+            </svg>
+        </button>
     </div>
+    <!-- <div id="eventhandler">
+        <svg id="slider" width="400" height="300"></svg>
+    </div> -->
 
     <!-- <input type="date" id="date" value="2012-04-05" min="2012-04-05" max="2012-04-06" onchange="timechange()">
         <input type='time' name='starttime' id='starttime' value='20:20' onchange="timechange()">

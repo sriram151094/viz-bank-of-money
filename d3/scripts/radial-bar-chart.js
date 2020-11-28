@@ -34,6 +34,8 @@ function initRadialChart(starttime, endtime) {
     width = +d3.select("#radialBarChart").style("width").slice(0, -2);
     window.addEventListener('DOMContentLoaded', (event) => {
     
+        
+
         var chartWindow = d3.select('#radialBarChart');
         radialSvg = chartWindow.append('svg')
             .attr('id', 'radialBar')
@@ -41,7 +43,7 @@ function initRadialChart(starttime, endtime) {
             .attr('width', width)
             .attr('height', height)
             .append('g')
-            .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
+            .attr('transform', 'translate(' + width / 2 + ',' + (height + 25) / 2 + ')');
     
         tooltip = d3.select(".tooltip");
     
@@ -55,8 +57,7 @@ function initRadialChart(starttime, endtime) {
     });
 }
 
-function getData(starttime, endtime) {
- 
+function getData(starttime, endtime) { 
     dnsupdateexternal = data.filter(function (d) { return (d.label.includes("DNS Update From External net") && Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime) }).length;
     ircauth = data.filter(function (d) { return (d.label.includes("IRC authorization message") && Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime) }).length;
     postgressql = data.filter(function (d) { return (d.label.includes("PostgreSQL") && Date.parse(d.datetime) >= starttime && Date.parse(d.date_time) <= endtime) }).length;
@@ -80,6 +81,7 @@ function getData(starttime, endtime) {
         { name: "MS SQL Attack", value: mssql },
         { name: "Oracle SQL Attack", value: oraclesql },
     ];
+
 }
 
 
@@ -183,7 +185,7 @@ function drawRadialChart(starttime, endtime) {
         tooltip.style("left", (event.pageX + 20) + "px")
         .style("top", (event.pageY - 10) + "px")
         .style("text-align", "left")
-        .html("Number of flags raised by IDS : "+d.value);
+        .html("Number of flags raised by Intrusion Detection System : "+d.value);
     }
 
 
