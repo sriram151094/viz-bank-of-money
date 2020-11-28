@@ -263,7 +263,7 @@ function storyTellingChart() {
         .attr("y", -24 * 10 / 2 + "px")
         .attr("dy", "1em")
         .attr("opacity", 1)
-        .text("Our organization Bank Of Money hosts about a million devices/workstations. ")
+        .text("The Bank of Money office is experiencing difficulties with its computing infrastucture.")
         .call(wrap, 250, "#text1");
 
     /*Starting text middle bottom*/
@@ -277,7 +277,7 @@ function storyTellingChart() {
         .attr("y", 24 * 3 / 2 + "px")
         .attr("dy", "1em")
         .attr('opacity', 1)
-        .text("It is imperative that we have a cyber security system that prevents the organization from getting compromised by attackers.")
+        .text("There are reports from staff regarding malicious popups appearing on their screens.")
         .call(wrap, 350, "#text2");
 
     /*Internal network glyph */
@@ -328,14 +328,13 @@ function Draw1() {
     /*Show and run the progressBar*/
     runProgressBar(700 * 11);
 
-    changeTopText("The Bank of Money is experiencing difficulties with its security infrastructure" +
-        "and it’s becoming difficult to drill down the issue causing it.",
+    changeTopText("From our analysis of the network data, we have traced out the cyber attack",
         4 / 2, 0, 1);
 
-    changeBottomText("Let's start by drawing out the attacks faced over the past two days",
+    changeBottomText("Let's start by drawing out the step by step invasion of the BOM network faced over the course of two days",
         1 / 2, 0, 10);
 
-    changeTopText("In the next few steps we would like to introduce you to the issues faced by our organization ",
+    changeTopText("",
         8 / 2, 9, 1, true, undefined, 250);
 
     //Remove arcs again
@@ -399,13 +398,11 @@ function Draw2() {
     .attr("opacity",1)
 
     /*Switch  texts*/
-    changeTopText("Firstly, a series of Port scanning events occur implying the presence of some external botnet trying to compromise the system",
+    changeTopText("Firstly, a series of Port scanning events occur between 5th April 6.27 PM to 8.36 PM implying the presence of some external botnet trying to compromise the system",
         1 / 2, 0, 1, true);
 
     changeBottomText("",
         0 / 2, 0, 1);
-
-    //updateReadings(8);
 
 };/*Draw2*/
 
@@ -455,16 +452,17 @@ function Draw3() {
     // d3.selectAll(".titles")
     //     .transition().duration(2000)
     //     .attr("opacity", function (d, i) { return d.index == 0 || d.index == 1 ? 1 : 0; });
+
     d3.selectAll("#eventText2")
     .transition().duration(2000)
     .attr("opacity",1)
 
-    changeTopText("HTC has 5% of the market share",
+    changeTopText("This is followed by a surge in attempt for FTP connections, closely followed by SSH connections between 5th April 8.37 PM to 9.21 PM.",
         6 / 2, 0, 1, true);
 
-    changeBottomText("Huawei came from practically no share in 2013 to 2.4% in 2014 thereby taking its place in the biggest 7 brands in the Netherlands",
+    changeBottomText("",
         -2 / 2, 0, 1);
-    //updateReadings(6);
+
 };/*Draw3*/
 
 /*///////////////////////////////////////////////////////////  
@@ -518,12 +516,11 @@ function Draw4() {
     .transition().duration(2000)
     .attr("opacity",1)
 
-    changeTopText("LG has almost 5% of the market",
+    changeTopText("Next, we observe the many SQL servers being simulatenously attacked between 5th April 9.47 PM to 6th April 3.27 AM.",
         6 / 2, 0, 1, true);
 
-    changeBottomText("Nokia is still owned by 15% of the respondents. However practically all of these phones are ordinary phones, not smartphones",
+    changeBottomText("",
         -2 / 2, 0, 1);
-    //updateReadings(4);
 
 };
 
@@ -574,18 +571,19 @@ function Draw5() {
     // d3.selectAll(".titles")
     //     .transition().duration(2000)
     //     .attr("opacity", function (d, i) { return d.index == 0 || d.index == 1 || d.index == 2 || d.index == 3 ? 1 : 0; });
+
     d3.selectAll("#eventText4")
     .transition().duration(2000)
     .attr("opacity",1)
 
-    changeTopText("LG has almost 5% of the market",
+    changeTopText("Next, we observe a massive data outage between 6th April 3 PM to 6 PM where the number of connection plunges drastically",
         6 / 2, 0, 1, true);
 
-    changeBottomText("Nokia is still owned by 15% of the respondents. However practically all of these phones are ordinary phones, not smartphones",
+    changeBottomText("",
         -2 / 2, 0, 1);
-    //updateReadings(2);
 
 };
+
 /*///////////////////////////////////////////////////////////  
 //Draw arc for DNS attack
 //////////////////////////////////////////////////////////*/
@@ -632,16 +630,16 @@ function Draw6() {
     // d3.selectAll(".titles")
     //     .transition().duration(2000)
     //     .attr("opacity", 1);
+
     d3.selectAll("#eventText5")
     .transition().duration(2000)
     .attr("opacity",1)
 
-    changeTopText("LG has almost 5% of the market",
+    changeTopText("Lastly, the DNS is attacked and compromised between 6th April 5.26 PM and 6.27 PM after which the external websites connect to the workstations. This is the root cause for the popups seen by the BOM employees.",
         6 / 2, 0, 1, true);
 
-    changeBottomText("Nokia is still owned by 15% of the respondents. However practically all of these phones are ordinary phones, not smartphones",
+    changeBottomText("",
         -2 / 2, 0, 1);
-    //updateReadings(0);
 };
 
 /*Go to the final bit*/
