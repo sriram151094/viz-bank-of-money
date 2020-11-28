@@ -181,44 +181,44 @@ function storyTellingChart() {
     //     .text(function (d, i) { return NameProvider[i]; });
 
     svg.append("text")
-    .attr("id", "eventText1")
-    .text("Port Scanning")
-    .style("font-weight", "900")
-    .style("font-size", "18px")
-    .attr("opacity", 0)
-    .attr("transform", "translate(150,-130)");
+        .attr("id", "eventText1")
+        .text("Port Scanning")
+        .style("font-weight", "900")
+        .style("font-size", "18px")
+        .attr("opacity", 0)
+        .attr("transform", "translate(150,-130)");
 
     svg.append("text")
-    .attr("id", "eventText2")
-    .text("FTP/SSH Attack")
-    .style("font-weight", "900")
-    .style("font-size", "18px")
-    .attr("opacity", 0)
-    .attr("transform", "translate(170,40)");
+        .attr("id", "eventText2")
+        .text("FTP/SSH Attack")
+        .style("font-weight", "900")
+        .style("font-size", "18px")
+        .attr("opacity", 0)
+        .attr("transform", "translate(170,40)");
 
     svg.append("text")
-    .attr("id", "eventText3")
-    .text("SQL Attack")
-    .style("font-weight", "900")
-    .style("font-size", "18px")
-    .attr("opacity", 0)
-    .attr("transform", "translate(-60,190)");
+        .attr("id", "eventText3")
+        .text("SQL Attack")
+        .style("font-weight", "900")
+        .style("font-size", "18px")
+        .attr("opacity", 0)
+        .attr("transform", "translate(-60,190)");
 
     svg.append("text")
-    .attr("id", "eventText4")
-    .text("Data Outage")
-    .style("font-weight", "900")
-    .style("font-size", "18px")
-    .attr("opacity", 0)
-    .attr("transform", "translate(-280, 120)");
+        .attr("id", "eventText4")
+        .text("Data Outage")
+        .style("font-weight", "900")
+        .style("font-size", "18px")
+        .attr("opacity", 0)
+        .attr("transform", "translate(-280, 120)");
 
     svg.append("text")
-    .attr("id", "eventText5")
-    .text("DNS Attack")
-    .style("font-weight", "900")
-    .style("font-size", "18px")
-    .attr("opacity", 0)
-    .attr("transform", "translate(-230,-150)");
+        .attr("id", "eventText5")
+        .text("DNS Attack")
+        .style("font-weight", "900")
+        .style("font-size", "18px")
+        .attr("opacity", 0)
+        .attr("transform", "translate(-230,-150)");
 
 
     /*//////////////////////////////////////////////////////////	
@@ -397,8 +397,8 @@ function Draw2() {
     //     .transition().duration(2000)
     //     .attr("opacity", function (d, i) { return d.index ? 0 : 1; });
     d3.selectAll("#eventText1")
-    .transition().duration(2000)
-    .attr("opacity",1)
+        .transition().duration(2000)
+        .attr("opacity", 1)
 
     /*Switch  texts*/
     changeTopText("Firstly, a series of Port scanning events occur between 5th April 6.27 PM to 8.36 PM implying the presence of some external botnet trying to compromise the system",
@@ -457,11 +457,11 @@ function Draw3() {
     //     .attr("opacity", function (d, i) { return d.index == 0 || d.index == 1 ? 1 : 0; });
 
     d3.selectAll("#eventText2")
-    .transition().duration(2000)
-    .attr("opacity",1)
+        .transition().duration(2000)
+        .attr("opacity", 1)
 
     changeTopText("This is followed by a surge in attempt for FTP connections, closely followed by SSH connections between 5th April 8.37 PM to 9.21 PM.",
-        6 / 2, 0, 1, true);
+        6 / 2, 0, 1, true, undefined, 300);
 
     changeBottomText("",
         -2 / 2, 0, 1);
@@ -516,11 +516,11 @@ function Draw4() {
     //     .attr("opacity", function (d, i) { return d.index == 0 || d.index == 1 || d.index == 2 ? 1 : 0; });
 
     d3.selectAll("#eventText3")
-    .transition().duration(2000)
-    .attr("opacity",1)
+        .transition().duration(2000)
+        .attr("opacity", 1)
 
     changeTopText("Next, we observe the many SQL servers being simulatenously attacked between 5th April 9.47 PM to 6th April 3.27 AM.",
-        6 / 2, 0, 1, true);
+        6 / 2, 0, 1, true, undefined, 300);
 
     changeBottomText("",
         -2 / 2, 0, 1);
@@ -576,11 +576,11 @@ function Draw5() {
     //     .attr("opacity", function (d, i) { return d.index == 0 || d.index == 1 || d.index == 2 || d.index == 3 ? 1 : 0; });
 
     d3.selectAll("#eventText4")
-    .transition().duration(2000)
-    .attr("opacity",1)
+        .transition().duration(2000)
+        .attr("opacity", 1)
 
     changeTopText("Next, we observe a massive data outage between 6th April 3 PM to 6 PM where the number of connection plunges drastically",
-        6 / 2, 0, 1, true);
+        6 / 2, 0, 1, true, undefined, 300);
 
     changeBottomText("",
         -2 / 2, 0, 1);
@@ -635,11 +635,11 @@ function Draw6() {
     //     .attr("opacity", 1);
 
     d3.selectAll("#eventText5")
-    .transition().duration(2000)
-    .attr("opacity",1)
+        .transition().duration(2000)
+        .attr("opacity", 1)
 
     changeTopText("Lastly, the DNS is attacked and compromised between 6th April 5.26 PM and 6.27 PM after which the external websites connect to the workstations. This is the root cause for the popups seen by the BOM employees.",
-        6 / 2, 0, 1, true);
+        6 / 2, 0, 1, true, undefined, 300);
 
     changeBottomText("",
         -2 / 2, 0, 1);
@@ -729,24 +729,24 @@ function finalChord() {
     //     .selectAll(".titles").style("opacity", 1);
 
     d3.selectAll("#eventText1")
-    .transition().duration(100)
-    .attr("opacity",1);
+        .transition().duration(100)
+        .attr("opacity", 1);
 
     d3.selectAll("#eventText2")
-    .transition().duration(100)
-    .attr("opacity",1);
+        .transition().duration(100)
+        .attr("opacity", 1);
 
     d3.selectAll("#eventText3")
-    .transition().duration(100)
-    .attr("opacity",1);
+        .transition().duration(100)
+        .attr("opacity", 1);
 
     d3.selectAll("#eventText4")
-    .transition().duration(100)
-    .attr("opacity",1)
+        .transition().duration(100)
+        .attr("opacity", 1)
 
     d3.selectAll("#eventText5")
-    .transition().duration(100)
-    .attr("opacity",1)
+        .transition().duration(100)
+        .attr("opacity", 1)
 
 
     /* Make all clusters visible */
@@ -1070,10 +1070,9 @@ function animateCluster(clusterid, nodes, newcolor) {
     })
 }
 
-function drawCharts(start, end)
-{
+function drawCharts(start, end) {
     drawNetworkChart(start, end);
     Heatmap(start, end);
     drawLineChart(start, end);
-    drawRadialChart(start,end);
+    drawRadialChart(start, end);
 }
