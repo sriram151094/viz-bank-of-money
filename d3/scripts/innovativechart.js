@@ -281,7 +281,7 @@ function storyTellingChart() {
         .attr("dy", "1em")
         .attr('opacity', 1)
         .text("There are reports from staff regarding malicious popups appearing on their screens.")
-        .call(wrap, 350, "#text2");
+        .call(wrap, 300, "#text2");
 
     /*Internal network glyph */
     d3.csv("../data/Internalnetwork.csv").then(data => {
@@ -332,10 +332,10 @@ function Draw1() {
     runProgressBar(700 * 11);
 
     changeTopText("From our analysis of the network data, we have traced out the cyber attack",
-        4 / 2, 0, 1);
+        4 / 2, 0, 1,false, undefined, 300);
 
     changeBottomText("Let's start by drawing out the step by step invasion of the BOM network faced over the course of two days",
-        1 / 2, 0, 10);
+        1 / 2, 0, 10, 280);
 
     changeTopText("",
         8 / 2, 9, 1, true, undefined, 250);
@@ -402,7 +402,7 @@ function Draw2() {
 
     /*Switch  texts*/
     changeTopText("Firstly, a series of Port scanning events occur between 5th April 6.27 PM to 8.36 PM implying the presence of some external botnet trying to compromise the system",
-        1 / 2, 0, 1, true);
+        1 / 2, 0, 1, true, undefined, 290);
 
     changeBottomText("",
         0 / 2, 0, 1);
@@ -461,7 +461,7 @@ function Draw3() {
         .attr("opacity", 1)
 
     changeTopText("This is followed by a surge in attempt for FTP connections, closely followed by SSH connections between 5th April 8.37 PM to 9.21 PM.",
-        6 / 2, 0, 1, true, undefined, 300);
+        6 / 2, 0, 1, true, undefined, 280);
 
     changeBottomText("",
         -2 / 2, 0, 1);
@@ -520,7 +520,7 @@ function Draw4() {
         .attr("opacity", 1)
 
     changeTopText("Next, we observe the many SQL servers being simulatenously attacked between 5th April 9.47 PM to 6th April 3.27 AM.",
-        6 / 2, 0, 1, true, undefined, 300);
+        6 / 2, 0, 1, true, undefined, 280);
 
     changeBottomText("",
         -2 / 2, 0, 1);
@@ -580,7 +580,7 @@ function Draw5() {
         .attr("opacity", 1)
 
     changeTopText("Next, we observe a massive data outage between 6th April 3 PM to 6 PM where the number of connection plunges drastically",
-        6 / 2, 0, 1, true, undefined, 300);
+        6 / 2, 0, 1, true, undefined, 280);
 
     changeBottomText("",
         -2 / 2, 0, 1);
@@ -639,7 +639,7 @@ function Draw6() {
         .attr("opacity", 1)
 
     changeTopText("Lastly, the DNS is attacked and compromised between 6th April 5.26 PM and 6.27 PM after which the external websites connect to the workstations. This is the root cause for the popups seen by the BOM employees.",
-        6 / 2, 0, 1, true, undefined, 300);
+        6 / 2, 0, 1, true, undefined, 280);
 
     changeBottomText("",
         -2 / 2, 0, 1);
@@ -856,7 +856,8 @@ function changeTopText(newText, loc, delayDisappear, delayAppear, finalText, xlo
 };/*changeTopText */
 
 /*Transition the bottom circle text*/
-function changeBottomText(newText, loc, delayDisappear, delayAppear) {
+function changeBottomText(newText, loc, delayDisappear, delayAppear,w) {
+    if (typeof (w) === 'undefined') w = 350;
     middleTextBottom
         /*Current text disappear*/
         .transition().delay(700 * delayDisappear).duration(700)
@@ -868,7 +869,7 @@ function changeBottomText(newText, loc, delayDisappear, delayAppear) {
             middleTextBottom.text(newText)
 
                 .attr("y", 24 * loc + "px")
-                .call(wrap, 350, "#bottomText");
+                .call(wrap, w, "#bottomText");
         })
         .transition().delay(700 * delayAppear).duration(700)
         .attr('opacity', 1);
