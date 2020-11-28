@@ -15,17 +15,24 @@ var matrix = [
 var mybutton = document.getElementById("scrollTopBtn");
 
 // When the user scrolls down 20px from the top of the document, show the button
-window.onscroll = function() {scrollFunction()};
+window.onscroll = function () { scrollFunction() };
 
 function scrollFunction() {
-  if (document.body.scrollTop > 35 || document.documentElement.scrollTop > 35) {
-    mybutton.style.display = "block";
-  } else {
-    mybutton.style.display = "none";
-  }
+    if (document.body.scrollTop > 35 || document.documentElement.scrollTop > 35) {
+        mybutton.style.display = "block";
+    } else {
+        mybutton.style.display = "none";
+    }
 }
 
 var colors = ["#C8125C", "#008FC8", "#10218B", "#134B24", "#737373"];
+
+var nodecolor = new Map()
+
+nodecolor.set("green", ['#b8f8b8', '#28a745b3'])
+nodecolor.set("red", ['#FFAB91', '#a728288c'])
+nodecolor.set("gray", ['#E0E0E0', '#9E9E9E'])
+
 var simulation;
 
 /*Initiate the color scale*/
@@ -56,6 +63,14 @@ var counter = 1,
         "Continue", "Continue", "Continue", "Continue", "Continue", "Finish"],
     opacityValueBase = 0.8,
     opacityValue = 0.4;
+
+var cluster = [
+    { name: "cluster0", ids: ["Workstation10", "Workstation40"], color: "red" },
+    { name: "cluster1", ids: ["Workstation11", "Workstation21", "Workstation31", "Workstation41"], color: "red" },
+    { name: "cluster2", ids: ["Workstation12", "Workstation22", "Workstation32", "Workstation42"], color: "red" },
+    { name: "cluster3", ids: ["Workstation13", "Workstation23", "Workstation33", "Workstation43", "Workstation53", "Firewall3", "DNS3"], color: "gray" },
+    { name: "cluster4", ids: ["Workstation14", "Workstation24", "Workstation34", "Workstation44", "Workstation54", "Firewall4", "DNS4"], color: "red" }
+]
 
 var svg;
 var g;
@@ -304,7 +319,7 @@ function Draw2() {
     runProgressBar(700 * 2);
 
     /*Animate the cluster*/
-    animateCluster("cluster0")
+    animateCluster(cluster[0]['name'], cluster[0]['ids'], cluster[0]['color'])
 
     /*Initiate all arcs but only show the Port Scanning arc (d.index = 0)*/
     g.append("path")
@@ -362,6 +377,9 @@ function Draw3() {
     /*Show and run the progressBar*/
     runProgressBar(700 * 2);
 
+    /*Animate the cluster*/
+    animateCluster(cluster[1]['name'], cluster[1]['ids'], cluster[1]['color'])
+
     g.append("path")
         .style("stroke", function (d) { return fill(d.index); })
         .style("fill", function (d) { return fill(d.index); })
@@ -385,9 +403,9 @@ function Draw3() {
 
     // Call other charts changes from here on click of a chord/event    
     g.on('click', (event, d) => {
-            console.log(d);
-            document.getElementById("chartsContainer").scrollIntoView();
-            drawNetworkChart(Date.parse("2012-04-05 20:37"), Date.parse("2012-04-05 21:21"));
+        console.log(d);
+        document.getElementById("chartsContainer").scrollIntoView();
+        drawNetworkChart(Date.parse("2012-04-05 20:37"), Date.parse("2012-04-05 21:21"));
     });
 
     /*Show the  name*/
@@ -413,6 +431,9 @@ function Draw4() {
 
     /*Show and run the progressBar*/
     runProgressBar(700 * 2);
+
+    /*Animate the cluster*/
+    animateCluster(cluster[2]['name'], cluster[2]['ids'], cluster[2]['color'])
 
     g.append("path")
         .style("stroke", function (d) { return fill(d.index); })
@@ -468,6 +489,9 @@ function Draw5() {
     /*Show and run the progressBar*/
     runProgressBar(700 * 2);
 
+    /*Animate the cluster*/
+    animateCluster(cluster[3]['name'], cluster[3]['ids'], cluster[3]['color'])
+
     g.append("path")
         .style("stroke", function (d) { return fill(d.index); })
         .style("fill", function (d) { return fill(d.index); })
@@ -488,7 +512,7 @@ function Draw5() {
     d3.selectAll("g.group")
         .transition().delay(700).duration(1000)
         .style("stroke", function (d, i, j) { return j ? 0 : "#000"; });
-    
+
     // Call other charts changes from here on click of a chord/event    
     g.on('click', (event, d) => {
         console.log(d);
@@ -521,6 +545,9 @@ function Draw6() {
     /*Show and run the progressBar*/
     runProgressBar(700 * 2);
 
+    /*Animate the cluster*/
+    animateCluster(cluster[4]['name'], cluster[4]['ids'], cluster[4]['color'])
+
     g.append("path")
         .style("stroke", function (d) { return fill(d.index); })
         .style("fill", function (d) { return fill(d.index); })
@@ -544,9 +571,9 @@ function Draw6() {
 
     // Call other charts changes from here on click of a chord/event    
     g.on('click', (event, d) => {
-            console.log(d);
-            document.getElementById("chartsContainer").scrollIntoView();
-            drawNetworkChart(Date.parse("2012-04-06 17:26"), Date.parse("2012-04-06 18:27"));
+        console.log(d);
+        document.getElementById("chartsContainer").scrollIntoView();
+        drawNetworkChart(Date.parse("2012-04-06 17:26"), Date.parse("2012-04-06 18:27"));
     });
 
     /*Show the  name*/
@@ -585,33 +612,32 @@ function finalChord() {
             .attr("d", arc)
             .attr('cursor', 'pointer')
             .style("opacity", 0)
-            .on('click', (event, d) => {  
+            .on('click', (event, d) => {
                 document.getElementById("chartsContainer").scrollIntoView();
-                switch(d.index)
-                {
-                    /* Port scanning event*/ 
+                switch (d.index) {
+                    /* Port scanning event*/
                     case 0:
                         drawNetworkChart(Date.parse("2012-04-05 18:27"), Date.parse("2012-04-05 20:36"));
                         break;
-                    /* FTP/SSH Event event*/ 
+                    /* FTP/SSH Event event*/
                     case 1:
                         drawNetworkChart(Date.parse("2012-04-05 20:37"), Date.parse("2012-04-05 21:21"));
                         break;
-                    /* SQL Attack event*/ 
+                    /* SQL Attack event*/
                     case 2:
                         drawNetworkChart(Date.parse("2012-04-05 21:47"), Date.parse("2012-04-06 03:27"));
                         break;
-                    /* Data Outage event*/ 
+                    /* Data Outage event*/
                     case 3:
                         drawNetworkChart(Date.parse("2012-04-06 02:00"), Date.parse("2012-04-05 18:00"));
                         break;
-                    /* DNS attack event*/ 
+                    /* DNS attack event*/
                     case 4:
                         drawNetworkChart(Date.parse("2012-04-06 17:26"), Date.parse("2012-04-06 18:27"));
                         break;
-    
+
                 }
-                
+
             })
             .transition().duration(1000)
             .style("opacity", 1);
@@ -625,7 +651,7 @@ function finalChord() {
                 console.log(d.index);
                 document.getElementById("chartsContainer").scrollIntoView();
                 drawNetworkChart(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"))
-        });
+            });
     };
 
     /*Make mouse over and out possible*/
@@ -643,6 +669,11 @@ function finalChord() {
     svg.selectAll("g.group")
         .transition().duration(100)
         .selectAll(".titles").style("opacity", 1);
+
+    /* Make all clusters visible */
+    cluster.forEach(clusterinfo => {
+        animateCluster(clusterinfo.name, clusterinfo.ids, clusterinfo.color)
+    })
 
 };
 
@@ -905,6 +936,7 @@ function drawNetworkGlyph(data, forceX, forceY, id) {
 
     var g = svg.append('g')
         .attr('id', "cluster" + id)
+        .attr('opacity', id == 0 ? 1 : 0.5)
 
     var elements = g.selectAll('.bubble')
         .data(_data)
@@ -915,9 +947,9 @@ function drawNetworkGlyph(data, forceX, forceY, id) {
     var circles = elements.append("circle")
         .attr("class", "bubble")
         .attr("r", "20")
-        .attr("fill", function (d) {
-            return "lightgreen"
-        })
+        .attr("fill", nodecolor.get('green')[0])
+        .attr('stroke-width', 3)
+        .attr('stroke', nodecolor.get('green')[1])
 
     var bg = elements.append('path')
         .attr("d", d3.symbol().size(2500).type(d3.symbolSquare))
@@ -944,13 +976,17 @@ function drawNetworkGlyph(data, forceX, forceY, id) {
 }
 
 
-function animateCluster(clusterid) {
-    let c = d3.select("[id='" + clusterid + "']").selectAll('g')
-    // d3.select("[id='cluster0']").selectAll('g').selectAll('circle').each(function (d) {
-    //     console.log(d3.select(d).attr('id'))
-    // })
+function animateCluster(clusterid, nodes, newcolor) {
 
-    d3.select("[id='cluster0']").selectAll('g').selectAll('circle').
-        transition(700).attr('fill', 'red')
-    console.log(c)
+    d3.select("[id='" + clusterid + "']")
+        .transition(100)
+        .attr('opacity', 1)
+
+    nodes.map(nodeid => {
+        d3.select("[id='" + nodeid + "']")
+            .select('circle')
+            .transition(1000)
+            .attr('fill', nodecolor.get(newcolor)[0])
+            .attr('stroke', nodecolor.get(newcolor)[1])
+    })
 }
