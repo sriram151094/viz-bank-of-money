@@ -1,5 +1,8 @@
 export { storyTellingChart }
 import { drawNetworkChart } from "./networkchart.js"
+import { Heatmap } from "./heatmap.js"
+import { drawLineChart } from "./lineChart.js"
+import { drawRadialChart } from "./radial-bar-chart.js"
 
 var NameProvider = ["Port Scanning", "FTP/SSH Attack", "SQL Attack", "Data Outage", "DNS Attack"];
 
@@ -381,7 +384,7 @@ function Draw2() {
     g.on('click', (event, d) => {
         console.log(d);
         document.getElementById("chartsContainer").scrollIntoView();
-        drawNetworkChart(Date.parse("2012-04-05 18:27"), Date.parse("2012-04-05 20:36"));
+        drawCharts(Date.parse("2012-04-05 18:27"), Date.parse("2012-04-05 20:36"));
     });
 
     /*Show the tick around the arc*/
@@ -445,7 +448,7 @@ function Draw3() {
     g.on('click', (event, d) => {
         console.log(d);
         document.getElementById("chartsContainer").scrollIntoView();
-        drawNetworkChart(Date.parse("2012-04-05 20:37"), Date.parse("2012-04-05 21:21"));
+        drawCharts(Date.parse("2012-04-05 20:37"), Date.parse("2012-04-05 21:21"));
     });
 
     /*Show the  name*/
@@ -504,7 +507,7 @@ function Draw4() {
     g.on('click', (event, d) => {
         console.log(d);
         document.getElementById("chartsContainer").scrollIntoView();
-        drawNetworkChart(Date.parse("2012-04-05 21:47"), Date.parse("2012-04-06 03:27"));
+        drawCharts(Date.parse("2012-04-05 21:47"), Date.parse("2012-04-06 03:27"));
     });
 
     /*Show the  name*/
@@ -564,7 +567,7 @@ function Draw5() {
     g.on('click', (event, d) => {
         console.log(d);
         document.getElementById("chartsContainer").scrollIntoView();
-        drawNetworkChart(Date.parse("2012-04-06 02:00"), Date.parse("2012-04-05 18:00"));
+        drawCharts(Date.parse("2012-04-06 02:00"), Date.parse("2012-04-05 18:00"));
     });
 
     /*Show the  name*/
@@ -623,7 +626,7 @@ function Draw6() {
     g.on('click', (event, d) => {
         console.log(d);
         document.getElementById("chartsContainer").scrollIntoView();
-        drawNetworkChart(Date.parse("2012-04-06 17:26"), Date.parse("2012-04-06 18:27"));
+        drawCharts(Date.parse("2012-04-06 17:26"), Date.parse("2012-04-06 18:27"));
     });
 
     /*Show the  name*/
@@ -670,23 +673,24 @@ function finalChord() {
                 switch (d.index) {
                     /* Port scanning event*/
                     case 0:
-                        drawNetworkChart(Date.parse("2012-04-05 18:27"), Date.parse("2012-04-05 20:36"));
+                        drawCharts(Date.parse("2012-04-05 18:27"), Date.parse("2012-04-05 20:36"))
+                        //drawNetworkChart(Date.parse("2012-04-05 18:27"), Date.parse("2012-04-05 20:36"));
                         break;
                     /* FTP/SSH Event event*/
                     case 1:
-                        drawNetworkChart(Date.parse("2012-04-05 20:37"), Date.parse("2012-04-05 21:21"));
+                        drawCharts(Date.parse("2012-04-05 20:37"), Date.parse("2012-04-05 21:21"));
                         break;
                     /* SQL Attack event*/
                     case 2:
-                        drawNetworkChart(Date.parse("2012-04-05 21:47"), Date.parse("2012-04-06 03:27"));
+                        drawCharts(Date.parse("2012-04-05 21:47"), Date.parse("2012-04-06 03:27"));
                         break;
                     /* Data Outage event*/
                     case 3:
-                        drawNetworkChart(Date.parse("2012-04-06 02:00"), Date.parse("2012-04-05 18:00"));
+                        drawCharts(Date.parse("2012-04-06 02:00"), Date.parse("2012-04-05 18:00"));
                         break;
                     /* DNS attack event*/
                     case 4:
-                        drawNetworkChart(Date.parse("2012-04-06 17:26"), Date.parse("2012-04-06 18:27"));
+                        drawCharts(Date.parse("2012-04-06 17:26"), Date.parse("2012-04-06 18:27"));
                         break;
 
                 }
@@ -703,7 +707,7 @@ function finalChord() {
             .on('click', (event, d) => {
                 console.log(d.index);
                 document.getElementById("chartsContainer").scrollIntoView();
-                drawNetworkChart(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"))
+                drawCharts(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"))
             });
     };
 
@@ -1064,4 +1068,12 @@ function animateCluster(clusterid, nodes, newcolor) {
             .attr('fill', nodecolor.get(newcolor)[0])
             .attr('stroke', nodecolor.get(newcolor)[1])
     })
+}
+
+function drawCharts(start, end)
+{
+    drawNetworkChart(start, end);
+    Heatmap(start, end);
+    drawLineChart(start, end);
+    drawRadialChart(start,end);
 }
