@@ -1,3 +1,14 @@
+var eventIntervals = {'portscan':"2012-04-05 18:27,2012-04-05 20:36",
+                      'sshftpattack':"2012-04-05 20:37,2012-04-05 21:21",
+                      'sqlattack':"2012-04-05 21:47,2012-04-06 03:27",
+                      'dataoutage':"2012-04-06 02:00,2012-04-06 18:00",
+                      'dnsattack':"2012-04-06 17:26,2012-04-06 18:27",
+                    };
+
+function eventchange() {
+    
+}
+
 function slider(min, max, rangeData) {
 
     var range = [min, max];

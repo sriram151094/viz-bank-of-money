@@ -37,21 +37,21 @@
         <div id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="navbar-input">
-                    <div class="input-group">
+                    <div class="input-group" pointer-events="all">
                         <div class="input-group-prepend">
                             <div class="input-group-text" id="btnGroupAddon">Event</div>
                         </div>
-                        <select id='y-attr-select' class="form-control">
-                            <option value='population'>SQL Attack</option>
-                            <option value='gdp'>SSH and FTP Attack</option>
-                            <option value='mortality'>DNS Attack</option>
-                            <option value='lifeexpectancy'>Data Outage</option>
-                            <option value='fertility' selected="selected">Port Scanning</option>
+                        <select id='y-attr-select' class="form-control" onclick="eventchange()">
+                            <option value='sqlattack'>SQL Attack</option>
+                            <option value='sshftpattack'>SSH and FTP Attack</option>
+                            <option value='dnsattack'>DNS Attack</option>
+                            <option value='dataoutage'>Data Outage</option>
+                            <option value='portscan' selected="selected">Port Scanning</option>
                         </select>
                     </div>
                 </li>
                 <li class="navbar-input">
-                    <div class="input-group">
+                    <div class="input-group" pointer-events="all">
                         <!-- <div class="input-group-prepend">
                             <div class="input-group-text" id="btnGroupAddon">Date</div>
                         </div>

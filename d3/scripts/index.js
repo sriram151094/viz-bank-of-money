@@ -12,14 +12,8 @@ export function buttonclick() {
 var starttime;
 var endtime;
 var applybutton;
+
 export function timechange() {
-    // let startTime = d3.select('#starttime').property('value')
-    // let endTime = d3.select('#endtime').property('value')
-    // let date = d3.select('#date').property('value')
-    // console.log(Date.parse(date + ' ' + startTime));
-    // console.log(Date.parse(date + ' ' + endTime));
-
-
     drawNetworkChart(starttime, endtime);
     Heatmap(starttime, endtime);
     drawRadialChart(starttime, endtime);
