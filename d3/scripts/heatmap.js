@@ -1,34 +1,40 @@
 export {Heatmap};
 var file = "../data/aggregated_data.csv"
-var tooltipDiv = d3.select('div.tooltip');
+var tooltipDiv;
 var svg;
 var heatmapData;
-var margin = {top: 40, right: 10, bottom: 150, left: 80};
+var margin = {top: 40, right: 50, bottom: 150, left: 90};
 const svgScreenWidth = +d3.select("#heatmap_div").style("width").slice(0,-2);
-var width = svgScreenWidth - margin.left - margin.right;
-var height = 350 - margin.top - margin.bottom;
+var width = svgScreenWidth;
+var height = 450 - margin.top - margin.bottom;
 const BAR_HEIGHT = 20;
 const COLOR_START = "#fac2c2", COLOR_END = "#f03434";
 const titlex = width / 2;
-const titley = -25;
+const titley = 1;
 const xlabelx = width / 2;
-const xlabely = height + 45;
-const ylabelx = -65;
-const ylabely = height / 2;
+const xlabely = height + margin.top + 40;
+const ylabelx = 25;
+const ylabely = (height  + margin.top)/ 2;
 
 function Heatmap(startTime, endTime) {
     if(heatmapData == undefined) {
         const heatMapDiv = d3.select("#heatmap_div");
         svg = heatMapDiv.append("svg")
+        tooltipDiv = d3.select('div.tooltip');
         readData().then(data => {
             heatmapData = data;
+            svg
+                .attr("width", width )
+                .attr("height", height + margin.top + margin.bottom);
             drawHeatMap(startTime, endTime);
+            drawAxis();
         }).catch(err => {
             console.error(err);
             return;
         });
     } else {
         drawHeatMap(startTime, endTime);
+        drawAxis();
     }
 }
 
@@ -109,27 +115,18 @@ function drawHeatMap(startTime, endTime) {
                     ip: ip,
                     port: p,
                     numAttacks: 0
-                })
+                });
         }
     }
-    // const heatMapDiv = d3.select("#heatmap_div");
-    // // heatMapDiv.select("svg").remove();
-    // svg = heatMapDiv.append("svg")
-    svg
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", 
-            "translate(" + margin.left + "," + margin.top + ")");
 
     // Build X scales and axis:
     var x = d3.scaleBand()
-        .range([ 0, width ])
+        .range([ 0, width - margin.left - margin.right ])
         .domain(ports)
         .padding(0.05);
         svg.append("g")
         .style("font-size", 15)
-        .attr("transform", "translate(0," + (height + 10) + ")")
+        .attr("transform", "translate(" + (margin.left) + "," + (height + margin.top + 10) + ")")
         .call(d3.axisBottom(x).tickSize(0).tickFormat(function(d) {
             if(d in portRangeMap)
                 return portRangeMap[d];
@@ -144,18 +141,17 @@ function drawHeatMap(startTime, endTime) {
         .padding(0.05);
     svg.append("g")
         .style("font-size", 15)
+        .attr("transform", "translate(" + (margin.left) + "," + (margin.top) + ")")
         .call(d3.axisLeft(y).tickSize(0))
         .select(".domain").remove();
 
     // Build color scale
     var max = d3.max(events, function (d) { return d.numAttacks});
-
-    var colorScale = d3.scaleLinear()
-    .range([COLOR_START, COLOR_END])
-    .domain([0, max]);
-    drawLegend(colorScale);
     
-    drawAxis();
+    var colorScale = d3.scaleLinear()
+        .range([COLOR_START, COLOR_END])
+        .domain([0, max]);
+    drawLegend(colorScale);
 
     var mouseover = function(e, d, elt) {
         drawTooltip(e, d);
@@ -182,10 +178,12 @@ function drawHeatMap(startTime, endTime) {
     }
 
     // add the squares
-    svg.selectAll()
+    svg.append("g").attr("transform", "translate(" + (margin.left) + "," + margin.top + ")")
+    .selectAll()
         .data(events)
         .enter()
         .append("rect")
+        .attr("class", "heatmap-rects")
         .attr("x", function(d) { return x(""+d.port) })
         .attr("y", function(d) { return y(d.ip) })
         .attr("rx", 5)
@@ -274,15 +272,28 @@ function compareIP(ipO, ipS, ipE) {
 }
 
 function drawTooltip(event, d) {
-    tooltipDiv.attr("class", "tooltip");
+    const portRangeMap = {
+        "-1": "Ports 0-1000",
+        "-2": "Ports 1000-2000",
+        "-3": "Ports 2000-3000",
+        "-4": "Ports 3000-4000",
+        "-5": "Ports 4000-5000"
+    }
     tooltipDiv.transition()
         .duration(50)
         .style("opacity", 1);
+    
+    let port;
+    if(d.port in portRangeMap) {
+        port = portRangeMap[d.port];
+    } else
+        port = d.port;
     tooltipDiv.html(
             "From: " + d.ip + "<br>" +
-            "To: " + d.port + "<br>" +
+            "To: " + port + "<br>" +
             "Num of Connections: " + d.numAttacks
         );
+
     tooltipDiv
         .style("left", (event.pageX + 20) + "px")
         .style("top", (event.pageY - 10) + "px")
@@ -291,16 +302,17 @@ function drawTooltip(event, d) {
 
 function drawLegend(colorScale) {
 
+    let newWidth = width - margin.left - margin.right;
     const defs = svg.append("defs");
     const axisScale = d3.scaleLinear()
         .domain(colorScale.domain())
-        .range([0, width]);
+        .range([0, newWidth]);
 
     const axisBottom = g => g
         .attr("class", `x-axis`)
-        .attr("transform", `translate(0,${(height + margin.top + 2 * BAR_HEIGHT)})`)
+        .attr("transform", `translate(${margin.left},${(height + 2 * margin.top + 2 * BAR_HEIGHT)})`)
         .call(d3.axisBottom(axisScale)
-                .ticks(width/100)
+                .ticks(newWidth/100)
                 .tickSize(-BAR_HEIGHT)
             );
 
@@ -313,41 +325,34 @@ function drawLegend(colorScale) {
         .attr("stop-color", d => d.color);
 
     svg.append('g')
-        .attr("transform", `translate(0,${height + margin.top + BAR_HEIGHT})`)
+        .attr("transform", `translate(${margin.left},${height + 2 * margin.top + BAR_HEIGHT})`)
         .append("rect")
-        .attr("width", width)
+        .attr("width", newWidth)
         .attr("height", BAR_HEIGHT)
         .style("fill", "url(#linear-gradient)")
         .style("position", "absolute");
     
     svg.append("text")
-        .attr("x", "-15px")
-        .attr("y", (height + margin.top + 3 * BAR_HEIGHT))
-        .text("Connections")
-    svg.append("text")
-        .attr("x", (width - 50))
-        .attr("y", (height + margin.top + 3 * BAR_HEIGHT))
-        .text("Connections")
+        .attr("x", margin.left-15)
+        .attr("y", (height + 2 * margin.top + 3 * BAR_HEIGHT))
+        .text("Connections");
 
-    
+    svg.append("text")
+        .attr("x", (newWidth + 50))
+        .attr("y", (height + 2 * margin.top + 3 * BAR_HEIGHT))
+        .text("Connections");
+
     svg.append('g').call(axisBottom);
 }
 
 function drawAxis() {
-    // Add title to graph
-    svg.append("text")
-        .attr("x", titlex)
-        .attr("y", titley)
-        .attr("text-anchor", "middle")
-        .style("font-size", "1.25em")
-        .text("Connections made from machines to ports");
 
     svg.append("text")
         .attr("x", xlabelx)
         .attr("y", xlabely)
         .attr("text-anchor", "middle")
         .style("font-size", "1em")
-        .text("Ports connected/attacked");
+        .text("Ports connected / attacked");
 
     // adapted from https://stackoverflow.com/a/30417969
     svg.append("g")
