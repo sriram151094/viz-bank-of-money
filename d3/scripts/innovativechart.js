@@ -166,16 +166,56 @@ function storyTellingChart() {
     ////////////////// Initiate Names //////////////////////////
     //////////////////////////////////////////////////////////*/
 
-    g.append("text")
-        .each(function (d) { d.angle = (d.startAngle + d.endAngle) / 2; })
-        .attr("dy", ".35em")
-        .attr("class", "titles")
-        .attr("text-anchor", function (d) { return d.angle > Math.PI ? "end" : null; })
-        .attr("transform", function (d) {
-            return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")" + "translate(" + (innerRadius + 55) + ")" + (d.angle > Math.PI ? "rotate(180)" : "");
-        })
-        .attr('opacity', 0)
-        .text(function (d, i) { return NameProvider[i]; });
+    // g.append("text")
+    //     .each(function (d) { d.angle = (d.startAngle + d.endAngle) / 2; })
+    //     .attr("dy", ".35em")
+    //     .attr("class", "titles")
+    //     .attr("text-anchor", function (d) { return d.angle > Math.PI ? "end" : null; })
+    //     .attr("transform", function (d) {
+    //         return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")" + "translate(" + (innerRadius + 55) + ")" + (d.angle > Math.PI ? "rotate(180)" : "");
+    //     })
+    //     .attr('opacity', 0)
+    //     .text(function (d, i) { return NameProvider[i]; });
+
+    svg.append("text")
+    .attr("id", "eventText1")
+    .text("Port Scanning")
+    .style("font-weight", "900")
+    .style("font-size", "18px")
+    .attr("opacity", 0)
+    .attr("transform", "translate(150,-130)");
+
+    svg.append("text")
+    .attr("id", "eventText2")
+    .text("FTP/SSH Attack")
+    .style("font-weight", "900")
+    .style("font-size", "18px")
+    .attr("opacity", 0)
+    .attr("transform", "translate(170,40)");
+
+    svg.append("text")
+    .attr("id", "eventText3")
+    .text("SQL Attack")
+    .style("font-weight", "900")
+    .style("font-size", "18px")
+    .attr("opacity", 0)
+    .attr("transform", "translate(-60,190)");
+
+    svg.append("text")
+    .attr("id", "eventText4")
+    .text("Data Outage")
+    .style("font-weight", "900")
+    .style("font-size", "18px")
+    .attr("opacity", 0)
+    .attr("transform", "translate(-280, 120)");
+
+    svg.append("text")
+    .attr("id", "eventText5")
+    .text("DNS Attack")
+    .style("font-weight", "900")
+    .style("font-size", "18px")
+    .attr("opacity", 0)
+    .attr("transform", "translate(-230,-150)");
 
 
     /*//////////////////////////////////////////////////////////	
@@ -351,9 +391,12 @@ function Draw2() {
         .style("stroke", function (d, i, j) { return j ? 0 : "#000"; });
 
     /*Show the  name*/
-    d3.selectAll(".titles")
-        .transition().duration(2000)
-        .attr("opacity", function (d, i) { return d.index ? 0 : 1; });
+    // d3.selectAll(".titles")
+    //     .transition().duration(2000)
+    //     .attr("opacity", function (d, i) { return d.index ? 0 : 1; });
+    d3.selectAll("#eventText1")
+    .transition().duration(2000)
+    .attr("opacity",1)
 
     /*Switch  texts*/
     changeTopText("Firstly, a series of Port scanning events occur implying the presence of some external botnet trying to compromise the system",
@@ -409,9 +452,12 @@ function Draw3() {
     });
 
     /*Show the  name*/
-    d3.selectAll(".titles")
-        .transition().duration(2000)
-        .attr("opacity", function (d, i) { return d.index == 0 || d.index == 1 ? 1 : 0; });
+    // d3.selectAll(".titles")
+    //     .transition().duration(2000)
+    //     .attr("opacity", function (d, i) { return d.index == 0 || d.index == 1 ? 1 : 0; });
+    d3.selectAll("#eventText2")
+    .transition().duration(2000)
+    .attr("opacity",1)
 
     changeTopText("HTC has 5% of the market share",
         6 / 2, 0, 1, true);
@@ -464,9 +510,13 @@ function Draw4() {
     });
 
     /*Show the  name*/
-    d3.selectAll(".titles")
-        .transition().duration(2000)
-        .attr("opacity", function (d, i) { return d.index == 0 || d.index == 1 || d.index == 2 ? 1 : 0; });
+    // d3.selectAll(".titles")
+    //     .transition().duration(2000)
+    //     .attr("opacity", function (d, i) { return d.index == 0 || d.index == 1 || d.index == 2 ? 1 : 0; });
+
+    d3.selectAll("#eventText3")
+    .transition().duration(2000)
+    .attr("opacity",1)
 
     changeTopText("LG has almost 5% of the market",
         6 / 2, 0, 1, true);
@@ -521,10 +571,12 @@ function Draw5() {
     });
 
     /*Show the  name*/
-    d3.selectAll(".titles")
-        .transition().duration(2000)
-        .attr("opacity", function (d, i) { return d.index == 0 || d.index == 1 || d.index == 2 || d.index == 3 ? 1 : 0; });
-
+    // d3.selectAll(".titles")
+    //     .transition().duration(2000)
+    //     .attr("opacity", function (d, i) { return d.index == 0 || d.index == 1 || d.index == 2 || d.index == 3 ? 1 : 0; });
+    d3.selectAll("#eventText4")
+    .transition().duration(2000)
+    .attr("opacity",1)
 
     changeTopText("LG has almost 5% of the market",
         6 / 2, 0, 1, true);
@@ -577,9 +629,12 @@ function Draw6() {
     });
 
     /*Show the  name*/
-    d3.selectAll(".titles")
-        .transition().duration(2000)
-        .attr("opacity", 1);
+    // d3.selectAll(".titles")
+    //     .transition().duration(2000)
+    //     .attr("opacity", 1);
+    d3.selectAll("#eventText5")
+    .transition().duration(2000)
+    .attr("opacity",1)
 
     changeTopText("LG has almost 5% of the market",
         6 / 2, 0, 1, true);
@@ -665,10 +720,32 @@ function finalChord() {
         .transition().duration(100)
         .style("stroke", "#000");
 
+
     /*And the Names of each Arc*/
-    svg.selectAll("g.group")
-        .transition().duration(100)
-        .selectAll(".titles").style("opacity", 1);
+    // svg.selectAll("g.group")
+    //     .transition().duration(100)
+    //     .selectAll(".titles").style("opacity", 1);
+
+    d3.selectAll("#eventText1")
+    .transition().duration(100)
+    .attr("opacity",1);
+
+    d3.selectAll("#eventText2")
+    .transition().duration(100)
+    .attr("opacity",1);
+
+    d3.selectAll("#eventText3")
+    .transition().duration(100)
+    .attr("opacity",1);
+
+    d3.selectAll("#eventText4")
+    .transition().duration(100)
+    .attr("opacity",1)
+
+    d3.selectAll("#eventText5")
+    .transition().duration(100)
+    .attr("opacity",1)
+
 
     /* Make all clusters visible */
     cluster.forEach(clusterinfo => {
