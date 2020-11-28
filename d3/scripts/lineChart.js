@@ -114,7 +114,7 @@ function getData(start, end) {
 
 
 function drawLineChart(starttime, endtime) {
-
+    console.log(lineSvg.selectAll('g').remove())
     getData(starttime, endtime).then(data => {
 
         if (data == "False") {
