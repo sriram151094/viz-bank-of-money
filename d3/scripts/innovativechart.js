@@ -567,7 +567,7 @@ function Draw5() {
     g.on('click', (event, d) => {
         console.log(d);
         document.getElementById("chartsContainer").scrollIntoView();
-        drawCharts(Date.parse("2012-04-06 02:00"), Date.parse("2012-04-05 18:00"));
+        drawCharts(Date.parse("2012-04-06 02:00"), Date.parse("2012-04-06 18:00"));
     });
 
     /*Show the  name*/
@@ -686,7 +686,7 @@ function finalChord() {
                         break;
                     /* Data Outage event*/
                     case 3:
-                        drawCharts(Date.parse("2012-04-06 02:00"), Date.parse("2012-04-05 18:00"));
+                        drawCharts(Date.parse("2012-04-06 02:00"), Date.parse("2012-04-06 18:00"));
                         break;
                     /* DNS attack event*/
                     case 4:
