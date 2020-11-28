@@ -327,7 +327,7 @@ function Draw2() {
     g.on('click', (event, d) => {
         console.log(d);
         document.getElementById("chartsContainer").scrollIntoView();
-        drawNetworkChart(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"))
+        drawNetworkChart(Date.parse("2012-04-05 18:27"), Date.parse("2012-04-05 20:36"));
     });
 
     /*Show the tick around the arc*/
@@ -387,7 +387,7 @@ function Draw3() {
     g.on('click', (event, d) => {
             console.log(d);
             document.getElementById("chartsContainer").scrollIntoView();
-            drawNetworkChart(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"))
+            drawNetworkChart(Date.parse("2012-04-05 20:37"), Date.parse("2012-04-05 21:21"));
     });
 
     /*Show the  name*/
@@ -439,7 +439,7 @@ function Draw4() {
     g.on('click', (event, d) => {
         console.log(d);
         document.getElementById("chartsContainer").scrollIntoView();
-        drawNetworkChart(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"))
+        drawNetworkChart(Date.parse("2012-04-05 21:47"), Date.parse("2012-04-06 03:27"));
     });
 
     /*Show the  name*/
@@ -493,7 +493,7 @@ function Draw5() {
     g.on('click', (event, d) => {
         console.log(d);
         document.getElementById("chartsContainer").scrollIntoView();
-        drawNetworkChart(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"))
+        drawNetworkChart(Date.parse("2012-04-06 02:00"), Date.parse("2012-04-05 18:00"));
     });
 
     /*Show the  name*/
@@ -546,7 +546,7 @@ function Draw6() {
     g.on('click', (event, d) => {
             console.log(d);
             document.getElementById("chartsContainer").scrollIntoView();
-            drawNetworkChart(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"))
+            drawNetworkChart(Date.parse("2012-04-06 17:26"), Date.parse("2012-04-06 18:27"));
     });
 
     /*Show the  name*/
@@ -591,23 +591,23 @@ function finalChord() {
                 {
                     /* Port scanning event*/ 
                     case 0:
-                        drawNetworkChart(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"));
+                        drawNetworkChart(Date.parse("2012-04-05 18:27"), Date.parse("2012-04-05 20:36"));
                         break;
                     /* FTP/SSH Event event*/ 
                     case 1:
-                        drawNetworkChart(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"));
+                        drawNetworkChart(Date.parse("2012-04-05 20:37"), Date.parse("2012-04-05 21:21"));
                         break;
                     /* SQL Attack event*/ 
                     case 2:
-                        drawNetworkChart(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"));
+                        drawNetworkChart(Date.parse("2012-04-05 21:47"), Date.parse("2012-04-06 03:27"));
                         break;
                     /* Data Outage event*/ 
                     case 3:
-                        drawNetworkChart(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"));
+                        drawNetworkChart(Date.parse("2012-04-06 02:00"), Date.parse("2012-04-05 18:00"));
                         break;
                     /* DNS attack event*/ 
                     case 4:
-                        drawNetworkChart(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"));
+                        drawNetworkChart(Date.parse("2012-04-06 17:26"), Date.parse("2012-04-06 18:27"));
                         break;
     
                 }
