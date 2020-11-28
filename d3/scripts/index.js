@@ -2,6 +2,7 @@ import { network, drawNetworkChart } from './networkchart.js'
 import { storyTellingChart } from './innovativechart.js'
 import { Heatmap } from './heatmap.js';
 import { linechart, drawLineChart } from './lineChart.js'
+import { initRadialChart, drawRadialChart} from './radial-bar-chart.js'
 
 export function buttonclick() {
     console.log("Change")
@@ -15,6 +16,7 @@ export function timechange() {
     console.log(Date.parse(date + ' ' + endTime));
     drawNetworkChart(Date.parse(date + ' ' + startTime), Date.parse(date + ' ' + endTime));
     Heatmap(Date.parse(date + ' ' + startTime), Date.parse(date + ' ' + endTime));
+    drawRadialChart(Date.parse(date + ' ' + startTime), Date.parse(date + ' ' + endTime));
 }
 
 function init() {
@@ -25,6 +27,7 @@ function init() {
     storyTellingChart();
     Heatmap(Date.parse(date + ' ' + startTime), Date.parse(date + ' ' + endTime));
     linechart();
+    initRadialChart(Date.parse(date + ' ' + startTime), Date.parse(date + ' ' + endTime));
 }
 
 init()

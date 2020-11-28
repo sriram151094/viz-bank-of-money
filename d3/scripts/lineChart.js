@@ -3,7 +3,7 @@ export { drawLineChart, linechart }
 var lineSvg;
 var filteredData;
 
-const margin = 30;
+const margin = 40;
 var width = 1000;
 const height = 500;
 const inner_width = width - margin;
@@ -28,15 +28,18 @@ var color = d3.scaleOrdinal()
 //https://codepen.io/zakariachowdhury/pen/JEmjwq
 
 function linechart() {
-    width = +d3.select("#linechart").style("width").slice(0, -2);
+    width = +d3.select("#linechart").style("width").slice(0, -2) - margin;
     var chartWindow = d3.select('#lineChart');
     lineSvg = chartWindow.append('svg')
         .attr('id', 'lineChart')
-        .attr('width', width + margin + "px")
-        .attr('height', height + margin + "px")
-        .attr("transform", `translate(${margin},${margin})`);
+        .attr('width', width )
+        .attr('height', height)
+    //.attr("transform", `translate(${margin},${margin})`);
     toolDiv = d3.select('div.tooltip');
     //d3.select('#lineChart').append("div").style("opacity", 0);
+
+    xScale = d3.scaleTime().range([0, width - margin]);
+    yScale = d3.scaleLinear().range([ height - margin, 0]);
 
     drawLineChart(Date.parse(startDate + ' ' + startTime), Date.parse(endDate + ' ' + endTime));
 };
@@ -239,7 +242,7 @@ function drawLineChart(starttime, endtime) {
         var xAxis = d3.axisBottom(xScale).ticks(10);
         var yAxis = d3.axisLeft(yScale).ticks(10);
 
-        var xAxisGrid = d3.axisBottom(xScale).tickSize(-inner_height).tickFormat('').ticks(10);
+        var xAxisGrid = d3.axisBottom(xScale).tickSize(-inner_height + margin).tickFormat('').ticks(10);
         var yAxisGrid = d3.axisLeft(yScale).tickSize(-inner_width).tickFormat('').ticks(10);
 
         lineSvg.append("g")
@@ -247,7 +250,7 @@ function drawLineChart(starttime, endtime) {
             .call(xAxis)
         lineSvg.append("text")
             .attr("x", width / 2)
-            .attr("y", height)
+            .attr("y", height - 8)
             .style("text-anchor", "middle")
             .style("font-family", "sans-serif")
             .style("font-size", "14px")

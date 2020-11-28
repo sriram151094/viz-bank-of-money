@@ -6,7 +6,7 @@ export function Heatmap(startTime, endTime) {
     var margin = {top: 40, right: 10, bottom: 150, left: 80};
     const svgScreenWidth = +d3.select("#heatmap_div").style("width").slice(0,-2);
     var width = svgScreenWidth - margin.left - margin.right;
-    var height = 325 - margin.top - margin.bottom;
+    var height = 450 - margin.top - margin.bottom;
     const BAR_HEIGHT = 20;
     const COLOR_START = "#fac2c2", COLOR_END = "#f03434";
     const titlex = width / 2;
