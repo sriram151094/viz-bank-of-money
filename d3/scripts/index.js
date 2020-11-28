@@ -1,6 +1,7 @@
 import { network, drawNetworkChart } from './networkchart.js'
 import { storyTellingChart } from './innovativechart.js'
-import {Heatmap} from './heatmap.js';
+import { Heatmap } from './heatmap.js';
+import { linechart, drawLineChart } from './lineChart.js'
 
 export function buttonclick() {
     console.log("Change")
@@ -23,6 +24,7 @@ function init() {
     network();
     storyTellingChart();
     Heatmap(Date.parse(date + ' ' + startTime), Date.parse(date + ' ' + endTime));
+    linechart();
 }
 
 init()
