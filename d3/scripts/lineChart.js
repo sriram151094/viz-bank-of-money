@@ -32,14 +32,14 @@ function linechart() {
     var chartWindow = d3.select('#lineChart');
     lineSvg = chartWindow.append('svg')
         .attr('id', 'lineChart')
-        .attr('width', width )
+        .attr('width', width)
         .attr('height', height)
     //.attr("transform", `translate(${margin},${margin})`);
     toolDiv = d3.select('div.tooltip');
     //d3.select('#lineChart').append("div").style("opacity", 0);
 
     xScale = d3.scaleTime().range([0, width - margin]);
-    yScale = d3.scaleLinear().range([ height - margin, 0]);
+    yScale = d3.scaleLinear().range([height - margin, 0]);
 
     drawLineChart(Date.parse(startDate + ' ' + startTime), Date.parse(endDate + ' ' + endTime));
 };
@@ -217,7 +217,7 @@ function drawLineChart(starttime, endtime) {
 
     function createLegends() {
         var size = 10
-        var gap = 150
+        var gap = 100
         lineSvg.selectAll("rect")
             .data(keys).enter()
             .append("rect")
@@ -242,7 +242,7 @@ function drawLineChart(starttime, endtime) {
         var xAxis = d3.axisBottom(xScale).ticks(10);
         var yAxis = d3.axisLeft(yScale).ticks(10);
 
-        var xAxisGrid = d3.axisBottom(xScale).tickSize(-inner_height + margin).tickFormat('').ticks(10);
+        var xAxisGrid = d3.axisBottom(xScale).tickSize(-inner_height).tickFormat('').ticks(10);
         var yAxisGrid = d3.axisLeft(yScale).tickSize(-inner_width).tickFormat('').ticks(10);
 
         lineSvg.append("g")
