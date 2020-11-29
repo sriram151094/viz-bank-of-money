@@ -11,8 +11,9 @@ export function buttonclick() {
 
 var starttime;
 var endtime;
+var machine;
 var applybutton;
-export function timechange() {
+export function timechange(machine=undefined) {
     // let startTime = d3.select('#starttime').property('value')
     // let endTime = d3.select('#endtime').property('value')
     // let date = d3.select('#date').property('value')
@@ -20,16 +21,22 @@ export function timechange() {
     // console.log(Date.parse(date + ' ' + endTime));
 
 
-    drawNetworkChart(starttime, endtime);
-    Heatmap(starttime, endtime);
-    drawLineChart(starttime, endtime);
+    drawNetworkChart(starttime, endtime, machine);
+    Heatmap(Date.parse("2012-04-05 01:27"), Date.parse("2012-04-05 20:36"), machine);
+    drawLineChart(starttime, endtime, machine);
     drawRadialChart(starttime, endtime);
 }
+
+export function reset(id) {
+    document.getElementById(id).selectedIndex = 0;
+    machine = undefined;
+}
+
 
 function init() {
     network();
     storyTellingChart();
-    Heatmap(Date.parse("2012-04-05 18:27"), Date.parse("2012-04-05 20:36"));
+    Heatmap(Date.parse("2012-04-05 01:27"), Date.parse("2012-04-05 20:36"));
     linechart();
     initRadialChart(Date.parse("2012-04-05 18:27"), Date.parse("2012-04-05 20:36"));
 
@@ -51,5 +58,10 @@ window.addEventListener('DOMContentLoaded', (event) => {
         endtime = Date.parse(e.detail['second']);
         applybutton.classed('disable-button', false);
     })
-    timechange(starttime, endtime)
+    d3.select('#machine').on('change', function(e) {
+        console.log(e);
+        machine = d3.select('#machine').property('value');
+        timechange(machine);
+    });
+    // timechange(starttime, endtime)
 })

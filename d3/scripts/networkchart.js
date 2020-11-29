@@ -1,4 +1,5 @@
 export { network, drawNetworkChart };
+import {getIPBucket} from './utils.js';
 
 var networkSvg;
 var width = 500;
@@ -30,10 +31,15 @@ function network() {
 }
 
 
-function getFireWallData(start, end) {
+function getFireWallData(start, end, machine) {
     return new Promise((resolve, reject) => {
         console.log(start)
         console.log(end)
+        // TODO : remove/handle : Temp fix
+        if(!start || !end) {
+            start = Date.parse(date + ' ' + startTime);
+            end = Date.parse(date + ' ' + endTime);
+        }
 
         d3.csv('../data/aggregated_data.csv').then(res => {
             console.log(res)
@@ -41,8 +47,14 @@ function getFireWallData(start, end) {
                 let d = Date.parse(log['date_time'])
                 return (d >= start && d <= end)
             })
+            
             console.log("filtered data=================")
             console.log(filteredData)
+
+            if(machine)
+                filteredData = filteredData.filter(record => 
+                        getIPBucket(record['source_ip']).machine.toLowerCase() == machine.toLowerCase()
+                    );
 
             let node_set = new Set();
             filteredData.forEach(row => {
@@ -97,9 +109,9 @@ function getFireWallData(start, end) {
 }
 
 
-function drawNetworkChart(starttime, endtime) {
+function drawNetworkChart(starttime, endtime, machine=undefined) {
     console.log(networkSvg.selectAll('g').remove())
-    getFireWallData(starttime, endtime).then(data => {
+    getFireWallData(starttime, endtime, machine).then(data => {
         console.log("network data ", data)
 
         const link = networkSvg.append("g")

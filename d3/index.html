@@ -23,9 +23,10 @@
     <!-- <script src="./scripts/d3-slider.js"></script> -->
     <!-- <script src="dc.js"></script> -->
     <script type="module">
-        import { buttonclick, timechange } from './scripts/index.js';
+        import { buttonclick, timechange, reset } from './scripts/index.js';
         window.buttonclick = buttonclick;
         window.timechange = timechange;
+        window.reset = reset;
     </script>
     <script>
         function scrollToTop() {
@@ -41,15 +42,44 @@
                         <div class="input-group-prepend">
                             <div class="input-group-text" id="btnGroupAddon">Event</div>
                         </div>
-                        <select id='y-attr-select' class="form-control" onchange="eventChange()">
+                        <select id='eventType' class="form-control" onchange="eventChange()">
+                            <option value='' disabled selected="selected">Select..</option>
                             <option value='sqlattack'>SQL Attack</option>
                             <option value='sshftpattack'>SSH and FTP Attack</option>
                             <option value='dnsattack'>DNS Attack</option>
                             <option value='dataoutage'>Data Outage</option>
-                            <option value='portscan' selected="selected">Port Scanning</option>
+                            <option value='portscan'>Port Scanning</option>
                         </select>
+                        <div class="close-btn-div">
+                            <button type="button" class="close" aria-label="Close" onclick="reset('eventType')">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
                     </div>
                 </li>
+                <li class="navbar-input">
+                    <div class="input-group" pointer-events="all" style="pointer-events: all">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text" id="machineGrp">Machine</div>
+                        </div>
+                        <select id='machine' class="form-control">
+                            <option value='' disabled selected="selected">Select..</option>
+                            <option value='dns'>Domain Name System</option>
+                            <option value='ids'>Intrusion Detection System</option>
+                            <option value='firewall'>Firewall</option>
+                            <option value='websites'>External Websites</option>
+                            <option value='log server'>Log Server</option>
+                            <option value='workStation'>Workstations</option>
+                            <option value='financial server'>Financial Server</option>
+                        </select>
+                        <div class="close-btn-div">
+                            <button type="button" class="close" aria-label="Close" onclick="reset('machine')">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+                </li>
+                    
                 <li class="navbar-input">
                     <div class="input-group" pointer-events="all" style="pointer-events: all">
                         <!-- <div class="input-group-prepend">

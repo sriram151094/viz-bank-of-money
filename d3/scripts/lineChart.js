@@ -1,4 +1,5 @@
 export { drawLineChart, linechart }
+import {getIPBucket} from './utils.js';
 
 var lineSvg;
 var filteredData;
@@ -43,7 +44,7 @@ function linechart() {
     drawLineChart(Date.parse(startDate + ' ' + startTime), Date.parse(endDate + ' ' + endTime));
 };
 
-function getData(start, end) {
+function getData(start, end, machine) {
     return new Promise((resolve, reject) => {
 
         d3.csv('./data/aggregated_data.csv').then(res => {
@@ -52,6 +53,10 @@ function getData(start, end) {
                 let d = Date.parse(log['date_time'])
                 return (d >= start && d <= end)
             })
+
+            if(machine)
+                filteredData = filteredData.filter(record => 
+                    getIPBucket(record['source_ip']).machine.toLowerCase() == machine.toLowerCase())
 
             console.log("Length of filtered data", filteredData.length)
 
@@ -112,9 +117,9 @@ function getData(start, end) {
 
 
 
-function drawLineChart(starttime, endtime) {
+function drawLineChart(starttime, endtime, machine=undefined) {
     console.log(lineSvg.selectAll('g').remove())
-    getData(starttime, endtime).then(data => {
+    getData(starttime, endtime, machine).then(data => {
 
         xScale.domain([new Date(starttime), new Date(endtime)]) 
         lineSvg.selectAll("*").remove(); 
