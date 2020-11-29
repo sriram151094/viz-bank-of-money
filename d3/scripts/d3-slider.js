@@ -1,9 +1,7 @@
-var eventIntervals = {'portscan':"2012-04-05 18:27,2012-04-05 20:36",
-                      'sshftpattack':"2012-04-05 20:37,2012-04-05 21:21",
-                      'sqlattack':"2012-04-05 21:47,2012-04-06 03:27",
-                      'dataoutage':"2012-04-06 02:00,2012-04-06 18:00",
-                      'dnsattack':"2012-04-06 17:26,2012-04-06 18:27",
-                    };
+
+var brush;
+var rangeMap = {};
+var gBrush;
 
 function slider(min, max, rangeData) {
 
@@ -79,7 +77,7 @@ function slider(min, max, rangeData) {
 
 
     // define brush
-    var brush = d3.brushX()
+    brush = d3.brushX()
         .extent([[0, 0], [width, height]])
         .on('brush', function (e) {
             var s = e.selection;
@@ -101,8 +99,25 @@ function slider(min, max, rangeData) {
             d3.select("#eventhandler").dispatch('change', { detail: { first: rangeData[String(s).split(",")[0]], second: rangeData[String(s).split(",")[1]] } })
         })
 
+    brush.move(d3.select(this), [
+        [0, 100], 
+        [2890, 1000] 
+      ]);
+
+    // brush.attr("d", rightRoundedRect(-240, -120, 480, 240, 20));
+
+      function rightRoundedRect(x, y, width, height, radius) {
+        return "M" + x + "," + y
+             + "h" + (width - radius)
+             + "a" + radius + "," + radius + " 0 0 1 " + radius + "," + radius
+             + "v" + (height - 2 * radius)
+             + "a" + radius + "," + radius + " 0 0 1 " + -radius + "," + radius
+             + "h" + (radius - width)
+             + "z";
+      }
+
     // append brush to g
-    var gBrush = g.append("g")
+    gBrush = g.append("g")
         .attr("class", "brush")
         .call(brush)
 
@@ -128,8 +143,13 @@ function slider(min, max, rangeData) {
     // override default behaviour - clicking outside of the selected area 
     // will select a small piece there rather than deselecting everything
     gBrush.selectAll(".overlay")
+    .style("rx", "5")
+        // .attr("d", rightRoundedRect(-500, -620, 880, 1240, 120))
         .each(function (d) { d.type = "selection"; })
         .on("mousedown touchstart", brushcentered)
+
+    gBrush.selectAll(".selection")
+        .style("rx", "5")
 
     function brushcentered() {
         var dx = x(1) - x(0), // Use a fixed width when recentering.
@@ -139,37 +159,60 @@ function slider(min, max, rangeData) {
         // console.log("Printing values "+ cx + " "+ x0 + " " + x1);
         d3.select(this.parentNode).call(brush.move, x1 > width ? [width - dx, width] : x0 < 0 ? [0, dx] : [x0, x1]);
     }
-
+    //var range1 = [1.00, 2.01]
     // select entire range
     gBrush.call(brush.move, range.map(x))
 
-    // return svg.node ()
-    var getRange = function () {
-        // var range = d3.brushSelection(gBrush.node()).map(d => Math.round(x.invert(d)));
-
-        dateRange.push(rangeData[String(s).split(",")[0]]);
-        dateRange.push(rangeData[String(s).split(",")[1]]);
-        return dateRange;
-    }
-
-    return dateRange;
 }
 
 //slider(0,25)
+
+export function setTime(start, end) {
+    var startIndex = rangeMap[start];
+    var endIndex = rangeMap[end];
+    var range1 = [startIndex, endIndex];
+    gBrush.call(brush.move, range1.map(x));
+    // brush = d3.brushX()
+    //     .extent([[0, 0], [width, height]])
+    //     .on('brush', function (e) {
+    //         var s = e.selection;
+    //         // console.log("The selection is "+String(s).split(",")[0])
+    //         // console.log("x val is "+rangeData[String(s).split(",")[0]])
+    //         // console.log("y val is "+rangeData[String(s).split(",")[1]])
+    //         // update and move labels
+    //         labelL.attr('x', s[0])
+    //             .text(rangeData[String(s).split(",")[0]].split(" ")[1])
+    //         labelR.attr('x', s[1])
+    //             .text(rangeData[String(s).split(",")[1]].split(" ")[1])
+    //         // move brush handles      
+    //         handle.attr("display", null).attr("transform", function (d, i) { return "translate(" + [s[i], - height / 4] + ")"; });
+    //         // update view
+    //         // if the view should only be updated after brushing is over, 
+    //         // move these two lines into the on('end') part below
+    //         svg.node().value = s.map(function (d) { var temp = x.invert(d); return +temp.toFixed(2) });
+    //         var elem = document.querySelector('#eventhandler');
+    //         d3.select("#eventhandler").dispatch('change', { detail: { first: rangeData[String(s).split(",")[0]], second: rangeData[String(s).split(",")[1]] } })
+    //     })
+}
 
 
 export function initTimeSlider() {
 
     var rangeData = [];
+    let count = 0;
 
     for (let j = 0; j < 10; j++) {
         let k = 0;
         while (k < 10) {
             rangeData.push("2012-04-05 0" + j + ":0" + k);
+            rangeMap["2012-04-05 0" + j + ":0" + k] = count;
+            count++;
             k = k + 5;
         }
         while (k < 60) {
             rangeData.push("2012-04-05 0" + j + ":" + k);
+            rangeMap["2012-04-05 0" + j + ":" + k] = count;
+            count++;
             k = k + 5;
         }
     }
@@ -177,10 +220,14 @@ export function initTimeSlider() {
         let k = 0;
         while (k < 10) {
             rangeData.push("2012-04-05 " + j + ":0" + k);
+            rangeMap["2012-04-05 " + j + ":0" + k] = count;
+            count++;
             k = k + 5;
         }
         while (k < 60) {
             rangeData.push("2012-04-05 " + j + ":" + k);
+            rangeMap["2012-04-05 " + j + ":" + k] = count;
+            count++;
             k = k + 5;
         }
     }
@@ -189,10 +236,14 @@ export function initTimeSlider() {
         let k = 0;
         while (k < 10) {
             rangeData.push("2012-04-06 0" + j + ":0" + k);
+            rangeMap["2012-04-06 0" + j + ":0" + k] = count;
+            count++;
             k = k + 5;
         }
         while (k < 60) {
             rangeData.push("2012-04-06 0" + j + ":" + k);
+            rangeMap["2012-04-06 0" + j + ":" + k] = count;
+            count++;
             k = k + 5;
         }
     }
@@ -200,14 +251,20 @@ export function initTimeSlider() {
         let k = 0;
         while (k < 10) {
             rangeData.push("2012-04-06 " + j + ":0" + k);
+            rangeMap["2012-04-06 " + j + ":0" + k] = count;
+            count++;
             k = k + 5;
         }
         while (k < 60) {
             rangeData.push("2012-04-06 " + j + ":" + k);
+            rangeMap["2012-04-06 " + j + ":" + k] = count;
+            count++;
             k = k + 5;
         }
     }
     rangeData.push("2012-04-07 00:00");
+    rangeMap["2012-04-07 00:00"] = count;
+    count++;
     
     slider(0, 2.89, rangeData);
     // slider(0, max)

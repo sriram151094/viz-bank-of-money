@@ -3,7 +3,15 @@ import { storyTellingChart } from './innovativechart.js'
 import { Heatmap } from './heatmap.js';
 import { linechart, drawLineChart } from './lineChart.js'
 import { initRadialChart, drawRadialChart } from './radial-bar-chart.js'
-import { initTimeSlider } from './d3-slider.js'
+import { initTimeSlider, setTime } from './d3-slider.js'
+
+
+var eventIntervals = {'portscan':"2012-04-05 18:27,2012-04-05 20:36",
+                      'sshftpattack':"2012-04-05 20:37,2012-04-05 21:21",
+                      'sqlattack':"2012-04-05 21:47,2012-04-06 03:27",
+                      'dataoutage':"2012-04-06 02:00,2012-04-06 18:00",
+                      'dnsattack':"2012-04-06 17:26,2012-04-06 18:27",
+                    };
 
 export function buttonclick() {
     console.log("Change")
@@ -43,9 +51,13 @@ function init() {
 
 }
 
-function eventChange() {
-    //var eventValue = d3.select("#y-attr-select").value;
-    console.log("The event val ");
+export function eventchange() {
+    var eventValue = d3.select("#y-attr-select").property('value');
+    console.log("The event val "+eventIntervals[eventValue]);
+    var start = eventIntervals[eventValue].split(",")[0];
+    var end = eventIntervals[eventValue].split(",")[1];
+    setTime(start, end);
+
 }
 
 //init()
