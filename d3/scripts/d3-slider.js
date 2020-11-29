@@ -5,10 +5,6 @@ var eventIntervals = {'portscan':"2012-04-05 18:27,2012-04-05 20:36",
                       'dnsattack':"2012-04-06 17:26,2012-04-06 18:27",
                     };
 
-function eventchange() {
-    
-}
-
 function slider(min, max, rangeData) {
 
     var range = [min, max];
