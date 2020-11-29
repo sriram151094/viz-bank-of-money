@@ -73,8 +73,8 @@ div.tooltip {
   
   rect.selection {
     stroke: none;
-    fill: #8097ff;
-    fill-opacity: 0.6;
+    fill: #313639;
+    fill-opacity: 0.3;
   }
   
   #labelleft, #labelright {

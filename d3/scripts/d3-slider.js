@@ -62,7 +62,8 @@ function slider(min, max, rangeData) {
         // dominant-baseline: hanging;
         // .style("dominant-baseline", "hanging")
         .style("font-size", "12px")
-        .style("font-weight", "bold");
+        .style("font-weight", "bold")
+        .style("fill", "black");
 
     // var line = g.append('line')
     // .attr('id', 'datelabel')
