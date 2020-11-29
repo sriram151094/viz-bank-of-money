@@ -22,6 +22,7 @@ export function timechange() {
 
     drawNetworkChart(starttime, endtime);
     Heatmap(starttime, endtime);
+    drawLineChart(starttime, endtime);
     drawRadialChart(starttime, endtime);
 }
 
