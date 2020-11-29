@@ -148,7 +148,7 @@ function drawNetworkChart(starttime, endtime) {
 
 
         var simulation = d3.forceSimulation(data.nodes)
-            .force("link", d3.forceLink(data.links).id(d => d.id).distance(40))
+            .force("link", d3.forceLink(data.links).id(d => d.id).distance(50))
             .force("charge", d3.forceManyBody())
             .force("x", d3.forceX())
             .force("y", d3.forceY());
@@ -161,8 +161,8 @@ function drawNetworkChart(starttime, endtime) {
                 .attr("y2", d => d.target.y + height / 2);
 
             node
-                .attr("cx", d => Math.max(5, Math.min(width - 5, d.x + width / 2)))
-                .attr("cy", d => Math.max(5, Math.min(height - 5, d.y + height / 2)))
+                .attr("cx", d => Math.max(7, Math.min(width - 5, d.x + width / 2)))
+                .attr("cy", d => Math.max(7, Math.min(height - 5, d.y + height / 2)))
         });
 
         //invalidation.then(() => simulation.stop());
@@ -233,7 +233,7 @@ function drawLegend() {
             .attr('id', 'lengend1')
             //.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
             .call(g => g.append('circle')
-                .attr('r', 5)
+                .attr('r', 7)
                 .attr('cx', margin.left)
                 .attr('cy', margin.top + (i * 15))
                 .attr('fill', legend_arr[i]['color'])
