@@ -1,30 +1,29 @@
 export { network, drawNetworkChart };
-import {getIPBucket} from './utils.js';
+import { getIPBucket } from './utils.js';
 
 var networkSvg;
 var width = 500;
 var height = 500;
-var startTime = '02:00';
-var endTime = '18:00';
-var date = '2012-04-06';
+var startTime;
+var endTime;
+var date;
 var defs
 var toolTip
 var margin = { top: 15, bottom: 10, left: 15, right: 10 }
 
-function network() {
-
-    const svgScreenWidth = +d3.select("#heatmap_div").style("width").slice(0, -2);
+function network(start, end) {
+    startTime = start
+    endTime = end
+    const svgScreenWidth = +d3.select("#networkChart").style("width").slice(0, -2);
     width = svgScreenWidth - margin.left - margin.right;
-    window.addEventListener('DOMContentLoaded', (event) => {
-        var chartWindow = d3.select('#networkChart');
-        networkSvg = chartWindow.append('svg')
-            .attr('id', 'network')
-            //.attr("viewBox", [-width / 4, -height / 4, width, height])
-            .attr('width', width)
-            .attr('height', height)
+    var chartWindow = d3.select('#networkChart');
+    networkSvg = chartWindow.append('svg')
+        .attr('id', 'network')
+        //.attr("viewBox", [-width / 4, -height / 4, width, height])
+        .attr('width', width)
+        .attr('height', height)
 
-        drawNetworkChart(Date.parse(date + ' ' + startTime), Date.parse(date + ' ' + endTime));
-    });
+    drawNetworkChart(startTime, endTime);
 
     toolTip = d3.select("body").append("div")
         .attr("class", "tooltip")
@@ -33,10 +32,8 @@ function network() {
 
 function getFireWallData(start, end, machine) {
     return new Promise((resolve, reject) => {
-        console.log(start)
-        console.log(end)
         // TODO : remove/handle : Temp fix
-        if(!start || !end) {
+        if (!start || !end) {
             start = Date.parse(date + ' ' + startTime);
             end = Date.parse(date + ' ' + endTime);
         }
@@ -47,14 +44,14 @@ function getFireWallData(start, end, machine) {
                 let d = Date.parse(log['date_time'])
                 return (d >= start && d <= end)
             })
-            
+
             console.log("filtered data=================")
             console.log(filteredData)
 
-            if(machine)
-                filteredData = filteredData.filter(record => 
-                        getIPBucket(record['source_ip']).machine.toLowerCase() == machine.toLowerCase()
-                    );
+            if (machine)
+                filteredData = filteredData.filter(record =>
+                    getIPBucket(record['source_ip']).machine.toLowerCase() == machine.toLowerCase()
+                );
 
             let node_set = new Set();
             filteredData.forEach(row => {
@@ -109,10 +106,21 @@ function getFireWallData(start, end, machine) {
 }
 
 
-function drawNetworkChart(starttime, endtime, machine=undefined) {
-    console.log(networkSvg.selectAll('g').remove())
+function drawNetworkChart(starttime, endtime, machine = undefined) {
+    networkSvg.selectAll('g').remove()
+    networkSvg.selectAll('text').remove()
     getFireWallData(starttime, endtime, machine).then(data => {
         console.log("network data ", data)
+
+        if (data['nodes'].length == 0) {
+            networkSvg.append('text')
+                .attr('x', width / 2.5)
+                .attr('y', height / 2)
+                //.style('font-size', '20px')
+                .text('No connections to show')
+            return
+        }
+
 
         const link = networkSvg.append("g")
             .attr("stroke", "#999")
@@ -173,8 +181,8 @@ function drawNetworkChart(starttime, endtime, machine=undefined) {
                 .attr("y2", d => d.target.y + height / 2);
 
             node
-                .attr("cx", d => Math.max(7, Math.min(width - 5, d.x + width / 2)))
-                .attr("cy", d => Math.max(7, Math.min(height - 5, d.y + height / 2)))
+                .attr("cx", d => Math.max(5, Math.min(width - 5, d.x + width / 2)))
+                .attr("cy", d => Math.max(5, Math.min(height - 5, d.y + height / 2)))
         });
 
         //invalidation.then(() => simulation.stop());

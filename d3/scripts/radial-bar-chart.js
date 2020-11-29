@@ -32,43 +32,38 @@ var tooltip;
 
 function initRadialChart(starttime, endtime) {
     width = +d3.select("#radialBarChart").style("width").slice(0, -2);
-    window.addEventListener('DOMContentLoaded', (event) => {
-    
-        
 
-        var chartWindow = d3.select('#radialBarChart');
-        radialSvg = chartWindow.append('svg')
-            .attr('id', 'radialBar')
-            //.attr("viewBox", [-width / 4, -height / 4, width, height])
-            .attr('width', width)
-            .attr('height', height)
-            .append('g')
-            .attr('transform', 'translate(' + width / 2 + ',' + (height + 25) / 2 + ')');
-    
-        tooltip = d3.select(".tooltip");
-    
-        Promise.all([d3.csv('./data/aggregated_data.csv')])
+    var chartWindow = d3.select('#radialBarChart');
+    radialSvg = chartWindow.append('svg')
+        .attr('id', 'radialBar')
+        //.attr("viewBox", [-width / 4, -height / 4, width, height])
+        .attr('width', width)
+        .attr('height', height)
+        .append('g')
+        .attr('transform', 'translate(' + width / 2 + ',' + (height + 25) / 2 + ')');
+
+    tooltip = d3.select(".tooltip");
+
+    Promise.all([d3.csv('./data/aggregated_data.csv')])
         .then(vals => {
             data = vals[0];
             drawRadialChart(starttime, endtime);
-    
+
         });
-    
-    });
 }
 
-function getData(starttime, endtime) { 
+function getData(starttime, endtime) {
     dnsupdateexternal = data.filter(function (d) { return (d.label.includes("DNS Update From External net") && Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime) }).length;
     ircauth = data.filter(function (d) { return (d.label.includes("IRC authorization message") && Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime) }).length;
     postgressql = data.filter(function (d) { return (d.label.includes("PostgreSQL") && Date.parse(d.datetime) >= starttime && Date.parse(d.date_time) <= endtime) }).length;
     mysql = data.filter(function (d) { return (d.label.includes("mySQL") && Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime) }).length;
     mssql = data.filter(function (d) { return (d.label.includes("MSSQL") && Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime) }).length;
-    oraclesql= data.filter(function (d) { return (d.label.includes("Oracle SQL") && Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime) }).length;
+    oraclesql = data.filter(function (d) { return (d.label.includes("Oracle SQL") && Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime) }).length;
     portscan5800 = data.filter(function (d) { return (d.label.includes("VNC Scan 5800-5820") && Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime) }).length;
     portscan5900 = data.filter(function (d) { return (d.label.includes("VNC Scan 5900-5920") && Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime) }).length;
     sshscan = data.filter(function (d) { return (d.label.includes("[1:2001219:18] ET SCAN Potential SSH Scan") && Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime) }).length;
     sshscanoutbound = data.filter(function (d) { return (d.label.includes("SSH Scan OUTBOUND") && Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime) }).length;
-    
+
     events = [
         { name: "Port Scan 5800-5820", value: portscan5800 },
         { name: "Port Scan 5900-5920", value: portscan5900 },
@@ -165,7 +160,7 @@ function drawRadialChart(starttime, endtime) {
         .duration(1000)
         .attrTween('d', arcTween);
 
-    arcs.on('mousemove', (e,d) => showTooltip(e,d))
+    arcs.on('mousemove', (e, d) => showTooltip(e, d))
     arcs.on('mouseout', hideTooltip)
 
     function arcTween(d, i) {
@@ -173,41 +168,41 @@ function drawRadialChart(starttime, endtime) {
         return t => arc(interpolate(t), i);
     }
 
-    function showTooltip(event,d) {
+    function showTooltip(event, d) {
         // tooltip.style('left', (event.pageX + 10) + 'px')
         //     .style('top', (event.pageY - 25) + 'px')
         //     .style('display', 'inline-block')
         //     .html(d.value);
         tooltip.transition()
-        .duration(50)
-        .style("opacity", 1);
+            .duration(50)
+            .style("opacity", 1);
 
         tooltip.style("left", (event.pageX + 20) + "px")
-        .style("top", (event.pageY - 10) + "px")
-        .style("text-align", "left")
-        .html("Number of flags raised by Intrusion Detection System : "+d.value);
+            .style("top", (event.pageY - 10) + "px")
+            .style("text-align", "left")
+            .html("Number of flags raised by Intrusion Detection System : " + d.value);
     }
 
 
     function hideTooltip() {
         // tooltip.style('display', 'none');
         tooltip.transition()
-        .duration('50')
-        .style("opacity", 0);
+            .duration('50')
+            .style("opacity", 0);
     }
 
     function rad2deg(angle) {
         return angle * 180 / PI;
     }
-    
+
     function getInnerRadius(index) {
         return arcMinRadius + (numArcs - (index + 1)) * (arcWidth + arcPadding);
     }
-    
+
     function getOuterRadius(index) {
         return getInnerRadius(index) + arcWidth;
     }
 
-    
+
 }
 

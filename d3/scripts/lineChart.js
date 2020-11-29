@@ -1,14 +1,15 @@
 export { drawLineChart, linechart }
-import {getIPBucket} from './utils.js';
+import { getIPBucket } from './utils.js';
 
 var lineSvg;
 var filteredData;
 
-const margin = 40;
+const margin = 60;
+const padding = 15;
 var width = 1000;
 const height = 500;
-const inner_width = width - margin;
-const inner_height = height - margin;
+const inner_width = width - margin - padding;
+const inner_height = height - margin - padding;
 
 var startTime = '20:30';
 var endTime = '21:30';
@@ -29,17 +30,17 @@ var color = d3.scaleOrdinal()
 //https://codepen.io/zakariachowdhury/pen/JEmjwq
 
 function linechart() {
-    width = +d3.select("#linechart").style("width").slice(0, -2) - margin;
+    width = +d3.select("#linechart").style("width").slice(0, -2);
     var chartWindow = d3.select('#lineChart');
     lineSvg = chartWindow.append('svg')
         .attr('id', 'lineChart')
         .attr('width', width)
         .attr('height', height)
-        .attr("transform", `translate(${margin},${margin})`);
+    //.attr("transform", `translate(${margin},${margin})`);
     toolDiv = d3.select('div.tooltip');
-    
-    xScale = d3.scaleTime().range([0, width - margin]);
-    yScale = d3.scaleLinear().range([height - margin, 0]);
+
+    xScale = d3.scaleTime().range([margin - padding, width - margin]);
+    yScale = d3.scaleLinear().range([height - margin, margin]);
 
     drawLineChart(Date.parse(startDate + ' ' + startTime), Date.parse(endDate + ' ' + endTime));
 };
@@ -54,8 +55,8 @@ function getData(start, end, machine) {
                 return (d >= start && d <= end)
             })
 
-            if(machine)
-                filteredData = filteredData.filter(record => 
+            if (machine)
+                filteredData = filteredData.filter(record =>
                     getIPBucket(record['source_ip']).machine.toLowerCase() == machine.toLowerCase())
 
             console.log("Length of filtered data", filteredData.length)
@@ -116,19 +117,19 @@ function getData(start, end, machine) {
 }
 
 
-function drawLineChart(starttime, endtime, machine=undefined) {
+function drawLineChart(starttime, endtime, machine = undefined) {
     console.log(lineSvg.selectAll('g').remove())
 
     // TODO : remove/handle : Temp fix
-    if(!starttime || !endtime) {
+    if (!starttime || !endtime) {
         starttime = Date.parse(startDate + ' ' + startTime);
         endtime = Date.parse(endDate + ' ' + endTime);
     }
 
     getData(starttime, endtime, machine).then(data => {
-        
+
         xScale.domain([new Date(starttime), new Date(endtime)])
-        lineSvg.selectAll("*").remove(); 
+        lineSvg.selectAll("*").remove();
         if (data == "False") {
             console.log("Handling empty cases")
             lineSvg.append("text").attr("x", (width - margin) / 2).attr("y", (height - margin) / 2).text("Data Not Available");
@@ -144,7 +145,7 @@ function drawLineChart(starttime, endtime, machine=undefined) {
             let temp = d3.max(row.values, d => d.count)
             max_y = (temp > max_y) ? temp : max_y
         })
-        
+
         yScale.domain([0, max_y + 10])
 
         var line = d3.line()
@@ -172,15 +173,15 @@ function drawLineChart(starttime, endtime, machine=undefined) {
                     const pathLength = this.getTotalLength();
                     return `${pathLength} ${pathLength}`
                 })
-        .attr("stroke-dashoffset", function (d) {
-            const pathLength = this.getTotalLength();
-            return `${pathLength}`
-        })
+            .attr("stroke-dashoffset", function (d) {
+                const pathLength = this.getTotalLength();
+                return `${pathLength}`
+            })
             .transition()
             .duration(3000)
             .ease(d3.easeLinear)
             .attr("stroke-dashoffset", 0);
-        
+
         setTimeout(() => {
             lines.selectAll('circle').data(lineChartData).enter()
                 .append("g")
@@ -238,7 +239,7 @@ function drawLineChart(starttime, endtime, machine=undefined) {
             .data(keys).enter()
             .append("rect")
             .attr("x", function (d, i) { return width / 2 + i * gap - 200 })
-            .attr("y", 10)
+            .attr("y", padding + 5)
             .attr("width", size)
             .attr("height", size)
             .style("fill", function (d) { return color(d) })
@@ -247,7 +248,8 @@ function drawLineChart(starttime, endtime, machine=undefined) {
             .data(keys).enter()
             .append("text")
             .attr("x", function (d, i) { return width / 2 + i * gap - 180 })
-            .attr("y", 20)
+            .attr("y", 2 * padding)
+            .style('font-size', '12px')
             .style("fill", function (d) { return color(d) })
             .text(function (d) { return d })
         //.attr("text-anchor", "left")
@@ -258,15 +260,15 @@ function drawLineChart(starttime, endtime, machine=undefined) {
         var xAxis = d3.axisBottom(xScale).ticks(10);
         var yAxis = d3.axisLeft(yScale).ticks(10);
 
-        var xAxisGrid = d3.axisBottom(xScale).tickSize(-inner_height).tickFormat('').ticks(10);
-        var yAxisGrid = d3.axisLeft(yScale).tickSize(-inner_width).tickFormat('').ticks(10);
+        var xAxisGrid = d3.axisBottom(xScale).tickSize(-height + (margin * 2)).tickFormat('').ticks(10);
+        var yAxisGrid = d3.axisLeft(yScale).tickSize(-width + margin * 2 - padding).tickFormat('').ticks(10);
 
         lineSvg.append("g")
-            .attr("transform", `translate(30, ${height - margin})`)
+            .attr("transform", `translate(${margin - padding * 2}, ${height - margin})`)
             .call(xAxis)
         lineSvg.append("text")
             .attr("x", width / 2)
-            .attr("y", height - 8)
+            .attr("y", height - padding)
             .style("text-anchor", "middle")
             .style("font-family", "sans-serif")
             .style("font-size", "14px")
@@ -274,11 +276,11 @@ function drawLineChart(starttime, endtime, machine=undefined) {
             .text("Time");
 
         lineSvg.append("g")
-            .attr("transform", `translate(30,0)`)
+            .attr("transform", `translate(${margin + padding},0)`)
             .call(yAxis)
             .append('text')
-            .attr("x", -(height-margin)/2 + 15)  
-            .attr("y", -20)
+            .attr("x", -(height - margin) / 2 + 15)
+            .attr("y", -margin + padding)
             .attr("transform", "rotate(-90)")
             .attr("fill", "#000")
             .style("font-family", "sans-serif")
@@ -291,10 +293,10 @@ function drawLineChart(starttime, endtime, machine=undefined) {
             .style('stroke', 'lightgrey')
             .style('stroke-opacity', '0.2')
             .style("stroke-dasharray", ("3, 3"))
-            .attr('transform', 'translate(30,' + inner_height + ')')
+            .attr('transform', `translate(${margin - padding * 2}, ${height - margin})`)
             .call(xAxisGrid);
         lineSvg.append('g')
-            .attr("transform", `translate(30,0)`)
+            .attr("transform", `translate(${margin + padding},0)`)
             .style('stroke', 'lightgrey')
             .style('stroke-opacity', '0.2')
             .style("stroke-dasharray", ("3, 3"))

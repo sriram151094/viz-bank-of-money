@@ -35,8 +35,8 @@ export function reset(id) {
 
 
 function init() {
-    network();
     storyTellingChart();
+    network(Date.parse("2012-04-05 18:27"), Date.parse("2012-04-05 20:36"));
     Heatmap(Date.parse("2012-04-05 01:27"), Date.parse("2012-04-05 20:36"));
     linechart();
     initRadialChart(Date.parse("2012-04-05 18:27"), Date.parse("2012-04-05 20:36"));
@@ -48,10 +48,10 @@ function eventChange() {
     console.log("The event val ");
 }
 
-init()
+//init()
 
 window.addEventListener('DOMContentLoaded', (event) => {
-
+    init()
     applybutton = d3.select('#filter-apply');
     initTimeSlider()
     d3.select('#eventhandler').on('change', function (e, d) {
