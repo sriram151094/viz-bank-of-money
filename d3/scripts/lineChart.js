@@ -116,12 +116,18 @@ function getData(start, end, machine) {
 }
 
 
-
 function drawLineChart(starttime, endtime, machine=undefined) {
     console.log(lineSvg.selectAll('g').remove())
-    getData(starttime, endtime, machine).then(data => {
 
-        xScale.domain([new Date(starttime), new Date(endtime)]) 
+    // TODO : remove/handle : Temp fix
+    if(!starttime || !endtime) {
+        starttime = Date.parse(startDate + ' ' + startTime);
+        endtime = Date.parse(endDate + ' ' + endTime);
+    }
+
+    getData(starttime, endtime, machine).then(data => {
+        
+        xScale.domain([new Date(starttime), new Date(endtime)])
         lineSvg.selectAll("*").remove(); 
         if (data == "False") {
             console.log("Handling empty cases")
