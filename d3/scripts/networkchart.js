@@ -10,6 +10,7 @@ var date;
 var defs
 var toolTip
 var margin = { top: 15, bottom: 10, left: 15, right: 10 }
+var fullData = []
 
 function network(start, end) {
     startTime = start
@@ -22,8 +23,10 @@ function network(start, end) {
         //.attr("viewBox", [-width / 4, -height / 4, width, height])
         .attr('width', width)
         .attr('height', height)
-
-    drawNetworkChart(startTime, endTime);
+    d3.csv('../data/aggregated_data.csv').then(res => {
+        fullData = res;
+        drawNetworkChart(startTime, endTime);
+    })
 
     toolTip = d3.select("body").append("div")
         .attr("class", "tooltip")
@@ -38,70 +41,61 @@ function getFireWallData(start, end, machine) {
             end = Date.parse(date + ' ' + endTime);
         }
 
-        d3.csv('../data/aggregated_data.csv').then(res => {
-            console.log(res)
-            let filteredData = res.filter(log => {
-                let d = Date.parse(log['date_time'])
-                return (d >= start && d <= end)
-            })
-
-            console.log("filtered data=================")
-            console.log(filteredData)
-
-            if (machine)
-                filteredData = filteredData.filter(record =>
-                    getIPBucket(record['source_ip']).machine.toLowerCase() == machine.toLowerCase()
-                );
-
-            let node_set = new Set();
-            filteredData.forEach(row => {
-                node_set.add(row['source_ip'])
-                node_set.add(row['destination_ip'])
-            })
-            let nodes = []
-            for (const ip of node_set) {
-                let d = {}
-                d['id'] = ip;
-                if (ip.includes('172.23.'))
-                    d['type'] = 'Workstation'
-                if (ip.includes('10.32.'))
-                    d['type'] = 'External Websites'
-                if (ip == '10.32.0.100' || ip == '172.23.0.1')
-                    d['type'] = 'Firewall'
-                else if (ip == '172.23.0.10')
-                    d['type'] = 'DNS'
-                if (ip.includes('172.28.'))
-                    d['type'] = 'Potentially Harmful Websites'
-
-                nodes.push(d)
-            }
-            console.log(nodes)
-
-            // Form links
-
-            let links = []
-
-            for (const row of filteredData) {
-                links.push({
-                    source: row['source_ip'],
-                    target: row['destination_ip'],
-                    // source_port : row['source_port'],
-                    // destination_port : row['destination_port'],
-                    operation: row['operation'],
-                    date_time: row['date_time']
-                })
-            }
-
-            console.log(links)
-
-            let data = {
-                'nodes': nodes,
-                'links': links
-            }
-
-            resolve(data)
-
+        let filteredData = fullData.filter(log => {
+            let d = Date.parse(log['date_time'])
+            return (d >= start && d <= end)
         })
+
+        if (machine)
+            filteredData = filteredData.filter(record =>
+                getIPBucket(record['source_ip']).machine.toLowerCase() == machine.toLowerCase()
+            );
+
+        let node_set = new Set();
+        filteredData.forEach(row => {
+            node_set.add(row['source_ip'])
+            node_set.add(row['destination_ip'])
+        })
+        let nodes = []
+        for (const ip of node_set) {
+            let d = {}
+            d['id'] = ip;
+            if (ip.includes('172.23.'))
+                d['type'] = 'Workstation'
+            if (ip.includes('10.32.'))
+                d['type'] = 'External Websites'
+            if (ip == '10.32.0.100' || ip == '172.23.0.1')
+                d['type'] = 'Firewall'
+            else if (ip == '172.23.0.10')
+                d['type'] = 'DNS'
+            if (ip.includes('172.28.'))
+                d['type'] = 'Potentially Harmful Websites'
+
+            nodes.push(d)
+        }
+
+        // Form links
+
+        let links = []
+
+        for (const row of filteredData) {
+            links.push({
+                source: row['source_ip'],
+                target: row['destination_ip'],
+                // source_port : row['source_port'],
+                // destination_port : row['destination_port'],
+                operation: row['operation'],
+                date_time: row['date_time']
+            })
+        }
+
+        let data = {
+            'nodes': nodes,
+            'links': links
+        }
+
+        resolve(data)
+
     })
 }
 
@@ -110,7 +104,6 @@ function drawNetworkChart(starttime, endtime, machine = undefined) {
     networkSvg.selectAll('g').remove()
     networkSvg.selectAll('text').remove()
     getFireWallData(starttime, endtime, machine).then(data => {
-        console.log("network data ", data)
 
         if (data['nodes'].length == 0) {
             networkSvg.append('text')
