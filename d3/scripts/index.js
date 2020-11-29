@@ -30,6 +30,7 @@ export function timechange(machine=undefined) {
 export function reset(id) {
     document.getElementById(id).selectedIndex = 0;
     machine = undefined;
+    timechange();
 }
 
 
