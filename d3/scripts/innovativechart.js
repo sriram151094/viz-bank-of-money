@@ -332,7 +332,7 @@ function Draw1() {
     runProgressBar(700 * 11);
 
     changeTopText("From our analysis of the network data, we have traced out the cyber attack",
-        4 / 2, 0, 1,false, undefined, 300);
+        4 / 2, 0, 1, false, undefined, 300);
 
     changeBottomText("Let's start by drawing out the step by step invasion of the BOM network faced over the course of two days",
         1 / 2, 0, 10, 280);
@@ -396,9 +396,11 @@ function Draw2() {
     // d3.selectAll(".titles")
     //     .transition().duration(2000)
     //     .attr("opacity", function (d, i) { return d.index ? 0 : 1; });
-    d3.selectAll("#eventText1")
-        .transition().duration(2000)
-        .attr("opacity", 1)
+    // d3.selectAll("#eventText1")
+    //     .transition().duration(2000)
+    //     .attr("opacity", 1)
+
+    appendTextLabels("#cluster0 #DNS0", -30, 50, 'Port Scanning')
 
     /*Switch  texts*/
     changeTopText("Firstly, a series of Port scanning events occur between 5th April 6.27 PM to 8.36 PM implying the presence of some external botnet trying to compromise the system",
@@ -456,9 +458,12 @@ function Draw3() {
     //     .transition().duration(2000)
     //     .attr("opacity", function (d, i) { return d.index == 0 || d.index == 1 ? 1 : 0; });
 
-    d3.selectAll("#eventText2")
-        .transition().duration(2000)
-        .attr("opacity", 1)
+    // d3.selectAll("#eventText2")
+    //     .transition().duration(2000)
+    //     .attr("opacity", 1)
+
+    appendTextLabels("#cluster1 #DNS1", -50, 50, "FTP/SSH Attack")
+
 
     changeTopText("This is followed by a surge in attempt for FTP connections, closely followed by SSH connections between 5th April 8.37 PM to 9.21 PM.",
         6 / 2, 0, 1, true, undefined, 280);
@@ -515,9 +520,12 @@ function Draw4() {
     //     .transition().duration(2000)
     //     .attr("opacity", function (d, i) { return d.index == 0 || d.index == 1 || d.index == 2 ? 1 : 0; });
 
-    d3.selectAll("#eventText3")
-        .transition().duration(2000)
-        .attr("opacity", 1)
+    // d3.selectAll("#eventText3")
+    //     .transition().duration(2000)
+    //     .attr("opacity", 1)
+
+    appendTextLabels("#cluster2 #Workstation52", 50, 20, "SQL Attack")
+
 
     changeTopText("Next, we observe the many SQL servers being simulatenously attacked between 5th April 9.47 PM to 6th April 3.27 AM.",
         6 / 2, 0, 1, true, undefined, 280);
@@ -575,9 +583,11 @@ function Draw5() {
     //     .transition().duration(2000)
     //     .attr("opacity", function (d, i) { return d.index == 0 || d.index == 1 || d.index == 2 || d.index == 3 ? 1 : 0; });
 
-    d3.selectAll("#eventText4")
-        .transition().duration(2000)
-        .attr("opacity", 1)
+    // d3.selectAll("#eventText4")
+    //     .transition().duration(2000)
+    //     .attr("opacity", 1)
+
+    appendTextLabels("#cluster3 #DNS3", -50, 50, "Data Outage")
 
     changeTopText("Next, we observe a massive data outage between 6th April 3 PM to 6 PM where the number of connection plunges drastically",
         6 / 2, 0, 1, true, undefined, 280);
@@ -634,9 +644,12 @@ function Draw6() {
     //     .transition().duration(2000)
     //     .attr("opacity", 1);
 
-    d3.selectAll("#eventText5")
-        .transition().duration(2000)
-        .attr("opacity", 1)
+    // d3.selectAll("#eventText5")
+    //     .transition().duration(2000)
+    //     .attr("opacity", 1)
+
+
+    appendTextLabels("#cluster4 #DNS4", -50, 50, "DNS Attack")
 
     changeTopText("Lastly, the DNS is attacked and compromised between 6th April 5.26 PM and 6.27 PM after which the external websites connect to the workstations. This is the root cause for the popups seen by the BOM employees.",
         6 / 2, 0, 1, true, undefined, 280);
@@ -728,31 +741,37 @@ function finalChord() {
     //     .transition().duration(100)
     //     .selectAll(".titles").style("opacity", 1);
 
-    d3.selectAll("#eventText1")
-        .transition().duration(100)
-        .attr("opacity", 1);
+    // d3.selectAll("#eventText1")
+    //     .transition().duration(100)
+    //     .attr("opacity", 1);
 
-    d3.selectAll("#eventText2")
-        .transition().duration(100)
-        .attr("opacity", 1);
+    // d3.selectAll("#eventText2")
+    //     .transition().duration(100)
+    //     .attr("opacity", 1);
 
-    d3.selectAll("#eventText3")
-        .transition().duration(100)
-        .attr("opacity", 1);
+    // d3.selectAll("#eventText3")
+    //     .transition().duration(100)
+    //     .attr("opacity", 1);
 
-    d3.selectAll("#eventText4")
-        .transition().duration(100)
-        .attr("opacity", 1)
+    // d3.selectAll("#eventText4")
+    //     .transition().duration(100)
+    //     .attr("opacity", 1)
 
-    d3.selectAll("#eventText5")
-        .transition().duration(100)
-        .attr("opacity", 1)
+    // d3.selectAll("#eventText5")
+    //     .transition().duration(100)
+    //     .attr("opacity", 1)
 
 
     /* Make all clusters visible */
     cluster.forEach(clusterinfo => {
         animateCluster(clusterinfo.name, clusterinfo.ids, clusterinfo.color)
     })
+
+    appendTextLabels("#cluster0 #DNS0", -30, 50, 'Port Scanning')
+    appendTextLabels("#cluster1 #DNS1", -50, 50, "FTP/SSH Attack")
+    appendTextLabels("#cluster2 #Workstation52", 50, 20, "SQL Attack")
+    appendTextLabels("#cluster3 #DNS3", -50, 50, "Data Outage")
+    appendTextLabels("#cluster4 #DNS4", -50, 50, "DNS Attack")
 
 };
 
@@ -856,7 +875,7 @@ function changeTopText(newText, loc, delayDisappear, delayAppear, finalText, xlo
 };/*changeTopText */
 
 /*Transition the bottom circle text*/
-function changeBottomText(newText, loc, delayDisappear, delayAppear,w) {
+function changeBottomText(newText, loc, delayDisappear, delayAppear, w) {
     if (typeof (w) === 'undefined') w = 350;
     middleTextBottom
         /*Current text disappear*/
@@ -1053,6 +1072,9 @@ function drawNetworkGlyph(data, forceX, forceY, id) {
                 })
             bg.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")" })
         })
+        .on("end", function (d) {
+            console.log("Simulation done")
+        })
 }
 
 
@@ -1069,6 +1091,26 @@ function animateCluster(clusterid, nodes, newcolor) {
             .attr('fill', nodecolor.get(newcolor)[0])
             .attr('stroke', nodecolor.get(newcolor)[1])
     })
+}
+
+
+function appendTextLabels(id, xoffset, yoffset, text) {
+    let circleElem = d3.select(id).select('circle')
+    let x = +circleElem.attr('cx')
+    let y = +circleElem.attr('cy')
+    console.log("x val" + x)
+    console.log("y val" + y)
+    svg.append("text")
+        .attr("x", x + xoffset)
+        .attr("y", y + yoffset)
+        .style("font-weight", "900")
+        .style("font-size", "18px")
+        .attr('opacity', 0)
+        .text(text)
+        .transition(2000)
+        .attr("opacity", 1)
+
+
 }
 
 function drawCharts(start, end) {
