@@ -6,6 +6,15 @@ import { drawRadialChart } from "./radial-bar-chart.js"
 
 var NameProvider = ["Port Scanning", "FTP/SSH Attack", "SQL Attack", "Data Outage", "DNS Attack"];
 
+var eventTimes = [
+    { event: "Port Scanning", startTime: Date.parse("2012-04-05 18:27"), endTime: Date.parse("2012-04-05 20:36") },
+    { event: "FTP/SSH Attack", startTime: Date.parse("2012-04-05 20:37"), endTime: Date.parse("2012-04-05 21:21") },
+    { event: "SQL Attack", startTime: Date.parse("2012-04-05 21:47"), endTime: Date.parse("2012-04-06 03:27") },
+    { event: "Data Outage", startTime: Date.parse("2012-04-06 02:00"), endTime: Date.parse("2012-04-06 18:00") },
+    { event: "DNS Attack", startTime: Date.parse("2012-04-06 17:26"), endTime: Date.parse("2012-04-06 18:27") }
+]
+
+
 var matrix = [
     [0, 0, 0, 1, 1],
     [0, 0, 0, 0, 1],
@@ -87,6 +96,7 @@ var textCenter;
 var middleTextTop;
 var middleTextBottom;
 var arc;
+var arc1;
 var innerRadius;
 var outerRadius;
 
@@ -102,6 +112,11 @@ function storyTellingChart() {
     arc = d3.arc()
         .innerRadius(innerRadius)
         .outerRadius(outerRadius);
+
+    arc1 = d3.arc()
+        .innerRadius(innerRadius + 10)
+        .outerRadius(outerRadius);
+
 
     svg = d3.select("#chart")
         .attr("width", width)
@@ -164,61 +179,6 @@ function storyTellingChart() {
         .attr("class", "ticks")
         .style("stroke", "#FFF");
 
-
-    /*//////////////////////////////////////////////////////////
-    ////////////////// Initiate Names //////////////////////////
-    //////////////////////////////////////////////////////////*/
-
-    // g.append("text")
-    //     .each(function (d) { d.angle = (d.startAngle + d.endAngle) / 2; })
-    //     .attr("dy", ".35em")
-    //     .attr("class", "titles")
-    //     .attr("text-anchor", function (d) { return d.angle > Math.PI ? "end" : null; })
-    //     .attr("transform", function (d) {
-    //         return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")" + "translate(" + (innerRadius + 55) + ")" + (d.angle > Math.PI ? "rotate(180)" : "");
-    //     })
-    //     .attr('opacity', 0)
-    //     .text(function (d, i) { return NameProvider[i]; });
-
-    svg.append("text")
-        .attr("id", "eventText1")
-        .text("Port Scanning")
-        .style("font-weight", "900")
-        .style("font-size", "18px")
-        .attr("opacity", 0)
-        .attr("transform", "translate(150,-130)");
-
-    svg.append("text")
-        .attr("id", "eventText2")
-        .text("FTP/SSH Attack")
-        .style("font-weight", "900")
-        .style("font-size", "18px")
-        .attr("opacity", 0)
-        .attr("transform", "translate(170,40)");
-
-    svg.append("text")
-        .attr("id", "eventText3")
-        .text("SQL Attack")
-        .style("font-weight", "900")
-        .style("font-size", "18px")
-        .attr("opacity", 0)
-        .attr("transform", "translate(-60,190)");
-
-    svg.append("text")
-        .attr("id", "eventText4")
-        .text("Data Outage")
-        .style("font-weight", "900")
-        .style("font-size", "18px")
-        .attr("opacity", 0)
-        .attr("transform", "translate(-280, 120)");
-
-    svg.append("text")
-        .attr("id", "eventText5")
-        .text("DNS Attack")
-        .style("font-weight", "900")
-        .style("font-size", "18px")
-        .attr("opacity", 0)
-        .attr("transform", "translate(-230,-150)");
 
 
     /*//////////////////////////////////////////////////////////	
@@ -315,10 +275,6 @@ function storyTellingChart() {
 
 }
 
-
-
-
-
 /*//////////////////////////////////////////////////////////	
 //Introduction
 ///////////////////////////////////////////////////////////*/
@@ -340,11 +296,6 @@ function Draw1() {
     changeTopText("",
         8 / 2, 9, 1, true, undefined, 250);
 
-    //Remove arcs again
-    // d3.selectAll(".arc")
-    // 	.transition().delay(9*700).duration(2100)
-    // 	.style("opacity", 0)
-    // 	.on("end", function() {d3.selectAll(".arc").remove();});
 
 };/*Draw1*/
 
@@ -380,27 +331,30 @@ function Draw2() {
             }
         })
 
+
     // Call other charts changes from here on click of a chord/event    
     g.on('click', (event, d) => {
         console.log(d);
         document.getElementById("chartsContainer").scrollIntoView();
-        drawCharts(Date.parse("2012-04-05 18:27"), Date.parse("2012-04-05 20:36"));
-    });
+        drawCharts(eventTimes[0].startTime, eventTimes[0].endTime);
+    })
+
+    // g.on('mouseover', (event, d) => {
+    //     d3.select("#arc" + d.index)
+    //         .attr("stroke-width", "6")
+    // });
+
+    // g.on('mouseout', (event, d) => {
+    //     d3.select("#arc" + d.index)
+    //         .attr("stroke-width", "1")
+    // });
 
     /*Show the tick around the arc*/
     d3.selectAll("g.group").selectAll("line")
         .transition().delay(700).duration(1000)
         .style("stroke", function (d, i, j) { return j ? 0 : "#000"; });
 
-    /*Show the  name*/
-    // d3.selectAll(".titles")
-    //     .transition().duration(2000)
-    //     .attr("opacity", function (d, i) { return d.index ? 0 : 1; });
-    // d3.selectAll("#eventText1")
-    //     .transition().duration(2000)
-    //     .attr("opacity", 1)
-
-    appendTextLabels("#cluster0 #DNS0", -30, 50, 'Port Scanning')
+    appendTextLabels("#cluster0 #DNS0", -30, 50, 'Port Scanning', eventTimes[0])
 
     /*Switch  texts*/
     changeTopText("Firstly, a series of Port scanning events occur between 5th April 6.27 PM to 8.36 PM implying the presence of some external botnet trying to compromise the system",
@@ -450,19 +404,11 @@ function Draw3() {
     g.on('click', (event, d) => {
         console.log(d);
         document.getElementById("chartsContainer").scrollIntoView();
-        drawCharts(Date.parse("2012-04-05 20:37"), Date.parse("2012-04-05 21:21"));
+        drawCharts(eventTimes[1].startTime, eventTimes[1].endTime);
     });
 
-    /*Show the  name*/
-    // d3.selectAll(".titles")
-    //     .transition().duration(2000)
-    //     .attr("opacity", function (d, i) { return d.index == 0 || d.index == 1 ? 1 : 0; });
 
-    // d3.selectAll("#eventText2")
-    //     .transition().duration(2000)
-    //     .attr("opacity", 1)
-
-    appendTextLabels("#cluster1 #DNS1", -50, 50, "FTP/SSH Attack")
+    appendTextLabels("#cluster1 #DNS1", -50, 50, "FTP/SSH Attack", eventTimes[1])
 
 
     changeTopText("This is followed by a surge in attempt for FTP connections, closely followed by SSH connections between 5th April 8.37 PM to 9.21 PM.",
@@ -512,19 +458,11 @@ function Draw4() {
     g.on('click', (event, d) => {
         console.log(d);
         document.getElementById("chartsContainer").scrollIntoView();
-        drawCharts(Date.parse("2012-04-05 21:47"), Date.parse("2012-04-06 03:27"));
+        drawCharts(eventTimes[2].startTime, eventTimes[2].endTime);
     });
 
-    /*Show the  name*/
-    // d3.selectAll(".titles")
-    //     .transition().duration(2000)
-    //     .attr("opacity", function (d, i) { return d.index == 0 || d.index == 1 || d.index == 2 ? 1 : 0; });
 
-    // d3.selectAll("#eventText3")
-    //     .transition().duration(2000)
-    //     .attr("opacity", 1)
-
-    appendTextLabels("#cluster2 #Workstation52", 50, 20, "SQL Attack")
+    appendTextLabels("#cluster2 #Workstation52", 50, 20, "SQL Attack", eventTimes[2])
 
 
     changeTopText("Next, we observe the many SQL servers being simulatenously attacked between 5th April 9.47 PM to 6th April 3.27 AM.",
@@ -575,19 +513,10 @@ function Draw5() {
     g.on('click', (event, d) => {
         console.log(d);
         document.getElementById("chartsContainer").scrollIntoView();
-        drawCharts(Date.parse("2012-04-06 02:00"), Date.parse("2012-04-06 18:00"));
+        drawCharts(eventTimes[3].startTime, eventTimes[3].endTime);
     });
 
-    /*Show the  name*/
-    // d3.selectAll(".titles")
-    //     .transition().duration(2000)
-    //     .attr("opacity", function (d, i) { return d.index == 0 || d.index == 1 || d.index == 2 || d.index == 3 ? 1 : 0; });
-
-    // d3.selectAll("#eventText4")
-    //     .transition().duration(2000)
-    //     .attr("opacity", 1)
-
-    appendTextLabels("#cluster3 #DNS3", -50, 50, "Data Outage")
+    appendTextLabels("#cluster3 #DNS3", -50, 50, "Data Outage", eventTimes[3])
 
     changeTopText("Next, we observe a massive data outage between 6th April 3 PM to 6 PM where the number of connection plunges drastically",
         6 / 2, 0, 1, true, undefined, 280);
@@ -636,20 +565,10 @@ function Draw6() {
     g.on('click', (event, d) => {
         console.log(d);
         document.getElementById("chartsContainer").scrollIntoView();
-        drawCharts(Date.parse("2012-04-06 17:26"), Date.parse("2012-04-06 18:27"));
+        drawCharts(eventTimes[4].startTime, eventTimes[4].endTime);
     });
 
-    /*Show the  name*/
-    // d3.selectAll(".titles")
-    //     .transition().duration(2000)
-    //     .attr("opacity", 1);
-
-    // d3.selectAll("#eventText5")
-    //     .transition().duration(2000)
-    //     .attr("opacity", 1)
-
-
-    appendTextLabels("#cluster4 #DNS4", -50, 50, "DNS Attack")
+    appendTextLabels("#cluster4 #DNS4", -50, 50, "DNS Attack", eventTimes[4])
 
     changeTopText("Lastly, the DNS is attacked and compromised between 6th April 5.26 PM and 6.27 PM after which the external websites connect to the workstations. This is the root cause for the popups seen by the BOM employees.",
         6 / 2, 0, 1, true, undefined, 280);
@@ -686,24 +605,23 @@ function finalChord() {
                 switch (d.index) {
                     /* Port scanning event*/
                     case 0:
-                        drawCharts(Date.parse("2012-04-05 18:27"), Date.parse("2012-04-05 20:36"))
-                        //drawNetworkChart(Date.parse("2012-04-05 18:27"), Date.parse("2012-04-05 20:36"));
+                        drawCharts(eventTimes[0].startTime, eventTimes[0].endTime);
                         break;
                     /* FTP/SSH Event event*/
                     case 1:
-                        drawCharts(Date.parse("2012-04-05 20:37"), Date.parse("2012-04-05 21:21"));
+                        drawCharts(eventTimes[1].startTime, eventTimes[1].endTime);
                         break;
                     /* SQL Attack event*/
                     case 2:
-                        drawCharts(Date.parse("2012-04-05 21:47"), Date.parse("2012-04-06 03:27"));
+                        drawCharts(eventTimes[2].startTime, eventTimes[2].endTime);
                         break;
                     /* Data Outage event*/
                     case 3:
-                        drawCharts(Date.parse("2012-04-06 02:00"), Date.parse("2012-04-06 18:00"));
+                        drawCharts(eventTimes[3].startTime, eventTimes[3].endTime);
                         break;
                     /* DNS attack event*/
                     case 4:
-                        drawCharts(Date.parse("2012-04-06 17:26"), Date.parse("2012-04-06 18:27"));
+                        drawCharts(eventTimes[4].startTime, eventTimes[4].endTime);
                         break;
 
                 }
@@ -767,11 +685,11 @@ function finalChord() {
         animateCluster(clusterinfo.name, clusterinfo.ids, clusterinfo.color)
     })
 
-    appendTextLabels("#cluster0 #DNS0", -30, 50, 'Port Scanning')
-    appendTextLabels("#cluster1 #DNS1", -50, 50, "FTP/SSH Attack")
-    appendTextLabels("#cluster2 #Workstation52", 50, 20, "SQL Attack")
-    appendTextLabels("#cluster3 #DNS3", -50, 50, "Data Outage")
-    appendTextLabels("#cluster4 #DNS4", -50, 50, "DNS Attack")
+    appendTextLabels("#cluster0 #DNS0", -30, 50, 'Port Scanning', eventTimes[0])
+    appendTextLabels("#cluster1 #DNS1", -50, 50, "FTP/SSH Attack", eventTimes[1])
+    appendTextLabels("#cluster2 #Workstation52", 50, 20, "SQL Attack", eventTimes[2])
+    appendTextLabels("#cluster3 #DNS3", -50, 50, "Data Outage", eventTimes[3])
+    appendTextLabels("#cluster4 #DNS4", -50, 50, "DNS Attack", eventTimes[4])
 
 };
 
@@ -1036,6 +954,14 @@ function drawNetworkGlyph(data, forceX, forceY, id) {
     var g = svg.append('g')
         .attr('id', "cluster" + id)
         .attr('opacity', id == 0 ? 1 : 0.5)
+        .on('mouseover', function (event, d) {
+            d3.select(this).style("cursor", "pointer");
+        })
+        .on('click', function (event, d) {
+            document.getElementById("chartsContainer").scrollIntoView();
+            //call for event 1
+            drawCharts(eventTimes[id].startTime, eventTimes[id].endTime);
+        });
 
     var elements = g.selectAll('.bubble')
         .data(_data)
@@ -1094,12 +1020,10 @@ function animateCluster(clusterid, nodes, newcolor) {
 }
 
 
-function appendTextLabels(id, xoffset, yoffset, text) {
+function appendTextLabels(id, xoffset, yoffset, text, eventdetail) {
     let circleElem = d3.select(id).select('circle')
     let x = +circleElem.attr('cx')
     let y = +circleElem.attr('cy')
-    console.log("x val" + x)
-    console.log("y val" + y)
     svg.append("text")
         .attr("x", x + xoffset)
         .attr("y", y + yoffset)
@@ -1107,8 +1031,19 @@ function appendTextLabels(id, xoffset, yoffset, text) {
         .style("font-size", "18px")
         .attr('opacity', 0)
         .text(text)
+        .on('mouseover', function (event, d) {
+            highlightText(event, d, this);
+        })
+        .on('mouseout', function (event, d) {
+            dehighlightText(event, d, this);
+        })
+        .on('click', function (event, d) {
+            document.getElementById("chartsContainer").scrollIntoView();
+            drawCharts(eventdetail.startTime, eventdetail.endTime);
+        })
         .transition(2000)
         .attr("opacity", 1)
+
 
 
 }
@@ -1118,4 +1053,19 @@ function drawCharts(start, end) {
     Heatmap(start, end);
     drawLineChart(start, end);
     drawRadialChart(start, end);
+}
+
+function highlightText(event, d, element) {
+    d3.select(element).style("cursor", "pointer");
+    d3.select(element)
+        .transition()
+        .duration('200')
+        .style("font-size", "24px")
+}
+
+function dehighlightText(event, d, element) {
+    d3.select(element)
+        .transition()
+        .duration('200')
+        .style("font-size", "18px")
 }
