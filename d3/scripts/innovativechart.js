@@ -249,6 +249,9 @@ function storyTellingChart() {
         drawCluster(data);
     })
 
+    /*Draw the legend */
+    drawLegend()
+
     /*Reload page*/
     d3.select("#reset")
         .on("click", function (e) { location.reload(); });
@@ -1036,4 +1039,82 @@ function dehighlightText(event, d, element) {
         .transition()
         .duration('200')
         .style("font-size", "18px")
+}
+
+function drawLegend() {
+    var legendg = svg.append('g')
+                .attr('id', "innovativeLegend")
+
+    //workstation image
+    legendg.append("circle")
+                .attr("transform", "translate(400,-280)")
+                .attr("class", "bubble")
+                .attr("r", "20")
+                .attr("fill", "none")
+                .attr('stroke-width', 3)
+                .attr('stroke', "black")
+        
+    legendg.append('path')
+                .attr("d", d3.symbol().size(2500).type(d3.symbolSquare))
+                .attr("transform", "translate(400,-280)")
+                .style("fill", function (d) {
+                    return `url(${location}#workstation)`
+                })
+
+    //workstation text
+    legendg.append("text")
+    .attr("transform", "translate(430,-280)")
+    .text("Workstations")
+    .style("font-weight", "700")
+    .style("font-family","Oswald")
+    .style("font-size", "18px")
+
+    //DNS image
+    legendg.append("circle")
+        .attr("transform", "translate(400,-230)")
+        .attr("class", "bubble")
+        .attr("r", "20")
+        .attr("fill", "none")
+        .attr('stroke-width', 3)
+        .attr('stroke', "black")
+
+    legendg.append('path')
+        .attr("d", d3.symbol().size(2500).type(d3.symbolSquare))
+        .attr("transform", "translate(400,-230)")
+        .style("fill", function (d) {
+            return `url(${location}#dns)`
+        })
+
+    //DNS text
+    legendg.append("text")
+    .attr("transform", "translate(430,-230)")
+    .text("DNS")
+    .style("font-weight", "700")
+    .style("font-family","Oswald")
+    .style("font-size", "18px")
+
+    //Firewall image
+    legendg.append("circle")
+        .attr("transform", "translate(400,-180)")
+        .attr("class", "bubble")
+        .attr("r", "20")
+        .attr("fill", "none")
+        .attr('stroke-width', 3)
+        .attr('stroke', "black")
+
+    legendg.append('path')
+        .attr("d", d3.symbol().size(2500).type(d3.symbolSquare))
+        .attr("transform", "translate(400,-180)")
+        .style("fill", function (d) {
+            return `url(${location}#firewall)`
+        })
+
+    //Firewall text
+    legendg.append("text")
+    .attr("transform", "translate(430,-180)")
+    .text("Firewall")
+    .style("font-weight", "700")
+    .style("font-family","Oswald")
+    .style("font-size", "18px")
+
 }
