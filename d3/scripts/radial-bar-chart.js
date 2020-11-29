@@ -75,9 +75,9 @@ function getData(starttime, endtime) {
         { name: "SSH Scan", value: sshscan },
         { name: "SSH Scan Outbound", value: sshscanoutbound },
         { name: "DNS Update From External Net", value: dnsupdateexternal },
-        { name: "IRC authorization message", value: ircauth },
+        { name: "IRC Authorization message", value: ircauth },
         { name: "PostgreSQL Attack", value: postgressql },
-        { name: "My SQL Attack", value: mysql },
+        { name: "MySQL Attack", value: mysql },
         { name: "MS SQL Attack", value: mssql },
         { name: "Oracle SQL Attack", value: oraclesql },
     ];

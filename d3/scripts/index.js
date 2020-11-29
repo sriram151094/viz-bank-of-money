@@ -35,6 +35,11 @@ function init() {
 
 }
 
+function eventChange() {
+    //var eventValue = d3.select("#y-attr-select").value;
+    console.log("The event val ");
+}
+
 init()
 
 window.addEventListener('DOMContentLoaded', (event) => {
