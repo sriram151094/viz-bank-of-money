@@ -402,9 +402,7 @@ function Draw3() {
 
     // Call other charts changes from here on click of a chord/event    
     g.on('click', (event, d) => {
-        console.log(d);
-        document.getElementById("chartsContainer").scrollIntoView();
-        drawCharts(eventTimes[1].startTime, eventTimes[1].endTime);
+        calldrawCharts(d.index)
     });
 
 
@@ -456,9 +454,7 @@ function Draw4() {
 
     // Call other charts changes from here on click of a chord/event    
     g.on('click', (event, d) => {
-        console.log(d);
-        document.getElementById("chartsContainer").scrollIntoView();
-        drawCharts(eventTimes[2].startTime, eventTimes[2].endTime);
+        calldrawCharts(d.index)
     });
 
 
@@ -511,9 +507,7 @@ function Draw5() {
 
     // Call other charts changes from here on click of a chord/event    
     g.on('click', (event, d) => {
-        console.log(d);
-        document.getElementById("chartsContainer").scrollIntoView();
-        drawCharts(eventTimes[3].startTime, eventTimes[3].endTime);
+        calldrawCharts(d.index)
     });
 
     appendTextLabels("#cluster3 #DNS3", -50, 50, "Data Outage", eventTimes[3])
@@ -563,9 +557,7 @@ function Draw6() {
 
     // Call other charts changes from here on click of a chord/event    
     g.on('click', (event, d) => {
-        console.log(d);
-        document.getElementById("chartsContainer").scrollIntoView();
-        drawCharts(eventTimes[4].startTime, eventTimes[4].endTime);
+        calldrawCharts(d.index)
     });
 
     appendTextLabels("#cluster4 #DNS4", -50, 50, "DNS Attack", eventTimes[4])
@@ -601,31 +593,7 @@ function finalChord() {
             .attr('cursor', 'pointer')
             .style("opacity", 0)
             .on('click', (event, d) => {
-                document.getElementById("chartsContainer").scrollIntoView();
-                switch (d.index) {
-                    /* Port scanning event*/
-                    case 0:
-                        drawCharts(eventTimes[0].startTime, eventTimes[0].endTime);
-                        break;
-                    /* FTP/SSH Event event*/
-                    case 1:
-                        drawCharts(eventTimes[1].startTime, eventTimes[1].endTime);
-                        break;
-                    /* SQL Attack event*/
-                    case 2:
-                        drawCharts(eventTimes[2].startTime, eventTimes[2].endTime);
-                        break;
-                    /* Data Outage event*/
-                    case 3:
-                        drawCharts(eventTimes[3].startTime, eventTimes[3].endTime);
-                        break;
-                    /* DNS attack event*/
-                    case 4:
-                        drawCharts(eventTimes[4].startTime, eventTimes[4].endTime);
-                        break;
-
-                }
-
+                calldrawCharts(d.index)
             })
             .transition().duration(1000)
             .style("opacity", 1);
@@ -636,7 +604,6 @@ function finalChord() {
             .transition().duration(1000)
             .style("opacity", 1)
             .on('click', (event, d) => {
-                console.log(d.index);
                 document.getElementById("chartsContainer").scrollIntoView();
                 drawCharts(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"))
             });
@@ -652,32 +619,6 @@ function finalChord() {
     d3.selectAll("g.group").selectAll("line")
         .transition().duration(100)
         .style("stroke", "#000");
-
-
-    /*And the Names of each Arc*/
-    // svg.selectAll("g.group")
-    //     .transition().duration(100)
-    //     .selectAll(".titles").style("opacity", 1);
-
-    // d3.selectAll("#eventText1")
-    //     .transition().duration(100)
-    //     .attr("opacity", 1);
-
-    // d3.selectAll("#eventText2")
-    //     .transition().duration(100)
-    //     .attr("opacity", 1);
-
-    // d3.selectAll("#eventText3")
-    //     .transition().duration(100)
-    //     .attr("opacity", 1);
-
-    // d3.selectAll("#eventText4")
-    //     .transition().duration(100)
-    //     .attr("opacity", 1)
-
-    // d3.selectAll("#eventText5")
-    //     .transition().duration(100)
-    //     .attr("opacity", 1)
 
 
     /* Make all clusters visible */
@@ -1046,6 +987,33 @@ function appendTextLabels(id, xoffset, yoffset, text, eventdetail) {
 
 
 
+}
+
+function calldrawCharts(id) {
+document.getElementById("chartsContainer").scrollIntoView();
+switch (id) {
+    /* Port scanning event*/
+    case 0:
+        drawCharts(eventTimes[0].startTime, eventTimes[0].endTime);
+        break;
+    /* FTP/SSH Event event*/
+    case 1:
+        drawCharts(eventTimes[1].startTime, eventTimes[1].endTime);
+        break;
+    /* SQL Attack event*/
+    case 2:
+        drawCharts(eventTimes[2].startTime, eventTimes[2].endTime);
+        break;
+    /* Data Outage event*/
+    case 3:
+        drawCharts(eventTimes[3].startTime, eventTimes[3].endTime);
+        break;
+    /* DNS attack event*/
+    case 4:
+        drawCharts(eventTimes[4].startTime, eventTimes[4].endTime);
+        break;
+
+}
 }
 
 function drawCharts(start, end) {
