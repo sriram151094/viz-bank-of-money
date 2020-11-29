@@ -34,10 +34,9 @@ function linechart() {
         .attr('id', 'lineChart')
         .attr('width', width)
         .attr('height', height)
-    //.attr("transform", `translate(${margin},${margin})`);
+        .attr("transform", `translate(${margin},${margin})`);
     toolDiv = d3.select('div.tooltip');
-    //d3.select('#lineChart').append("div").style("opacity", 0);
-
+    
     xScale = d3.scaleTime().range([0, width - margin]);
     yScale = d3.scaleLinear().range([height - margin, 0]);
 
@@ -117,10 +116,11 @@ function drawLineChart(starttime, endtime) {
     console.log(lineSvg.selectAll('g').remove())
     getData(starttime, endtime).then(data => {
 
+        xScale.domain([new Date(starttime), new Date(endtime)]) 
+        lineSvg.selectAll("*").remove(); 
         if (data == "False") {
             console.log("Handling empty cases")
             lineSvg.append("text").attr("x", (width - margin) / 2).attr("y", (height - margin) / 2).text("Data Not Available");
-            xScale.domain([new Date(starttime), new Date(endtime)])
             yScale.domain([0, 100])
             createAxis()
             createLegends()
@@ -133,7 +133,7 @@ function drawLineChart(starttime, endtime) {
             let temp = d3.max(row.values, d => d.count)
             max_y = (temp > max_y) ? temp : max_y
         })
-        xScale.domain(d3.extent(lineChartData[0].values, d => new Date(d.date)))
+        
         yScale.domain([0, max_y + 10])
 
         var line = d3.line()
@@ -155,16 +155,21 @@ function drawLineChart(starttime, endtime) {
             .style('stroke-width', '1');
 
         //animation
-        var totalLength = lines.selectAll('path').node().getTotalLength();
-
         lines.selectAll('path')
-            .attr("stroke-dasharray", totalLength + " " + totalLength)
-            .attr("stroke-dashoffset", totalLength)
+            .attr("stroke-dasharray",
+                function (d) {
+                    const pathLength = this.getTotalLength();
+                    return `${pathLength} ${pathLength}`
+                })
+        .attr("stroke-dashoffset", function (d) {
+            const pathLength = this.getTotalLength();
+            return `${pathLength}`
+        })
             .transition()
             .duration(3000)
             .ease(d3.easeLinear)
             .attr("stroke-dashoffset", 0);
-
+        
         setTimeout(() => {
             lines.selectAll('circle').data(lineChartData).enter()
                 .append("g")
@@ -261,7 +266,8 @@ function drawLineChart(starttime, endtime) {
             .attr("transform", `translate(30,0)`)
             .call(yAxis)
             .append('text')
-            .attr("y", 15)
+            .attr("x", -(height-margin)/2 + 15)  
+            .attr("y", -20)
             .attr("transform", "rotate(-90)")
             .attr("fill", "#000")
             .style("font-family", "sans-serif")
@@ -273,12 +279,14 @@ function drawLineChart(starttime, endtime) {
         lineSvg.append('g')
             .style('stroke', 'lightgrey')
             .style('stroke-opacity', '0.2')
+            .style("stroke-dasharray", ("3, 3"))
             .attr('transform', 'translate(30,' + inner_height + ')')
             .call(xAxisGrid);
         lineSvg.append('g')
             .attr("transform", `translate(30,0)`)
             .style('stroke', 'lightgrey')
             .style('stroke-opacity', '0.2')
+            .style("stroke-dasharray", ("3, 3"))
             .call(yAxisGrid);
     }
 }
