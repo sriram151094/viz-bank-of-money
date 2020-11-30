@@ -60,16 +60,17 @@ function getFireWallData(start, end, machine) {
         for (const ip of node_set) {
             let d = {}
             d['id'] = ip;
-            if (ip.includes('172.23.'))
-                d['type'] = 'Workstation'
-            if (ip.includes('10.32.'))
-                d['type'] = 'External Websites'
-            if (ip == '10.32.0.100' || ip == '172.23.0.1')
-                d['type'] = 'Firewall'
-            else if (ip == '172.23.0.10')
-                d['type'] = 'DNS'
-            if (ip.includes('172.28.'))
-                d['type'] = 'Potentially Harmful Websites'
+            d['type'] = getIPBucket(ip).machine
+            // if (ip.includes('172.23.'))
+            //     d['type'] = 'Workstation'
+            // if (ip.includes('10.32.'))
+            //     d['type'] = 'External Websites'
+            // if (ip == '10.32.0.100' || ip == '172.23.0.1')
+            //     d['type'] = 'Firewall'
+            // else if (ip == '172.23.0.10')
+            //     d['type'] = 'DNS'
+            // if (ip.includes('172.28.'))
+            //     d['type'] = 'Potentially Harmful Websites'
 
             nodes.push(d)
         }
@@ -216,6 +217,10 @@ let color = type => {
         return 'blue'
     else if (type == 'DNS')
         return 'orange'
+    else if (type == 'Financial Server')
+        return '#9932cc'
+    else if (type == 'Log Server')
+        return '#36cc32'
     else
         return 'red'
 
@@ -238,6 +243,14 @@ function drawLegend() {
         {
             name: 'External Websites',
             color: 'red'
+        },
+        {
+            name: 'Financial Server',
+            color: '#9932cc'
+        },
+        {
+            name: 'Log Server',
+            color: '#36cc32'
         }
     ]
 
@@ -248,25 +261,16 @@ function drawLegend() {
             .call(g => g.append('circle')
                 .attr('r', 7)
                 .attr('cx', margin.left)
-                .attr('cy', margin.top + (i * 15))
+                .attr('cy', margin.top + (i * 18))
                 .attr('fill', legend_arr[i]['color'])
             )
             .call(g => g.append('text')
                 .attr('x', margin.left + 10)
-                .attr('y', margin.top + 5 + (i * 15))
+                .attr('y', margin.top + 5 + (i * 18))
                 .attr('font-size', '12px')
                 .text(legend_arr[i]['name'])
             )
     }
-
-    // networkSvg.append('rect')
-    //     .attr('x', 2)
-    //     .attr('y', 2)
-    //     .attr('width', 125)
-    //     .attr('height', 72)
-    //     .attr('stroke', 'black')
-    //     .attr('stroke-dasharray', 1)
-    //     .attr('fill', 'transparent')
 
 }
 

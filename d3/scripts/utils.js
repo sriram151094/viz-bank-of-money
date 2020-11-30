@@ -19,7 +19,8 @@ const ipRanges = [
     {start: '172.23.151.0', end: '172.23.200.255', machine: 'Workstation'},
     {start: '172.23.201.0', end: '172.23.213.255', machine: 'Workstation'},
     {start: '172.23.230.0', end: '172.23.255.255', machine: 'Workstation'},
-    {start: '172.23.214.0', end: '172.23.229.255', machine: 'Financial Server'}
+    {start: '172.23.214.0', end: '172.23.229.255', machine: 'Financial Server'},
+    {start: '172.28.29.0', end: '172.28.29.255', machine: 'Workstation'}
 ];
 
 function getIPBucket(ipAddr) {
