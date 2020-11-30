@@ -3,6 +3,7 @@ import { drawNetworkChart } from "./networkchart.js"
 import { Heatmap } from "./heatmap.js"
 import { drawLineChart } from "./lineChart.js"
 import { drawRadialChart } from "./radial-bar-chart.js"
+import { setTime } from "./d3-slider.js"
 
 var NameProvider = ["Port Scanning", "FTP/SSH Attack", "SQL Attack", "Data Outage", "DNS Attack"];
 
@@ -14,6 +15,12 @@ var eventTimes = [
     { event: "DNS Attack", startTime: Date.parse("2012-04-06 17:26"), endTime: Date.parse("2012-04-06 18:27") }
 ]
 
+var eventIntervals = {'Port Scanning':"2012-04-05 18:27,2012-04-05 20:36",
+                      'FTP/SSH Attack':"2012-04-05 20:37,2012-04-05 21:21",
+                      'SQL Attack':"2012-04-05 21:47,2012-04-06 03:27",
+                      'Data Outage':"2012-04-06 02:00,2012-04-06 18:00",
+                      'DNS Attack':"2012-04-06 17:26,2012-04-06 18:27",
+                    };
 
 var matrix = [
     [0, 0, 0, 1, 1],
@@ -79,7 +86,7 @@ var counter = 1,
 var cluster = [
     { name: "cluster0", ids: ["Workstation10", "Workstation40"], color: "red" },
     { name: "cluster1", ids: ["Workstation11", "Workstation21", "Workstation31", "Workstation41"], color: "red" },
-    { name: "cluster2", ids: ["Workstation12", "Workstation22", "Workstation32", "Workstation42"], color: "red" },
+    { name: "cluster2", ids: ["Workstation12", "Workstation22", "Workstation32", "Workstation42", "Workstation52", "Firewall2"], color: "red" },
     { name: "cluster3", ids: ["Workstation13", "Workstation23", "Workstation33", "Workstation43", "Workstation53", "Firewall3", "DNS3"], color: "gray" },
     { name: "cluster4", ids: ["Workstation14", "Workstation24", "Workstation34", "Workstation44", "Workstation54", "Firewall4", "DNS4"], color: "red" }
 ]
@@ -125,12 +132,10 @@ function storyTellingChart() {
         .attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
         .datum(chord(matrix));
 
-
-    console.log(svg)
     svg.append('circle')
         .attr('cx', 0)
         .attr('cy', 0)
-        .attr('r', 300)
+        .attr('r', height - outerRadius - 200)
         .attr('fill', 'transparent')
         .attr('stroke', 'black')
         .attr('stroke-dasharray', 5)
@@ -227,7 +232,7 @@ function storyTellingChart() {
         .attr("dy", "1em")
         .attr("opacity", 1)
         .text("The Bank of Money office is experiencing difficulties with its computing infrastucture.")
-        .call(wrap, 250, "#text1");
+        .call(wrap, innerRadius, "#text1");
 
     /*Starting text middle bottom*/
     middleTextBottom = textCenter.append("text")
@@ -241,7 +246,7 @@ function storyTellingChart() {
         .attr("dy", "1em")
         .attr('opacity', 1)
         .text("There are reports from staff regarding malicious popups appearing on their screens.")
-        .call(wrap, 300, "#text2");
+        .call(wrap, innerRadius, "#text2");
 
     /*Internal network glyph */
     d3.csv("../data/Internalnetwork.csv").then(data => {
@@ -282,8 +287,6 @@ function storyTellingChart() {
 //Introduction
 ///////////////////////////////////////////////////////////*/
 function Draw1() {
-    console.log("Draw1 function")
-
     /*First disable click event on clicker button*/
     stopClicker();
 
@@ -291,10 +294,10 @@ function Draw1() {
     runProgressBar(700 * 11);
 
     changeTopText("From our analysis of the network data, we have traced out the cyber attack",
-        4 / 2, 0, 1, false, undefined, 300);
+        4 / 2, 0, 1, false, undefined, innerRadius * 1.5);
 
     changeBottomText("Let's start by drawing out the step by step invasion of the BOM network faced over the course of two days",
-        1 / 2, 0, 10, 280);
+        1 / 2, 0, 10, innerRadius * 1.5);
 
     changeTopText("",
         8 / 2, 9, 1, true, undefined, 250);
@@ -306,7 +309,6 @@ function Draw1() {
 //Show Arc of Port Scanning
 //////////////////////////////////////////////////////////*/
 function Draw2() {
-    console.log("Draw2 function")
 
     /*First disable click event on clicker button*/
     stopClicker();
@@ -337,31 +339,21 @@ function Draw2() {
 
     // Call other charts changes from here on click of a chord/event    
     g.on('click', (event, d) => {
-        console.log(d);
         document.getElementById("chartsContainer").scrollIntoView();
         drawCharts(eventTimes[0].startTime, eventTimes[0].endTime);
+        setTime(eventIntervals["Port Scanning"].split(",")[0], eventIntervals["Port Scanning"].split(",")[1], "Port Scanning");
     })
-
-    // g.on('mouseover', (event, d) => {
-    //     d3.select("#arc" + d.index)
-    //         .attr("stroke-width", "6")
-    // });
-
-    // g.on('mouseout', (event, d) => {
-    //     d3.select("#arc" + d.index)
-    //         .attr("stroke-width", "1")
-    // });
 
     /*Show the tick around the arc*/
     d3.selectAll("g.group").selectAll("line")
         .transition().delay(700).duration(1000)
         .style("stroke", function (d, i, j) { return j ? 0 : "#000"; });
 
-    appendTextLabels("#cluster0 #DNS0", -30, 50, 'Port Scanning', eventTimes[0])
+    appendTextLabels("#cluster0 #Workstation40", -150, -30, 'Port Scanning', eventTimes[0])
 
     /*Switch  texts*/
     changeTopText("Firstly, a series of Port scanning events occur between 5th April 6.27 PM to 8.36 PM implying the presence of some external botnet trying to compromise the system",
-        1 / 2, 0, 1, true, undefined, 290);
+        1 / 2, 0, 1, true, undefined, innerRadius * 1.5);
 
     changeBottomText("",
         0 / 2, 0, 1);
@@ -372,7 +364,6 @@ function Draw2() {
 //Draw arc for FTP/SSH Attack
 //////////////////////////////////////////////////////////*/
 function Draw3() {
-    console.log("Draw3 function")
     /*First disable click event on clicker button*/
     stopClicker();
 
@@ -406,6 +397,7 @@ function Draw3() {
     // Call other charts changes from here on click of a chord/event    
     g.on('click', (event, d) => {
         calldrawCharts(d.index)
+        setTime(eventIntervals["FTP/SSH Attack"].split(",")[0], eventIntervals["FTP/SSH Attack"].split(",")[1], "FTP/SSH Attack");
     });
 
 
@@ -413,7 +405,7 @@ function Draw3() {
 
 
     changeTopText("This is followed by a surge in attempt for FTP connections, closely followed by SSH connections between 5th April 8.37 PM to 9.21 PM.",
-        6 / 2, 0, 1, true, undefined, 280);
+        6 / 2, 0, 1, true, undefined, innerRadius * 1.5);
 
     changeBottomText("",
         -2 / 2, 0, 1);
@@ -424,7 +416,6 @@ function Draw3() {
 //Draw arc for SQL Attack
 //////////////////////////////////////////////////////////*/
 function Draw4() {
-    console.log("Draw4 function")
     /*First disable click event on clicker button*/
     stopClicker();
 
@@ -458,6 +449,7 @@ function Draw4() {
     // Call other charts changes from here on click of a chord/event    
     g.on('click', (event, d) => {
         calldrawCharts(d.index)
+        setTime(eventIntervals["SQL Attack"].split(",")[0], eventIntervals["SQL Attack"].split(",")[1], "SQL Attack");
     });
 
 
@@ -465,7 +457,7 @@ function Draw4() {
 
 
     changeTopText("Next, we observe the many SQL servers being simulatenously attacked between 5th April 9.47 PM to 6th April 3.27 AM.",
-        6 / 2, 0, 1, true, undefined, 280);
+        6 / 2, 0, 1, true, undefined, innerRadius * 1.5);
 
     changeBottomText("",
         -2 / 2, 0, 1);
@@ -477,7 +469,6 @@ function Draw4() {
 //Draw arc for Data Outage
 //////////////////////////////////////////////////////////*/
 function Draw5() {
-    console.log("Draw5 function")
     /*First disable click event on clicker button*/
     stopClicker();
 
@@ -511,12 +502,13 @@ function Draw5() {
     // Call other charts changes from here on click of a chord/event    
     g.on('click', (event, d) => {
         calldrawCharts(d.index)
+        setTime(eventIntervals["Data Outage"].split(",")[0], eventIntervals["Data Outage"].split(",")[1], "Data Outage");
     });
 
     appendTextLabels("#cluster3 #DNS3", -50, 50, "Data Outage", eventTimes[3])
 
     changeTopText("Next, we observe a massive data outage between 6th April 3 PM to 6 PM where the number of connection plunges drastically",
-        6 / 2, 0, 1, true, undefined, 280);
+        6 / 2, 0, 1, true, undefined, innerRadius * 1.5);
 
     changeBottomText("",
         -2 / 2, 0, 1);
@@ -527,7 +519,6 @@ function Draw5() {
 //Draw arc for DNS attack
 //////////////////////////////////////////////////////////*/
 function Draw6() {
-    console.log("Draw6 function")
     /*First disable click event on clicker button*/
     stopClicker();
 
@@ -561,12 +552,13 @@ function Draw6() {
     // Call other charts changes from here on click of a chord/event    
     g.on('click', (event, d) => {
         calldrawCharts(d.index)
+        setTime(eventIntervals["DNS Attack"].split(",")[0], eventIntervals["DNS Attack"].split(",")[1], "DNS Attack");
     });
 
     appendTextLabels("#cluster4 #DNS4", -50, 50, "DNS Attack", eventTimes[4])
 
     changeTopText("Lastly, the DNS is attacked and compromised between 6th April 5.26 PM and 6.27 PM after which the external websites connect to the workstations. This is the root cause for the popups seen by the BOM employees.",
-        6 / 2, 0, 1, true, undefined, 280);
+        6 / 2, 0, 1, true, undefined, innerRadius * 1.5);
 
     changeBottomText("",
         -2 / 2, 0, 1);
@@ -597,6 +589,7 @@ function finalChord() {
             .style("opacity", 0)
             .on('click', (event, d) => {
                 calldrawCharts(d.index)
+                setTime(eventIntervals[eventTimes[d.index].event].split(",")[0], eventIntervals[eventTimes[d.index].event].split(",")[1], eventTimes[d.index].event);
             })
             .transition().duration(1000)
             .style("opacity", 1);
@@ -606,10 +599,15 @@ function finalChord() {
         svg.selectAll("g.group").select("path")
             .transition().duration(1000)
             .style("opacity", 1)
-            .on('click', (event, d) => {
-                document.getElementById("chartsContainer").scrollIntoView();
-                drawCharts(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"))
-            });
+        // .on('click', (event, d) => {
+        //     document.getElementById("chartsContainer").scrollIntoView();
+        //     drawCharts(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"))
+        // });
+        setTimeout(function () {
+            document.getElementById("chartsContainer").scrollIntoView();
+            drawCharts(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"))
+        }, 3000);
+
     };
 
     /*Make mouse over and out possible*/
@@ -629,7 +627,8 @@ function finalChord() {
         animateCluster(clusterinfo.name, clusterinfo.ids, clusterinfo.color)
     })
 
-    appendTextLabels("#cluster0 #DNS0", -30, 50, 'Port Scanning', eventTimes[0])
+    d3.select('#compromisepc').transition(1000).attr('opacity', 1)
+    appendTextLabels("#cluster0 #Workstation40", -150, -30, 'Port Scanning', eventTimes[0])
     appendTextLabels("#cluster1 #DNS1", -50, 50, "FTP/SSH Attack", eventTimes[1])
     appendTextLabels("#cluster2 #Workstation52", 50, 20, "SQL Attack", eventTimes[2])
     appendTextLabels("#cluster3 #DNS3", -50, 50, "Data Outage", eventTimes[3])
@@ -746,7 +745,6 @@ function changeBottomText(newText, loc, delayDisappear, delayAppear, w) {
         .attr("id", "bottomText")
         /*New text appear*/
         .call(endall, function () {
-            console.log(d3.select(this))
             middleTextBottom.text(newText)
 
                 .attr("y", 24 * loc + "px")
@@ -795,6 +793,7 @@ function loadSvgs() {
     var firewallSvg;
     var dnsSvg;
     var databaseSvg;
+    var compromiseSvg;
     var defs;
     defs = svg.append('svg:defs')
     var workstationdefs = svg.append("defs");
@@ -866,10 +865,38 @@ function loadSvgs() {
             .attr('height', 30)
             .append(() => res.getElementsByTagName("svg")[0])
     })
+
+    d3.xml("../d3/img/warning-red.svg").then(res => {
+
+        let g = d3.select("#chart")
+        compromiseSvg = res;
+        defs.append('pattern')
+            .attr('id', 'compromise')
+            .attr('patternUnits', 'objectBoundingBox')
+            .attr('width', 10)
+            .attr('height', 10)
+            // Append svg to pattern
+            .append('svg')
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('width', 100)
+            .attr('height', 100)
+            .append(() => res.getElementsByTagName("svg")[0])
+
+        g.append('path')
+            .attr('id', 'compromisepc')
+            .attr("d", d3.symbol().size(10000).type(d3.symbolSquare))
+            .attr("transform", `translate(${width / 2},${height / 2})`)
+            .style("fill", function (d) {
+                return `url(${location}#compromise)`
+            })
+            .attr('opacity', 0)
+    })
 }
 
 function drawCluster(data) {
-    let forces = [[200, -250], [320, -50], [0, 270], [-320, 50], [-200, -250]]
+    let forces = [[outerRadius + 20, -outerRadius - 40], [height - outerRadius - 200, -50],
+    [0, outerRadius + 90], [-(height - outerRadius - 200), 50], [-200, -outerRadius - 40]]
     loadSvgs();
 
     for (let i = 0; i < 5; i++) {
@@ -877,8 +904,9 @@ function drawCluster(data) {
     }
 }
 
-
+var glyphs = []
 function drawNetworkGlyph(data, forceX, forceY, id) {
+    glyphs = []
     let _data = data.map(datum => {
         return { Name: datum.Name + id, Type: datum.Type }
     })
@@ -898,14 +926,22 @@ function drawNetworkGlyph(data, forceX, forceY, id) {
     var g = svg.append('g')
         .attr('id', "cluster" + id)
         .attr('opacity', id == 0 ? 1 : 0.5)
-        .on('mouseover', function (event, d) {
+
+    if (id == 0)
+        g.on('mouseover', function (event, d) {
+            d3.select(this).selectAll('circle').attr('stroke-width', 6)
             d3.select(this).style("cursor", "pointer");
         })
-        .on('click', function (event, d) {
-            document.getElementById("chartsContainer").scrollIntoView();
-            //call for event 1
-            drawCharts(eventTimes[id].startTime, eventTimes[id].endTime);
-        });
+            .on('click', function (event, d) {
+                document.getElementById("chartsContainer").scrollIntoView();
+                //call for event 1
+                drawCharts(eventTimes[id].startTime, eventTimes[id].endTime);
+            })
+            .on('mouseout', function (event, d) {
+                d3.select(this).selectAll('circle').attr('stroke-width', 3)
+            })
+
+    glyphs.push(g)
 
     var elements = g.selectAll('.bubble')
         .data(_data)
@@ -942,17 +978,30 @@ function drawNetworkGlyph(data, forceX, forceY, id) {
                 })
             bg.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")" })
         })
-        .on("end", function (d) {
-            console.log("Simulation done")
-        })
 }
 
 
 function animateCluster(clusterid, nodes, newcolor) {
 
-    d3.select("[id='" + clusterid + "']")
-        .transition(100)
+    let g = d3.select("[id='" + clusterid + "']")
+    let id = +clusterid.slice(-1)
+    g.transition(100)
         .attr('opacity', 1)
+
+    g.on('mouseover', function (event, d) {
+        d3.select(this).selectAll('circle').attr('stroke-width', 6)
+        d3.select(this).style("cursor", "pointer");
+    })
+        .on('click', function (event, d) {
+            document.getElementById("chartsContainer").scrollIntoView();
+            //call for event 1
+            drawCharts(eventTimes[id].startTime, eventTimes[id].endTime);
+            setTime(eventIntervals[eventTimes[id].event].split(",")[0], eventIntervals[eventTimes[id].event].split(",")[1], eventTimes[id].event);
+        })
+        .on('mouseout', function (event, d) {
+            d3.select(this).selectAll('circle').attr('stroke-width', 3)
+        })
+
 
     nodes.map(nodeid => {
         d3.select("[id='" + nodeid + "']")
@@ -984,6 +1033,7 @@ function appendTextLabels(id, xoffset, yoffset, text, eventdetail) {
         .on('click', function (event, d) {
             document.getElementById("chartsContainer").scrollIntoView();
             drawCharts(eventdetail.startTime, eventdetail.endTime);
+            setTime(eventIntervals[text].split(",")[0], eventIntervals[text].split(",")[1], text);
         })
         .transition(2000)
         .attr("opacity", 1)
@@ -993,30 +1043,30 @@ function appendTextLabels(id, xoffset, yoffset, text, eventdetail) {
 }
 
 function calldrawCharts(id) {
-document.getElementById("chartsContainer").scrollIntoView();
-switch (id) {
-    /* Port scanning event*/
-    case 0:
-        drawCharts(eventTimes[0].startTime, eventTimes[0].endTime);
-        break;
-    /* FTP/SSH Event event*/
-    case 1:
-        drawCharts(eventTimes[1].startTime, eventTimes[1].endTime);
-        break;
-    /* SQL Attack event*/
-    case 2:
-        drawCharts(eventTimes[2].startTime, eventTimes[2].endTime);
-        break;
-    /* Data Outage event*/
-    case 3:
-        drawCharts(eventTimes[3].startTime, eventTimes[3].endTime);
-        break;
-    /* DNS attack event*/
-    case 4:
-        drawCharts(eventTimes[4].startTime, eventTimes[4].endTime);
-        break;
+    document.getElementById("chartsContainer").scrollIntoView();
+    switch (id) {
+        /* Port scanning event*/
+        case 0:
+            drawCharts(eventTimes[0].startTime, eventTimes[0].endTime);
+            break;
+        /* FTP/SSH Event event*/
+        case 1:
+            drawCharts(eventTimes[1].startTime, eventTimes[1].endTime);
+            break;
+        /* SQL Attack event*/
+        case 2:
+            drawCharts(eventTimes[2].startTime, eventTimes[2].endTime);
+            break;
+        /* Data Outage event*/
+        case 3:
+            drawCharts(eventTimes[3].startTime, eventTimes[3].endTime);
+            break;
+        /* DNS attack event*/
+        case 4:
+            drawCharts(eventTimes[4].startTime, eventTimes[4].endTime);
+            break;
 
-}
+    }
 }
 
 function drawCharts(start, end) {
@@ -1042,36 +1092,13 @@ function dehighlightText(event, d, element) {
 }
 
 function drawLegend() {
-    var legendg = svg.append('g')
-                .attr('id', "innovativeLegend")
+    let SVG = d3.select("#chart")
+    var legendg = SVG.append('g')
+        .attr('id', "innovativeLegend")
 
     //workstation image
     legendg.append("circle")
-                .attr("transform", "translate(400,-280)")
-                .attr("class", "bubble")
-                .attr("r", "20")
-                .attr("fill", "none")
-                .attr('stroke-width', 3)
-                .attr('stroke', "black")
-        
-    legendg.append('path')
-                .attr("d", d3.symbol().size(2500).type(d3.symbolSquare))
-                .attr("transform", "translate(400,-280)")
-                .style("fill", function (d) {
-                    return `url(${location}#workstation)`
-                })
-
-    //workstation text
-    legendg.append("text")
-    .attr("transform", "translate(430,-280)")
-    .text("Workstations")
-    .style("font-weight", "700")
-    .style("font-family","Oswald")
-    .style("font-size", "18px")
-
-    //DNS image
-    legendg.append("circle")
-        .attr("transform", "translate(400,-230)")
+        .attr("transform", `translate(${width - 200 - 30},50)`)
         .attr("class", "bubble")
         .attr("r", "20")
         .attr("fill", "none")
@@ -1080,22 +1107,46 @@ function drawLegend() {
 
     legendg.append('path')
         .attr("d", d3.symbol().size(2500).type(d3.symbolSquare))
-        .attr("transform", "translate(400,-230)")
+        .attr("transform", `translate(${width - 200 - 30},50)`)
+        .style("fill", function (d) {
+            return `url(${location}#workstation)`
+        })
+
+    //workstation text
+    legendg.append("text")
+        .attr("transform", `translate(${width - 200},55)`)
+        .text("Workstations")
+        .style("font-weight", "700")
+        .style("font-family", "Oswald")
+        .style("font-size", "18px")
+
+    //DNS image
+    legendg.append("circle")
+        .attr("transform", `translate(${width - 200 - 30},100)`)
+        .attr("class", "bubble")
+        .attr("r", "20")
+        .attr("fill", "none")
+        .attr('stroke-width', 3)
+        .attr('stroke', "black")
+
+    legendg.append('path')
+        .attr("d", d3.symbol().size(2500).type(d3.symbolSquare))
+        .attr("transform", `translate(${width - 200 - 30},100)`)
         .style("fill", function (d) {
             return `url(${location}#dns)`
         })
 
     //DNS text
     legendg.append("text")
-    .attr("transform", "translate(430,-230)")
-    .text("DNS")
-    .style("font-weight", "700")
-    .style("font-family","Oswald")
-    .style("font-size", "18px")
+        .attr("transform", `translate(${width - 200},105)`)
+        .text("DNS")
+        .style("font-weight", "700")
+        .style("font-family", "Oswald")
+        .style("font-size", "18px")
 
     //Firewall image
     legendg.append("circle")
-        .attr("transform", "translate(400,-180)")
+        .attr("transform", `translate(${width - 200 - 30},150)`)
         .attr("class", "bubble")
         .attr("r", "20")
         .attr("fill", "none")
@@ -1104,17 +1155,17 @@ function drawLegend() {
 
     legendg.append('path')
         .attr("d", d3.symbol().size(2500).type(d3.symbolSquare))
-        .attr("transform", "translate(400,-180)")
+        .attr("transform", `translate(${width - 200 - 30},150)`)
         .style("fill", function (d) {
             return `url(${location}#firewall)`
         })
 
     //Firewall text
     legendg.append("text")
-    .attr("transform", "translate(430,-180)")
-    .text("Firewall")
-    .style("font-weight", "700")
-    .style("font-family","Oswald")
-    .style("font-size", "18px")
+        .attr("transform", `translate(${width - 200},155)`)
+        .text("Firewall")
+        .style("font-weight", "700")
+        .style("font-family", "Oswald")
+        .style("font-size", "18px")
 
 }
