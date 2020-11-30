@@ -33,37 +33,12 @@ function slider(min, max, rangeData) {
 
     const g = svg.append('g').attr('transform', `translate(${30}, ${5})`)
 
-    var line = g.append("line").attr('id', 'line')
-        .style("stroke", "black")
-        // .style("stroke-width", 2)
-        .attr("x1", 288)
-        .attr("y1", 0)
-        .attr("x2", 288)
-        .attr("y2", 25);
     // labels
     var labelL = g.append('text')
         .attr('id', 'labelleft')
         .attr('x', 0)
         .attr('y', height + 5)
-
-    var firstDayLabel = g.append('text')
-        .attr('id', 'datelabel')
-        .attr('x', 150)
-        .attr('y', height - 8.5)
-        .text("2012/04/05")
-        .style("font-size", "12px")
-        .style("font-weight", "bold");
-
-    var secondDayLabel = g.append('text')
-        .attr('id', 'datelabel')
-        .attr('x', 360)
-        .attr('y', height - 8.5)
-        .text("2012/04/06")
-        // dominant-baseline: hanging;
-        // .style("dominant-baseline", "hanging")
-        .style("font-size", "12px")
-        .style("font-weight", "bold")
-        .style("fill", "black");
+        .style('fill', '#fff')
 
     // var line = g.append('line')
     // .attr('id', 'datelabel')
@@ -74,6 +49,7 @@ function slider(min, max, rangeData) {
         .attr('id', 'labelright')
         .attr('x', 0)
         .attr('y', height + 5)
+        .style('fill', '#fff')
 
 
 
@@ -136,8 +112,8 @@ function slider(min, max, rangeData) {
         .data([{ type: "w" }, { type: "e" }])
         .enter().append("path")
         .attr("class", "handle--custom")
-        .attr("stroke", "#111")
-        .attr("fill", '#111')
+        .attr("stroke", "rgb(16, 195, 225)")
+        .attr("fill", 'rgb(16, 195, 225)')
         .attr("cursor", "ew-resize")
         .attr("d", brushResizePath);
 
@@ -145,12 +121,15 @@ function slider(min, max, rangeData) {
     // will select a small piece there rather than deselecting everything
     gBrush.selectAll(".overlay")
     .style("rx", "5")
+    .style("fill", "#fff")
         // .attr("d", rightRoundedRect(-500, -620, 880, 1240, 120))
         .each(function (d) { d.type = "selection"; })
+        
         .on("mousedown touchstart", brushcentered)
 
     gBrush.selectAll(".selection")
         .style("rx", "5")
+        .style("fill", "rgb(16, 195, 225)")
 
     function brushcentered() {
         var dx = x(1) - x(0), // Use a fixed width when recentering.
@@ -163,6 +142,34 @@ function slider(min, max, rangeData) {
     //var range1 = [1.00, 2.01]
     // select entire range
     gBrush.call(brush.move, range.map(x))
+
+    var firstDayLabel = g.append('text')
+        .attr('id', 'datelabel')
+        .attr('x', 150)
+        .attr('y', height - 8.5)
+        .text("2012/04/05")
+        .style("font-size", "12px")
+        .style("font-weight", "bold")
+        .style("fill", "black");
+
+    var secondDayLabel = g.append('text')
+        .attr('id', 'datelabel')
+        .attr('x', 360)
+        .attr('y', height - 8.5)
+        .text("2012/04/06")
+        // dominant-baseline: hanging;
+        // .style("dominant-baseline", "hanging")
+        .style("font-size", "12px")
+        .style("font-weight", "bold")
+        .style("fill", "black");
+    
+    var line = g.append("line").attr('id', 'line')
+        .style("stroke", "black")
+        // .style("stroke-width", 2)
+        .attr("x1", 288)
+        .attr("y1", 0)
+        .attr("x2", 288)
+        .attr("y2", 25);
 
 }
 

@@ -97,3 +97,8 @@ div.tooltip {
   .enable-button {
     display: initial;
   }
+
+  li.navbar-input {
+    background-color: transparent;
+    border: 0;
+  }

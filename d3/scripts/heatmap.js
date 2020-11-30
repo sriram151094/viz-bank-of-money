@@ -50,6 +50,17 @@ function drawHeatMap(startTime, endTime, machine) {
     const ip_addresses = ['DNS', 'IDS', 'Firewall', 'Workstation', 'Websites', 'Log Server', 'Financial Server'];
     const portSet = new Set([21, 22, 53, 80, 1433, 1521, 3306, 5432, 6667, -1, -2, -3, -4, -5]);
     const ports = Array.from(portSet).map(String);
+    const portMachineMap = {
+        "21": "FTP",
+        "22": "SSH",
+        "53": "DNS",
+        "80": "HTTP",
+        "1433": "MSSQL",
+        "1521": "Oracle",
+        "3306": "MySQL",
+        "5432": "PostgreSQL", 
+        "6667": "IRC"
+    }
     const portRangeMap = {
         "-1": "0-1k",
         "-2": "1k-2k",
@@ -232,11 +243,22 @@ function getPortRange(port) {
 
 function drawTooltip(event, d) {
     const portRangeMap = {
-        "-1": "Ports 0-1000",
-        "-2": "Ports 1000-2000",
-        "-3": "Ports 2000-3000",
-        "-4": "Ports 3000-4000",
-        "-5": "Ports 4000-5000"
+        "-1": "Others (0-1000)",
+        "-2": "Others (1000-2000)",
+        "-3": "Others (2000-3000)",
+        "-4": "Others (3000-4000)",
+        "-5": "Others (4000-5000)"
+    }
+    const portMachineMap = {
+        "21": "FTP",
+        "22": "SSH",
+        "53": "DNS",
+        "80": "HTTP",
+        "1433": "MSSQL",
+        "1521": "Oracle",
+        "3306": "MySQL",
+        "5432": "PostgreSQL", 
+        "6667": "IRC"
     }
     tooltipDiv.transition()
         .duration(50)
@@ -246,7 +268,7 @@ function drawTooltip(event, d) {
     if(d.port in portRangeMap) {
         port = portRangeMap[d.port];
     } else
-        port = d.port;
+        port = portMachineMap[d.port] + " (" + d.port + ")";
     tooltipDiv.html(
             "From: " + d.ip + "<br>" +
             "To: " + port + "<br>" +
