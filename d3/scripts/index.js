@@ -44,6 +44,7 @@ function init() {
 }
 
 export function eventChange() {
+    document.getElementById("chartsContainer").scrollIntoView();
     var eventValue = d3.select("#eventType").property('value');
     var start = eventIntervals[eventValue].split(",")[0];
     var end = eventIntervals[eventValue].split(",")[1];
@@ -59,6 +60,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
     applybutton = d3.select('#filter-apply');
     initTimeSlider()
     d3.select('#eventhandler').on('change', function (e, d) {
+        document.getElementById("chartsContainer").scrollIntoView();
         starttime = Date.parse(e.detail['first']);
         endtime = Date.parse(e.detail['second']);
         if(getEventVal() != "") {
@@ -73,6 +75,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
         //applybutton.classed('disable-button', false);
     })
     d3.select('#machine').on('change', function(e) {
+        document.getElementById("chartsContainer").scrollIntoView();
         machine = d3.select('#machine').property('value');
         timechange(machine);
     });
