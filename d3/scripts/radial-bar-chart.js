@@ -1,5 +1,5 @@
 export { initRadialChart, drawRadialChart }
-import {getIPBucket} from './utils.js';
+import { getIPBucket } from './utils.js';
 var width = 960, height = 450, chartRadius = height / 2 - 40;
 var events;
 
@@ -60,40 +60,41 @@ function initRadialChart(starttime, endtime) {
 }
 
 function getData(starttime, endtime, machine) {
-    
+
     // filteredData = res.filter(log => {
     //     let d = Date.parse(log['date_time'])
     //     return (d >= start && d <= end)
     // })
     data1 = data.filter(d => { return Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime });
     // data = data.filter(function (d) { return Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime });
-    if(machine) {
-        data2 = data1.filter(record => getIPBucket(record['source_ip']).machine.toLowerCase() == machine.toLowerCase())
+    if (machine) {
+        data2 = data1.filter(record => getIPBucket(record['source_ip']).machine.toLowerCase() == machine.toLowerCase() ||
+            (machine == 'dns' && getIPBucket(record['destination_ip']).machine.toLowerCase() == machine.toLowerCase()))
         console.log(data2)
         dnsupdateexternal = data2.filter(d => { return d.label.includes("DNS Update From External net") }).length;
-        ircauth = data2.filter(d =>  { return (d.label.includes("IRC authorization message") ) }).length;
-        postgressql = data2.filter(d =>  { return (d.label.includes("PostgreSQL")) }).length;
-        mysql = data2.filter(d =>  { return (d.label.includes("mySQL") ) }).length;
-        mssql = data2.filter(d =>  { return (d.label.includes("MSSQL") ) }).length;
-        oraclesql = data2.filter(d =>  { return (d.label.includes("Oracle SQL") ) }).length;
-        portscan5800 = data2.filter(d =>  { return (d.label.includes("VNC Scan 5800-5820") ) }).length;
-        portscan5900 = data2.filter(d =>  { return (d.label.includes("VNC Scan 5900-5920") ) }).length;
-        sshscan = data2.filter(d =>  { return (d.label.includes("[1:2001219:18] ET SCAN Potential SSH Scan") ) }).length;
-        sshscanoutbound = data2.filter(d =>  { return (d.label.includes("SSH Scan OUTBOUND") ) }).length;
+        ircauth = data2.filter(d => { return (d.label.includes("IRC authorization message")) }).length;
+        postgressql = data2.filter(d => { return (d.label.includes("PostgreSQL")) }).length;
+        mysql = data2.filter(d => { return (d.label.includes("mySQL")) }).length;
+        mssql = data2.filter(d => { return (d.label.includes("MSSQL")) }).length;
+        oraclesql = data2.filter(d => { return (d.label.includes("Oracle SQL")) }).length;
+        portscan5800 = data2.filter(d => { return (d.label.includes("VNC Scan 5800-5820")) }).length;
+        portscan5900 = data2.filter(d => { return (d.label.includes("VNC Scan 5900-5920")) }).length;
+        sshscan = data2.filter(d => { return (d.label.includes("[1:2001219:18] ET SCAN Potential SSH Scan")) }).length;
+        sshscanoutbound = data2.filter(d => { return (d.label.includes("SSH Scan OUTBOUND")) }).length;
     }
     else {
         dnsupdateexternal = data1.filter(d => { return d.label.includes("DNS Update From External net") }).length;
-        ircauth = data1.filter(d =>  { return (d.label.includes("IRC authorization message") ) }).length;
-        postgressql = data1.filter(d =>  { return (d.label.includes("PostgreSQL")) }).length;
-        mysql = data1.filter(d =>  { return (d.label.includes("mySQL") ) }).length;
-        mssql = data1.filter(d =>  { return (d.label.includes("MSSQL") ) }).length;
-        oraclesql = data1.filter(d =>  { return (d.label.includes("Oracle SQL") ) }).length;
-        portscan5800 = data1.filter(d =>  { return (d.label.includes("VNC Scan 5800-5820") ) }).length;
-        portscan5900 = data1.filter(d =>  { return (d.label.includes("VNC Scan 5900-5920") ) }).length;
-        sshscan = data1.filter(d =>  { return (d.label.includes("[1:2001219:18] ET SCAN Potential SSH Scan") ) }).length;
-        sshscanoutbound = data1.filter(d =>  { return (d.label.includes("SSH Scan OUTBOUND") ) }).length;
+        ircauth = data1.filter(d => { return (d.label.includes("IRC authorization message")) }).length;
+        postgressql = data1.filter(d => { return (d.label.includes("PostgreSQL")) }).length;
+        mysql = data1.filter(d => { return (d.label.includes("mySQL")) }).length;
+        mssql = data1.filter(d => { return (d.label.includes("MSSQL")) }).length;
+        oraclesql = data1.filter(d => { return (d.label.includes("Oracle SQL")) }).length;
+        portscan5800 = data1.filter(d => { return (d.label.includes("VNC Scan 5800-5820")) }).length;
+        portscan5900 = data1.filter(d => { return (d.label.includes("VNC Scan 5900-5920")) }).length;
+        sshscan = data1.filter(d => { return (d.label.includes("[1:2001219:18] ET SCAN Potential SSH Scan")) }).length;
+        sshscanoutbound = data1.filter(d => { return (d.label.includes("SSH Scan OUTBOUND")) }).length;
     }
-    
+
 
     events = [
         { name: "Port Scan 5800-5820", value: portscan5800 },
@@ -121,10 +122,10 @@ function drawRadialChart(starttime, endtime, machine = undefined) {
     d3.selectAll("#radialline")
         .remove();
     d3.selectAll("#labels")
-        .remove(); 
+        .remove();
     d3.selectAll("#conntext")
-        .remove(); 
-    
+        .remove();
+
     // TODO : remove/handle : Temp fix
     if (!starttime || !endtime) {
         starttime = Date.parse(startDate + ' ' + startTime);
@@ -133,21 +134,21 @@ function drawRadialChart(starttime, endtime, machine = undefined) {
 
     getData(starttime, endtime, machine);
 
-    if(machine) {
+    if (machine) {
         if (data2.length == 0) {
             d3.selectAll("#radialbar").append('text')
                 .attr("id", "conntext")
-                .attr('x', (width-15) / 2.5)
+                .attr('x', (width - 15) / 2.5)
                 .attr('y', height / 2)
                 //.style('font-size', '20px')
                 .text('No flags found for the selected machine')
-        return;
-    }
+            return;
+        }
     }
 
     let scale = d3.scaleLinear()
-        .domain([0, d3.max(events, function (d) { 
-            return d.value; 
+        .domain([0, d3.max(events, function (d) {
+            return d.value;
         }) * 1.1])
         .range([0, 2 * PI]);
 

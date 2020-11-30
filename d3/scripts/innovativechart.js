@@ -998,6 +998,8 @@ function animateCluster(clusterid, nodes, newcolor) {
             document.getElementById("chartsContainer").scrollIntoView();
             //call for event 1
             drawCharts(eventTimes[id].startTime, eventTimes[id].endTime);
+            d3.select('#eventType').property('value', eventTimes[id].event)
+            d3.select('#machine').property('value', '')
             setTime(eventIntervals[eventTimes[id].event].split(",")[0], eventIntervals[eventTimes[id].event].split(",")[1], eventTimes[id].event);
         })
         .on('mouseout', function (event, d) {

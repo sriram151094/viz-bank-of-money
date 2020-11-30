@@ -57,7 +57,9 @@ function getData(start, end, machine) {
 
             if (machine)
                 filteredData = filteredData.filter(record =>
-                    getIPBucket(record['source_ip']).machine.toLowerCase() == machine.toLowerCase())
+                    getIPBucket(record['source_ip']).machine.toLowerCase() == machine.toLowerCase() ||
+                    (machine == 'dns' && getIPBucket(record['destination_ip']).machine.toLowerCase() == machine.toLowerCase())
+                )
 
             console.log("Length of filtered data", filteredData.length)
 

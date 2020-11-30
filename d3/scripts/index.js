@@ -50,7 +50,7 @@ export function eventChange() {
     setTime(start, end, eventValue);
     starttime = Date.parse(start);
     endtime = Date.parse(end);
-    timechange();
+    timechange(machine);
 }
 
 
@@ -66,7 +66,10 @@ window.addEventListener('DOMContentLoaded', (event) => {
             endtime = Date.parse(eventIntervals[e.detail['third']].split(",")[1])
             setEventVal();
         }
-        timechange()
+        else {
+            d3.select('#eventType').property('value', '');
+        }
+        timechange(machine)
         //applybutton.classed('disable-button', false);
     })
     d3.select('#machine').on('change', function(e) {

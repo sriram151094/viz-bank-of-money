@@ -1,13 +1,13 @@
-export {Heatmap};
-import {getIPBucket} from './utils.js';
+export { Heatmap };
+import { getIPBucket } from './utils.js';
 
 
 var file = "../data/aggregated_data.csv"
 var tooltipDiv;
 var svg;
 var heatmapData;
-var margin = {top: 40, right: 50, bottom: 150, left: 90};
-const svgScreenWidth = +d3.select("#heatmap_div").style("width").slice(0,-2);
+var margin = { top: 40, right: 50, bottom: 150, left: 90 };
+const svgScreenWidth = +d3.select("#heatmap_div").style("width").slice(0, -2);
 var width = svgScreenWidth;
 var height = 450 - margin.top - margin.bottom;
 const BAR_HEIGHT = 20;
@@ -17,16 +17,16 @@ const titley = 1;
 const xlabelx = width / 2;
 const xlabely = height + margin.top + 40;
 const ylabelx = 25;
-const ylabely = (height  + margin.top)/ 2;
+const ylabely = (height + margin.top) / 2;
 
 function Heatmap(startTime, endTime, machine = undefined) {
-    if(heatmapData == undefined) {
+    if (heatmapData == undefined) {
         tooltipDiv = d3.select('div.tooltip');
         svg = d3.select("#heatmap_div").append("svg");
         readData().then(data => {
             heatmapData = data;
             svg
-                .attr("width", width )
+                .attr("width", width)
                 .attr("height", height + margin.top + margin.bottom);
             drawHeatMap(startTime, endTime, machine);
             drawAxis();
@@ -43,10 +43,11 @@ function Heatmap(startTime, endTime, machine = undefined) {
 function drawHeatMap(startTime, endTime, machine) {
     svg.selectAll("*").remove();
     let filteredData = heatmapData.filter(record => record.datetime >= startTime && record.datetime <= endTime);
-    
-    if(machine)
-        filteredData = filteredData.filter(record => getIPBucket(record.sourceIP).machine.toLowerCase() == machine.toLowerCase())
-    
+
+    if (machine)
+        filteredData = filteredData.filter(record => getIPBucket(record.sourceIP).machine.toLowerCase() == machine.toLowerCase()
+            || (machine == 'dns' && getIPBucket(record['destination_ip']).machine.toLowerCase() == machine.toLowerCase()))
+
     const ip_addresses = ['DNS', 'IDS', 'Firewall', 'Workstation', 'Websites', 'Log Server', 'Financial Server'];
     const portSet = new Set([21, 22, 53, 80, 1433, 1521, 3306, 5432, 6667, -1, -2, -3, -4, -5]);
     const ports = Array.from(portSet).map(String);
@@ -58,7 +59,7 @@ function drawHeatMap(startTime, endTime, machine) {
         "1433": "MSSQL",
         "1521": "Oracle",
         "3306": "MySQL",
-        "5432": "PostgreSQL", 
+        "5432": "PostgreSQL",
         "6667": "IRC"
     }
     const portRangeMap = {
@@ -70,15 +71,15 @@ function drawHeatMap(startTime, endTime, machine) {
     }
     let events = [];
 
-    let event_groups = d3.group(filteredData, 
-        d => getIPBucket(d.sourceIP).machine, 
+    let event_groups = d3.group(filteredData,
+        d => getIPBucket(d.sourceIP).machine,
         d => {
             let port = +d.destinationPort, portVal;
-            if(portSet.has(port))
+            if (portSet.has(port))
                 portVal = port;
-            else if(d.sourcePort === '6667')
+            else if (d.sourcePort === '6667')
                 portVal = 6667;
-            else 
+            else
                 portVal = getPortRange(port)
             return portVal;
         }
@@ -97,14 +98,14 @@ function drawHeatMap(startTime, endTime, machine) {
 
     let dataMap = {};
     events.forEach(e => {
-        if(!(e.ip in dataMap))
-            dataMap[e.ip]= new Set();
+        if (!(e.ip in dataMap))
+            dataMap[e.ip] = new Set();
         dataMap[e.ip].add(e.port);
     });
 
-    for(const ip of ip_addresses) {
-        for(const p of portSet) {
-            if(!(ip in dataMap) || !(dataMap[ip].has(p)))
+    for (const ip of ip_addresses) {
+        for (const p of portSet) {
+            if (!(ip in dataMap) || !(dataMap[ip].has(p)))
                 events.push({
                     ip: ip,
                     port: p,
@@ -115,22 +116,22 @@ function drawHeatMap(startTime, endTime, machine) {
 
     // Build X scales and axis:
     var x = d3.scaleBand()
-        .range([ 0, width - margin.left - margin.right ])
+        .range([0, width - margin.left - margin.right])
         .domain(ports)
         .padding(0.05);
-        svg.append("g")
+    svg.append("g")
         .style("font-size", 15)
         .attr("transform", "translate(" + (margin.left) + "," + (height + margin.top + 10) + ")")
-        .call(d3.axisBottom(x).tickSize(0).tickFormat(function(d) {
-            if(d in portRangeMap)
+        .call(d3.axisBottom(x).tickSize(0).tickFormat(function (d) {
+            if (d in portRangeMap)
                 return portRangeMap[d];
             return d;
-            }))
+        }))
         .select(".domain").remove();
 
     // Build Y scales and axis:
     var y = d3.scaleBand()
-        .range([ height, 0 ])
+        .range([height, 0])
         .domain(ip_addresses)
         .padding(0.05);
     svg.append("g")
@@ -140,79 +141,80 @@ function drawHeatMap(startTime, endTime, machine) {
         .select(".domain").remove();
 
     // Build color scale
-    var max = d3.max(events, function (d) { return d.numAttacks});
-    
+    var max = d3.max(events, function (d) { return d.numAttacks });
+
     var colorScale = d3.scaleLinear()
         .range([COLOR_START, COLOR_END])
         .domain([0, max]);
     drawLegend(colorScale);
 
-    var mouseover = function(e, d, elt) {
+    var mouseover = function (e, d, elt) {
         drawTooltip(e, d);
         d3.select(elt)
             .style("stroke", "#aaa")
             .style("stroke-width", 2);
     }
-    var mousemove = function(e) {
+    var mousemove = function (e) {
         tooltipDiv
             .style("left", (e.pageX + 20) + "px")
             .style("top", (e.pageY - 10) + "px");
     }
-    var mouseleave = function(elt) {
+    var mouseleave = function (elt) {
         tooltipDiv.html('');
         tooltipDiv
             .style("opacity", 0)
             .style("border-color", "transparent");
-        
-        
-    d3.select(elt)
-        .style("stroke", "none")
-        .attr("width", x.bandwidth())
-        .attr("height", y.bandwidth());
+
+
+        d3.select(elt)
+            .style("stroke", "none")
+            .attr("width", x.bandwidth())
+            .attr("height", y.bandwidth());
     }
 
     // add the squares
     svg.append("g").attr("transform", "translate(" + (margin.left) + "," + margin.top + ")")
-    .selectAll()
+        .selectAll()
         .data(events)
         .enter()
         .append("rect")
         .attr("class", "heatmap-rects")
-        .attr("x", function(d) { return x(""+d.port) })
-        .attr("y", function(d) { return y(d.ip) })
+        .attr("x", function (d) { return x("" + d.port) })
+        .attr("y", function (d) { return y(d.ip) })
         .attr("rx", 5)
         .attr("ry", 5)
         .attr("width", x.bandwidth())
         .attr("height", y.bandwidth())
-        .style("fill", function(d) { 
-            if(machine && (machine.toLowerCase() == d.ip.toLowerCase()))
+        .style("fill", function (d) {
+            if (machine && (machine.toLowerCase() == d.ip.toLowerCase()))
                 return colorScale(d.numAttacks);
-            else if(!machine)
+            else if (!machine)
                 return colorScale(d.numAttacks);
             else return "#ccc";
-            })
+        })
         .style("stroke-width", 4)
         .style("stroke", "none")
         .style("opacity", 1)
-        .on("mouseover", function(e,d) { mouseover(e, d, this) })
-        .on("mousemove", function(e) { mousemove(e)})
-        .on("mouseleave", function() { mouseleave(this)});
+        .on("mouseover", function (e, d) { mouseover(e, d, this) })
+        .on("mousemove", function (e) { mousemove(e) })
+        .on("mouseleave", function () { mouseleave(this) });
 }
 
 function readData() {
     return new Promise((resolve, reject) => {
-        d3.csv(file, function(d) {
+        d3.csv(file, function (d) {
             return {
                 // extract important data features
-                datetime : Date.parse(d['date_time']),
-                sourceIP : d['source_ip'],
-                destinationPort : d['destination_port'],
-                sourcePort : d['source_port'],
+                datetime: Date.parse(d['date_time']),
+                sourceIP: d['source_ip'],
+                destination_ip : d['destination_ip'],
+                destinationPort: d['destination_port'],
+                sourcePort: d['source_port'],
                 numAttacks: 0
             }
-        }).then(function(data) {
+        }).then(function (data) {
             resolve(data);
-        }).catch(function(err) {
+        }).catch(function (err) {
             reject(err);
         });
     });
@@ -257,23 +259,23 @@ function drawTooltip(event, d) {
         "1433": "MSSQL",
         "1521": "Oracle",
         "3306": "MySQL",
-        "5432": "PostgreSQL", 
+        "5432": "PostgreSQL",
         "6667": "IRC"
     }
     tooltipDiv.transition()
         .duration(50)
         .style("opacity", 1);
-    
+
     let port;
-    if(d.port in portRangeMap) {
+    if (d.port in portRangeMap) {
         port = portRangeMap[d.port];
     } else
         port = portMachineMap[d.port] + " (" + d.port + ")";
     tooltipDiv.html(
-            "From: " + d.ip + "<br>" +
-            "To: " + port + "<br>" +
-            "Num of Connections: " + d.numAttacks
-        );
+        "From: " + d.ip + "<br>" +
+        "To: " + port + "<br>" +
+        "Num of Connections: " + d.numAttacks
+    );
 
     tooltipDiv
         .style("left", (event.pageX + 20) + "px")
@@ -293,13 +295,13 @@ function drawLegend(colorScale) {
         .attr("class", `x-axis`)
         .attr("transform", `translate(${margin.left},${(height + 2 * margin.top + 2 * BAR_HEIGHT)})`)
         .call(d3.axisBottom(axisScale)
-                .ticks(newWidth/100)
-                .tickSize(-BAR_HEIGHT)
-            );
+            .ticks(newWidth / 100)
+            .tickSize(-BAR_HEIGHT)
+        );
 
     const linearGradient = defs.append("linearGradient").attr("id", "linear-gradient");
     linearGradient.selectAll("stop")
-        .data(colorScale.ticks().map((t, i, n) => ({ offset: `${100*i/n.length}%`, color: colorScale(t) })))
+        .data(colorScale.ticks().map((t, i, n) => ({ offset: `${100 * i / n.length}%`, color: colorScale(t) })))
         .enter()
         .append("stop")
         .attr("offset", d => d.offset)
@@ -312,9 +314,9 @@ function drawLegend(colorScale) {
         .attr("height", BAR_HEIGHT)
         .style("fill", "url(#linear-gradient)")
         .style("position", "absolute");
-    
+
     svg.append("text")
-        .attr("x", margin.left-15)
+        .attr("x", margin.left - 15)
         .attr("y", (height + 2 * margin.top + 3 * BAR_HEIGHT))
         .text("Connections");
 

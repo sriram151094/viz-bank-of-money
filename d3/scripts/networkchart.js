@@ -48,7 +48,8 @@ function getFireWallData(start, end, machine) {
 
         if (machine)
             filteredData = filteredData.filter(record =>
-                getIPBucket(record['source_ip']).machine.toLowerCase() == machine.toLowerCase()
+                getIPBucket(record['source_ip']).machine.toLowerCase() == machine.toLowerCase() ||
+                (machine == 'dns' && getIPBucket(record['destination_ip']).machine.toLowerCase() == machine.toLowerCase())
             );
 
         let node_set = new Set();
