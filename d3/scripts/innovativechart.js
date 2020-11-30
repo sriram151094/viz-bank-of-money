@@ -231,7 +231,7 @@ function storyTellingChart() {
         .attr("dy", "1em")
         .attr("opacity", 1)
         .text("The Bank of Money office is experiencing difficulties with its computing infrastucture.")
-        .call(wrap, 250, "#text1");
+        .call(wrap, innerRadius, "#text1");
 
     /*Starting text middle bottom*/
     middleTextBottom = textCenter.append("text")
@@ -245,7 +245,7 @@ function storyTellingChart() {
         .attr("dy", "1em")
         .attr('opacity', 1)
         .text("There are reports from staff regarding malicious popups appearing on their screens.")
-        .call(wrap, 300, "#text2");
+        .call(wrap, innerRadius, "#text2");
 
     /*Internal network glyph */
     d3.csv("../data/Internalnetwork.csv").then(data => {
@@ -295,10 +295,10 @@ function Draw1() {
     runProgressBar(700 * 11);
 
     changeTopText("From our analysis of the network data, we have traced out the cyber attack",
-        4 / 2, 0, 1, false, undefined, 300);
+        4 / 2, 0, 1, false, undefined, innerRadius * 1.5);
 
     changeBottomText("Let's start by drawing out the step by step invasion of the BOM network faced over the course of two days",
-        1 / 2, 0, 10, 280);
+        1 / 2, 0, 10, innerRadius * 1.5);
 
     changeTopText("",
         8 / 2, 9, 1, true, undefined, 250);
@@ -365,7 +365,7 @@ function Draw2() {
 
     /*Switch  texts*/
     changeTopText("Firstly, a series of Port scanning events occur between 5th April 6.27 PM to 8.36 PM implying the presence of some external botnet trying to compromise the system",
-        1 / 2, 0, 1, true, undefined, 290);
+        1 / 2, 0, 1, true, undefined, innerRadius * 1.5);
 
     changeBottomText("",
         0 / 2, 0, 1);
@@ -417,7 +417,7 @@ function Draw3() {
 
 
     changeTopText("This is followed by a surge in attempt for FTP connections, closely followed by SSH connections between 5th April 8.37 PM to 9.21 PM.",
-        6 / 2, 0, 1, true, undefined, 280);
+        6 / 2, 0, 1, true, undefined, innerRadius * 1.5);
 
     changeBottomText("",
         -2 / 2, 0, 1);
@@ -469,7 +469,7 @@ function Draw4() {
 
 
     changeTopText("Next, we observe the many SQL servers being simulatenously attacked between 5th April 9.47 PM to 6th April 3.27 AM.",
-        6 / 2, 0, 1, true, undefined, 280);
+        6 / 2, 0, 1, true, undefined, innerRadius * 1.5);
 
     changeBottomText("",
         -2 / 2, 0, 1);
@@ -520,7 +520,7 @@ function Draw5() {
     appendTextLabels("#cluster3 #DNS3", -50, 50, "Data Outage", eventTimes[3])
 
     changeTopText("Next, we observe a massive data outage between 6th April 3 PM to 6 PM where the number of connection plunges drastically",
-        6 / 2, 0, 1, true, undefined, 280);
+        6 / 2, 0, 1, true, undefined, innerRadius * 1.5);
 
     changeBottomText("",
         -2 / 2, 0, 1);
@@ -570,7 +570,7 @@ function Draw6() {
     appendTextLabels("#cluster4 #DNS4", -50, 50, "DNS Attack", eventTimes[4])
 
     changeTopText("Lastly, the DNS is attacked and compromised between 6th April 5.26 PM and 6.27 PM after which the external websites connect to the workstations. This is the root cause for the popups seen by the BOM employees.",
-        6 / 2, 0, 1, true, undefined, 280);
+        6 / 2, 0, 1, true, undefined, innerRadius * 1.5);
 
     changeBottomText("",
         -2 / 2, 0, 1);
