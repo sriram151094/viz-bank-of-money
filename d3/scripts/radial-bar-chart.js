@@ -58,22 +58,40 @@ function initRadialChart(starttime, endtime) {
 }
 
 function getData(starttime, endtime, machine) {
-    data = data.filter(function (d) { return Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime });
     
+    // filteredData = res.filter(log => {
+    //     let d = Date.parse(log['date_time'])
+    //     return (d >= start && d <= end)
+    // })
+    var data1 = data.filter(d => { return Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime });
+    // data = data.filter(function (d) { return Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime });
     if(machine) {
-        data = data.filter(record => getIPBucket(record['source_ip']).machine.toLowerCase() == machine.toLowerCase())
-    console.log(data)
+        var data2 = data1.filter(record => getIPBucket(record['source_ip']).machine.toLowerCase() == machine.toLowerCase())
+        console.log(data2)
+        dnsupdateexternal = data2.filter(d => { return d.label.includes("DNS Update From External net") }).length;
+        ircauth = data2.filter(d =>  { return (d.label.includes("IRC authorization message") ) }).length;
+        postgressql = data2.filter(d =>  { return (d.label.includes("PostgreSQL")) }).length;
+        mysql = data2.filter(d =>  { return (d.label.includes("mySQL") ) }).length;
+        mssql = data2.filter(d =>  { return (d.label.includes("MSSQL") ) }).length;
+        oraclesql = data2.filter(d =>  { return (d.label.includes("Oracle SQL") ) }).length;
+        portscan5800 = data2.filter(d =>  { return (d.label.includes("VNC Scan 5800-5820") ) }).length;
+        portscan5900 = data2.filter(d =>  { return (d.label.includes("VNC Scan 5900-5920") ) }).length;
+        sshscan = data2.filter(d =>  { return (d.label.includes("[1:2001219:18] ET SCAN Potential SSH Scan") ) }).length;
+        sshscanoutbound = data2.filter(d =>  { return (d.label.includes("SSH Scan OUTBOUND") ) }).length;
     }
-    dnsupdateexternal = data.filter(function (d) { return d.label.includes("DNS Update From External net") }).length;
-    ircauth = data.filter(function (d) { return (d.label.includes("IRC authorization message") ) }).length;
-    postgressql = data.filter(function (d) { return (d.label.includes("PostgreSQL") && Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime) }).length;
-    mysql = data.filter(function (d) { return (d.label.includes("mySQL") ) }).length;
-    mssql = data.filter(function (d) { return (d.label.includes("MSSQL") ) }).length;
-    oraclesql = data.filter(function (d) { return (d.label.includes("Oracle SQL") ) }).length;
-    portscan5800 = data.filter(function (d) { return (d.label.includes("VNC Scan 5800-5820") ) }).length;
-    portscan5900 = data.filter(function (d) { return (d.label.includes("VNC Scan 5900-5920") ) }).length;
-    sshscan = data.filter(function (d) { return (d.label.includes("[1:2001219:18] ET SCAN Potential SSH Scan") ) }).length;
-    sshscanoutbound = data.filter(function (d) { return (d.label.includes("SSH Scan OUTBOUND") ) }).length;
+    else {
+        dnsupdateexternal = data1.filter(d => { return d.label.includes("DNS Update From External net") }).length;
+        ircauth = data1.filter(d =>  { return (d.label.includes("IRC authorization message") ) }).length;
+        postgressql = data1.filter(d =>  { return (d.label.includes("PostgreSQL")) }).length;
+        mysql = data1.filter(d =>  { return (d.label.includes("mySQL") ) }).length;
+        mssql = data1.filter(d =>  { return (d.label.includes("MSSQL") ) }).length;
+        oraclesql = data1.filter(d =>  { return (d.label.includes("Oracle SQL") ) }).length;
+        portscan5800 = data1.filter(d =>  { return (d.label.includes("VNC Scan 5800-5820") ) }).length;
+        portscan5900 = data1.filter(d =>  { return (d.label.includes("VNC Scan 5900-5920") ) }).length;
+        sshscan = data1.filter(d =>  { return (d.label.includes("[1:2001219:18] ET SCAN Potential SSH Scan") ) }).length;
+        sshscanoutbound = data1.filter(d =>  { return (d.label.includes("SSH Scan OUTBOUND") ) }).length;
+    }
+    
 
     events = [
         { name: "Port Scan 5800-5820", value: portscan5800 },
@@ -110,9 +128,14 @@ function drawRadialChart(starttime, endtime, machine = undefined) {
     }
 
     getData(starttime, endtime, machine);
+    // if(machine) {
+    //     console.log("The length is "+data2.length)
+    // }
 
     let scale = d3.scaleLinear()
-        .domain([0, d3.max(events, function (d) { return d.value; }) * 1.1])
+        .domain([0, d3.max(events, function (d) { 
+            return d.value; 
+        }) * 1.1])
         .range([0, 2 * PI]);
 
     let ticks = scale.ticks(numTicks).slice(0, -1);
