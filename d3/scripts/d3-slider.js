@@ -65,6 +65,7 @@ function slider(min, max, rangeData) {
         .attr('id', 'labelleft')
         .attr('x', 0)
         .attr('y', height + 5)
+        .style('fill', '#fff')
 
     // d3.selectAll("#datelabel1")
     //     .remove();
@@ -233,7 +234,7 @@ export function setTime(start, end, eventvalue) {
     "dnsattack": [2.48, 2.55]}
 
     d3.selectAll("#labelright")
-    .remove();
+        .remove();
     d3.selectAll("#labelleft")
         .remove();
 
@@ -242,11 +243,13 @@ export function setTime(start, end, eventvalue) {
         .attr('id', 'labelleft')
         .attr('x', 0)
         .attr('y', height + 5)
+        .style('fill', '#fff')
 
     labelR = g.append('text')
         .attr('id', 'labelright')
         .attr('x', 0)
         .attr('y', height + 5)
+        .style('fill', '#fff')
 
     labelL.attr('x', range1[eventvalue][0] * 200)
         // .attr("id", "leftlabel")
