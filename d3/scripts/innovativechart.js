@@ -104,10 +104,14 @@ function storyTellingChart() {
     /*Initiate the SVG*/
     const svgScreenWidth = +d3.select("[id='storyContainer']").style("width").slice(0, -2);
     width = svgScreenWidth - margin.left - margin.right;
+    console.log("width" + width)
     height = window.innerHeight - 250
 
     innerRadius = (Math.min(width, height) - 100) * .30,
         outerRadius = innerRadius * 1.04;
+
+    console.log(innerRadius)
+    console.log(outerRadius)
 
     arc = d3.arc()
         .innerRadius(innerRadius)
@@ -130,7 +134,7 @@ function storyTellingChart() {
     svg.append('circle')
         .attr('cx', 0)
         .attr('cy', 0)
-        .attr('r', 300)
+        .attr('r', height - outerRadius - 200)
         .attr('fill', 'transparent')
         .attr('stroke', 'black')
         .attr('stroke-dasharray', 5)
@@ -357,7 +361,7 @@ function Draw2() {
         .transition().delay(700).duration(1000)
         .style("stroke", function (d, i, j) { return j ? 0 : "#000"; });
 
-    appendTextLabels("#cluster0 #DNS0", -30, 50, 'Port Scanning', eventTimes[0])
+    appendTextLabels("#cluster0 #Workstation40", -150, -30, 'Port Scanning', eventTimes[0])
 
     /*Switch  texts*/
     changeTopText("Firstly, a series of Port scanning events occur between 5th April 6.27 PM to 8.36 PM implying the presence of some external botnet trying to compromise the system",
@@ -629,7 +633,7 @@ function finalChord() {
         animateCluster(clusterinfo.name, clusterinfo.ids, clusterinfo.color)
     })
 
-    appendTextLabels("#cluster0 #DNS0", -30, 50, 'Port Scanning', eventTimes[0])
+    appendTextLabels("#cluster0 #Workstation40", -150, -30, 'Port Scanning', eventTimes[0])
     appendTextLabels("#cluster1 #DNS1", -50, 50, "FTP/SSH Attack", eventTimes[1])
     appendTextLabels("#cluster2 #Workstation52", 50, 20, "SQL Attack", eventTimes[2])
     appendTextLabels("#cluster3 #DNS3", -50, 50, "Data Outage", eventTimes[3])
@@ -869,7 +873,8 @@ function loadSvgs() {
 }
 
 function drawCluster(data) {
-    let forces = [[200, -250], [320, -50], [0, 270], [-320, 50], [-200, -250]]
+    let forces = [[outerRadius + 20, -outerRadius - 40], [height - outerRadius - 200, -50],
+    [0, outerRadius + 90], [-(height - outerRadius - 200), 50], [-200, -outerRadius - 40]]
     loadSvgs();
 
     for (let i = 0; i < 5; i++) {
@@ -993,30 +998,30 @@ function appendTextLabels(id, xoffset, yoffset, text, eventdetail) {
 }
 
 function calldrawCharts(id) {
-document.getElementById("chartsContainer").scrollIntoView();
-switch (id) {
-    /* Port scanning event*/
-    case 0:
-        drawCharts(eventTimes[0].startTime, eventTimes[0].endTime);
-        break;
-    /* FTP/SSH Event event*/
-    case 1:
-        drawCharts(eventTimes[1].startTime, eventTimes[1].endTime);
-        break;
-    /* SQL Attack event*/
-    case 2:
-        drawCharts(eventTimes[2].startTime, eventTimes[2].endTime);
-        break;
-    /* Data Outage event*/
-    case 3:
-        drawCharts(eventTimes[3].startTime, eventTimes[3].endTime);
-        break;
-    /* DNS attack event*/
-    case 4:
-        drawCharts(eventTimes[4].startTime, eventTimes[4].endTime);
-        break;
+    document.getElementById("chartsContainer").scrollIntoView();
+    switch (id) {
+        /* Port scanning event*/
+        case 0:
+            drawCharts(eventTimes[0].startTime, eventTimes[0].endTime);
+            break;
+        /* FTP/SSH Event event*/
+        case 1:
+            drawCharts(eventTimes[1].startTime, eventTimes[1].endTime);
+            break;
+        /* SQL Attack event*/
+        case 2:
+            drawCharts(eventTimes[2].startTime, eventTimes[2].endTime);
+            break;
+        /* Data Outage event*/
+        case 3:
+            drawCharts(eventTimes[3].startTime, eventTimes[3].endTime);
+            break;
+        /* DNS attack event*/
+        case 4:
+            drawCharts(eventTimes[4].startTime, eventTimes[4].endTime);
+            break;
 
-}
+    }
 }
 
 function drawCharts(start, end) {
@@ -1042,36 +1047,13 @@ function dehighlightText(event, d, element) {
 }
 
 function drawLegend() {
-    var legendg = svg.append('g')
-                .attr('id', "innovativeLegend")
+    let SVG = d3.select("#chart")
+    var legendg = SVG.append('g')
+        .attr('id', "innovativeLegend")
 
     //workstation image
     legendg.append("circle")
-                .attr("transform", "translate(400,-280)")
-                .attr("class", "bubble")
-                .attr("r", "20")
-                .attr("fill", "none")
-                .attr('stroke-width', 3)
-                .attr('stroke', "black")
-        
-    legendg.append('path')
-                .attr("d", d3.symbol().size(2500).type(d3.symbolSquare))
-                .attr("transform", "translate(400,-280)")
-                .style("fill", function (d) {
-                    return `url(${location}#workstation)`
-                })
-
-    //workstation text
-    legendg.append("text")
-    .attr("transform", "translate(430,-280)")
-    .text("Workstations")
-    .style("font-weight", "700")
-    .style("font-family","Oswald")
-    .style("font-size", "18px")
-
-    //DNS image
-    legendg.append("circle")
-        .attr("transform", "translate(400,-230)")
+        .attr("transform", `translate(${width - 200 - 30},50)`)
         .attr("class", "bubble")
         .attr("r", "20")
         .attr("fill", "none")
@@ -1080,22 +1062,46 @@ function drawLegend() {
 
     legendg.append('path')
         .attr("d", d3.symbol().size(2500).type(d3.symbolSquare))
-        .attr("transform", "translate(400,-230)")
+        .attr("transform", `translate(${width - 200 - 30},50)`)
+        .style("fill", function (d) {
+            return `url(${location}#workstation)`
+        })
+
+    //workstation text
+    legendg.append("text")
+        .attr("transform", `translate(${width - 200},55)`)
+        .text("Workstations")
+        .style("font-weight", "700")
+        .style("font-family", "Oswald")
+        .style("font-size", "18px")
+
+    //DNS image
+    legendg.append("circle")
+        .attr("transform", `translate(${width - 200 - 30},100)`)
+        .attr("class", "bubble")
+        .attr("r", "20")
+        .attr("fill", "none")
+        .attr('stroke-width', 3)
+        .attr('stroke', "black")
+
+    legendg.append('path')
+        .attr("d", d3.symbol().size(2500).type(d3.symbolSquare))
+        .attr("transform", `translate(${width - 200 - 30},100)`)
         .style("fill", function (d) {
             return `url(${location}#dns)`
         })
 
     //DNS text
     legendg.append("text")
-    .attr("transform", "translate(430,-230)")
-    .text("DNS")
-    .style("font-weight", "700")
-    .style("font-family","Oswald")
-    .style("font-size", "18px")
+        .attr("transform", `translate(${width - 200},105)`)
+        .text("DNS")
+        .style("font-weight", "700")
+        .style("font-family", "Oswald")
+        .style("font-size", "18px")
 
     //Firewall image
     legendg.append("circle")
-        .attr("transform", "translate(400,-180)")
+        .attr("transform", `translate(${width - 200 - 30},150)`)
         .attr("class", "bubble")
         .attr("r", "20")
         .attr("fill", "none")
@@ -1104,17 +1110,17 @@ function drawLegend() {
 
     legendg.append('path')
         .attr("d", d3.symbol().size(2500).type(d3.symbolSquare))
-        .attr("transform", "translate(400,-180)")
+        .attr("transform", `translate(${width - 200 - 30},150)`)
         .style("fill", function (d) {
             return `url(${location}#firewall)`
         })
 
     //Firewall text
     legendg.append("text")
-    .attr("transform", "translate(430,-180)")
-    .text("Firewall")
-    .style("font-weight", "700")
-    .style("font-family","Oswald")
-    .style("font-size", "18px")
+        .attr("transform", `translate(${width - 200},155)`)
+        .text("Firewall")
+        .style("font-weight", "700")
+        .style("font-family", "Oswald")
+        .style("font-size", "18px")
 
 }
