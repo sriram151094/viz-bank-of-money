@@ -15,12 +15,13 @@ var eventTimes = [
     { event: "DNS Attack", startTime: Date.parse("2012-04-06 17:26"), endTime: Date.parse("2012-04-06 18:27") }
 ]
 
-var eventIntervals = {'Port Scanning':"2012-04-05 18:27,2012-04-05 20:36",
-                      'FTP/SSH Attack':"2012-04-05 20:37,2012-04-05 21:21",
-                      'SQL Attack':"2012-04-05 21:47,2012-04-06 03:27",
-                      'Data Outage':"2012-04-06 02:00,2012-04-06 18:00",
-                      'DNS Attack':"2012-04-06 17:26,2012-04-06 18:27",
-                    };
+var eventIntervals = {
+    'Port Scanning': "2012-04-05 18:27,2012-04-05 20:36",
+    'FTP/SSH Attack': "2012-04-05 20:37,2012-04-05 21:21",
+    'SQL Attack': "2012-04-05 21:47,2012-04-06 03:27",
+    'Data Outage': "2012-04-06 02:00,2012-04-06 18:00",
+    'DNS Attack': "2012-04-06 17:26,2012-04-06 18:27",
+};
 
 var matrix = [
     [0, 0, 0, 1, 1],
@@ -341,7 +342,8 @@ function Draw2() {
     g.on('click', (event, d) => {
         document.getElementById("chartsContainer").scrollIntoView();
         drawCharts(eventTimes[0].startTime, eventTimes[0].endTime);
-        console.log("The port scan time change "+eventTimes[0].startTime + " " + eventTimes[0].endTime);
+        d3.select('#eventType').property('value', eventTimes[0].event)
+        d3.select('#machine').property('value', '')
 
         setTime(eventIntervals["Port Scanning"].split(",")[0], eventIntervals["Port Scanning"].split(",")[1], "Port Scanning");
     })
