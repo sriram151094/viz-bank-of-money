@@ -79,7 +79,7 @@ var counter = 1,
 var cluster = [
     { name: "cluster0", ids: ["Workstation10", "Workstation40"], color: "red" },
     { name: "cluster1", ids: ["Workstation11", "Workstation21", "Workstation31", "Workstation41"], color: "red" },
-    { name: "cluster2", ids: ["Workstation12", "Workstation22", "Workstation32", "Workstation42"], color: "red" },
+    { name: "cluster2", ids: ["Workstation12", "Workstation22", "Workstation32", "Workstation42", "Workstation52", "Firewall2"], color: "red" },
     { name: "cluster3", ids: ["Workstation13", "Workstation23", "Workstation33", "Workstation43", "Workstation53", "Firewall3", "DNS3"], color: "gray" },
     { name: "cluster4", ids: ["Workstation14", "Workstation24", "Workstation34", "Workstation44", "Workstation54", "Firewall4", "DNS4"], color: "red" }
 ]
@@ -590,8 +590,11 @@ function finalChord() {
         //     document.getElementById("chartsContainer").scrollIntoView();
         //     drawCharts(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"))
         // });
-        document.getElementById("chartsContainer").scrollIntoView();
-        drawCharts(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"))
+        setTimeout(function () {
+            document.getElementById("chartsContainer").scrollIntoView();
+            drawCharts(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"))
+        }, 3000);
+
     };
 
     /*Make mouse over and out possible*/
@@ -611,6 +614,7 @@ function finalChord() {
         animateCluster(clusterinfo.name, clusterinfo.ids, clusterinfo.color)
     })
 
+    d3.select('#compromisepc').transition(1000).attr('opacity', 1)
     appendTextLabels("#cluster0 #Workstation40", -150, -30, 'Port Scanning', eventTimes[0])
     appendTextLabels("#cluster1 #DNS1", -50, 50, "FTP/SSH Attack", eventTimes[1])
     appendTextLabels("#cluster2 #Workstation52", 50, 20, "SQL Attack", eventTimes[2])
@@ -776,6 +780,7 @@ function loadSvgs() {
     var firewallSvg;
     var dnsSvg;
     var databaseSvg;
+    var compromiseSvg;
     var defs;
     defs = svg.append('svg:defs')
     var workstationdefs = svg.append("defs");
@@ -846,6 +851,33 @@ function loadSvgs() {
             .attr('width', 30)
             .attr('height', 30)
             .append(() => res.getElementsByTagName("svg")[0])
+    })
+
+    d3.xml("../d3/img/warning-red.svg").then(res => {
+
+        let g = d3.select("#chart")
+        compromiseSvg = res;
+        defs.append('pattern')
+            .attr('id', 'compromise')
+            .attr('patternUnits', 'objectBoundingBox')
+            .attr('width', 10)
+            .attr('height', 10)
+            // Append svg to pattern
+            .append('svg')
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('width', 100)
+            .attr('height', 100)
+            .append(() => res.getElementsByTagName("svg")[0])
+
+        g.append('path')
+            .attr('id', 'compromisepc')
+            .attr("d", d3.symbol().size(10000).type(d3.symbolSquare))
+            .attr("transform", `translate(${width / 2},${height / 2})`)
+            .style("fill", function (d) {
+                return `url(${location}#compromise)`
+            })
+            .attr('opacity', 0)
     })
 }
 
