@@ -18,6 +18,7 @@ var h;
 var margin;
 var handle;
 var rangeData = [];
+var eventVal = "";
 
 function slider(min, max, rangeData) {
 
@@ -82,10 +83,6 @@ function slider(min, max, rangeData) {
         .attr('y', height + 5)
         .style('fill', '#fff')
 
-    // d3.selectAll("#datelabel1")
-    //     .remove();
-    // d3.selectAll("#datelabel2")
-    //     .remove();
 
     firstDayLabel = g.append('text')
         .attr('id', 'datelabel1')
@@ -142,7 +139,7 @@ function slider(min, max, rangeData) {
             //d3.select("#eventhandler").dispatch('change', { detail: { first: rangeData[String(s).split(",")[0]], second: rangeData[String(s).split(",")[1]] } })
         })
         .on('end', function(e) {
-            d3.select("#eventhandler").dispatch('change', { detail: { first: rangeData[String(s).split(",")[0]], second: rangeData[String(s).split(",")[1]] } })
+            d3.select("#eventhandler").dispatch('change', { detail: { first: rangeData[String(s).split(",")[0]], second: rangeData[String(s).split(",")[1]], third: eventVal} })
         })
 
     brush.move(d3.select(this), [
@@ -198,9 +195,6 @@ function slider(min, max, rangeData) {
             x1 = cx + dx / 2;
         d3.select(this.parentNode).call(brush.move, x1 > width ? [width - dx, width] : x0 < 0 ? [0, dx] : [x0, x1]);
     }
-    //var range2 = [1.00, 2.01]
-    // select entire range
-    // gBrush.call(brush.move, range.map(x))
 
     gBrush.call(brush.move, [1.11, 1.245].map(x).map(d => Math.floor(d)))
 
@@ -242,7 +236,17 @@ export function setTime(start, end, eventvalue) {
         "Data Outage": [1.57, 2.53],
         "DNS Attack": [2.495, 2.56]
     }
+    eventVal = eventvalue;
     gBrush.call(brush.move, [range1[eventvalue][0], range1[eventvalue][1]].map(x).map(d => Math.floor(d)))
+
+}
+
+export function getEventVal() {
+    return eventVal;
+}
+
+export function setEventVal() {
+    eventVal = "";
 }
 
 

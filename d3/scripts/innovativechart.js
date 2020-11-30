@@ -341,6 +341,8 @@ function Draw2() {
     g.on('click', (event, d) => {
         document.getElementById("chartsContainer").scrollIntoView();
         drawCharts(eventTimes[0].startTime, eventTimes[0].endTime);
+        console.log("The port scan time change "+eventTimes[0].startTime + " " + eventTimes[0].endTime);
+
         setTime(eventIntervals["Port Scanning"].split(",")[0], eventIntervals["Port Scanning"].split(",")[1], "Port Scanning");
     })
 

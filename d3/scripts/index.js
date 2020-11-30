@@ -3,7 +3,7 @@ import { storyTellingChart } from './innovativechart.js'
 import { Heatmap } from './heatmap.js';
 import { linechart, drawLineChart } from './lineChart.js'
 import { initRadialChart, drawRadialChart } from './radial-bar-chart.js'
-import { initTimeSlider, setTime } from './d3-slider.js'
+import { initTimeSlider, setTime, getEventVal, setEventVal } from './d3-slider.js'
 
 
 var eventIntervals = {'Port Scanning':"2012-04-05 18:27,2012-04-05 20:36",
@@ -17,10 +17,10 @@ var starttime;
 var endtime;
 var machine;
 var applybutton;
+var eventval = "";
 export function timechange(machine=undefined) {
-
     drawNetworkChart(starttime, endtime, machine);
-    Heatmap(Date.parse("2012-04-05 01:27"), Date.parse("2012-04-05 20:36"), machine);
+    Heatmap(starttime, endtime, machine);
     drawLineChart(starttime, endtime, machine);
     drawRadialChart(starttime, endtime, machine);
 }
@@ -61,6 +61,11 @@ window.addEventListener('DOMContentLoaded', (event) => {
     d3.select('#eventhandler').on('change', function (e, d) {
         starttime = Date.parse(e.detail['first']);
         endtime = Date.parse(e.detail['second']);
+        if(getEventVal() != "") {
+            starttime = Date.parse(eventIntervals[e.detail['third']].split(",")[0])
+            endtime = Date.parse(eventIntervals[e.detail['third']].split(",")[1])
+            setEventVal();
+        }
         timechange()
         //applybutton.classed('disable-button', false);
     })
