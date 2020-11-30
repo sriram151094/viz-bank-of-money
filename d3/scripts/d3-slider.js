@@ -16,6 +16,8 @@ var range;
 var w;
 var h;
 var margin;
+var handle;
+var rangeData = [];
 
 function slider(min, max, rangeData) {
 
@@ -32,6 +34,8 @@ function slider(min, max, rangeData) {
         right: 40
     }
 
+    
+
     // dimensions of slider bar
     width = w - margin.left - margin.right;
     height = h - margin.top - margin.bottom - 10;
@@ -40,6 +44,21 @@ function slider(min, max, rangeData) {
     x = d3.scaleLinear()
         .domain(range)  // data space
         .range([0, width]);  // display space
+
+    // d3.selectAll("#line")
+    //     .remove();
+    // d3.selectAll("#labelright")
+    //     .remove();
+    // d3.selectAll("#labelleft")
+    //     .remove();
+    // d3.selectAll("#datelabel1")
+    //     .remove();
+    // d3.selectAll("#datelabel2")
+    //     .remove();
+    // d3.selectAll("#newbrush")
+    //     .remove();
+    // d3.select("#eventhandler").remove();
+    // d3.selectAll("svg > *").remove();
 
     // create svg and translated g
     svg = d3.select("#eventhandler").append('svg').attr("width", w).attr("height", (height + 25))
@@ -54,10 +73,7 @@ function slider(min, max, rangeData) {
         .attr("x2", 288)
         .attr("y2", 25);
 
-    d3.selectAll("#labelright")
-        .remove();
-    d3.selectAll("#labelleft")
-        .remove();
+    
     // d3.selectAll("#brushX")
     //     .remove();
     // labels
@@ -110,7 +126,7 @@ function slider(min, max, rangeData) {
         .extent([[0, 0], [width, height]])
         .on('brush', function (e) {
             s = e.selection;
-            // console.log("The selection is "+String(s).split(",")[0])
+            console.log("The selection is "+s)
             // console.log("x val is "+rangeData[String(s).split(",")[0]])
             // console.log("y val is "+rangeData[String(s).split(",")[1]])
             // update and move labels
@@ -140,6 +156,7 @@ function slider(min, max, rangeData) {
     // append brush to g
     gBrush = g.append("g")
         .attr("class", "brush")
+        .attr("id", "newbrush")
         .call(brush)
 
     // add brush handles
@@ -152,7 +169,7 @@ function slider(min, max, rangeData) {
             "M" + (4.5 * x) + "," + (y + 8) + "V" + (2 * y - 8);
     }
 
-    var handle = gBrush.selectAll(".handle--custom")
+    handle = gBrush.selectAll(".handle--custom")
         .data([{ type: "w" }, { type: "e" }])
         .enter().append("path")
         .attr("class", "handle--custom")
@@ -183,7 +200,7 @@ function slider(min, max, rangeData) {
         // console.log("Printing values "+ cx + " "+ x0 + " " + x1);
         d3.select(this.parentNode).call(brush.move, x1 > width ? [width - dx, width] : x0 < 0 ? [0, dx] : [x0, x1]);
     }
-    //var range1 = [1.00, 2.01]
+    //var range2 = [1.00, 2.01]
     // select entire range
     gBrush.call(brush.move, range.map(x))
 
@@ -218,6 +235,15 @@ function slider(min, max, rangeData) {
 }
 
 //slider(0,25)
+export function setTime1(start, end, eventvalue) {
+    var range1 = {"sqlattack": [1.30, 1.65], 
+    "portscan": [1.10, 1.24], 
+    "sshftpattack": [1.23, 1.28], 
+    "dataoutage": [1.56, 2.52], 
+    "dnsattack": [2.48, 2.55]}
+    slider(range1[eventvalue][0], range1[eventvalue][1], rangeData);
+}
+
 
 export function setTime(start, end, eventvalue) {
     // portscan = 221, 248
@@ -259,6 +285,12 @@ export function setTime(start, end, eventvalue) {
         // .attr("id", "rightlabel")
         .text(end.split(" ")[1])
 
+    s = [range1[eventvalue][0] * 200, range1[eventvalue][1] * 200]
+
+    handle.attr("display", null).attr("transform", function (d, i) { return "translate(" + [s[i], - height / 4] + ")"; });
+    svg.node().value = s.map(function (d) { var temp = x.invert(d); return +temp.toFixed(2) });
+    // d3.select("#eventhandler").dispatch('change', { detail: { first: rangeData[String(s).split(",")[0]], second: rangeData[String(s).split(",")[1]] } })
+
     var startIndex = rangeMap[start];
     var endIndex = rangeMap[end];
 
@@ -266,14 +298,12 @@ export function setTime(start, end, eventvalue) {
     // var range1 = [startIndex * 0.01, endIndex * 0.01];
     
     // var range1 = [1.10, 1.24]
-    gBrush.call(brush.move, range1[eventvalue].map(x));
-   
+    gBrush.call(brush.move, range1[eventvalue].map(x));    
 }
 
 
 export function initTimeSlider() {
 
-    var rangeData = [];
     let count = 0;
 
     for (let j = 0; j < 10; j++) {
