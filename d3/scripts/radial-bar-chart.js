@@ -34,6 +34,8 @@ var sshscanoutbound = 0;
 
 var radialSvg;
 var tooltip;
+var data1;
+var data2;
 
 function initRadialChart(starttime, endtime) {
     width = +d3.select("#radialBarChart").style("width").slice(0, -2);
@@ -63,10 +65,10 @@ function getData(starttime, endtime, machine) {
     //     let d = Date.parse(log['date_time'])
     //     return (d >= start && d <= end)
     // })
-    var data1 = data.filter(d => { return Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime });
+    data1 = data.filter(d => { return Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime });
     // data = data.filter(function (d) { return Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime });
     if(machine) {
-        var data2 = data1.filter(record => getIPBucket(record['source_ip']).machine.toLowerCase() == machine.toLowerCase())
+        data2 = data1.filter(record => getIPBucket(record['source_ip']).machine.toLowerCase() == machine.toLowerCase())
         console.log(data2)
         dnsupdateexternal = data2.filter(d => { return d.label.includes("DNS Update From External net") }).length;
         ircauth = data2.filter(d =>  { return (d.label.includes("IRC authorization message") ) }).length;
@@ -119,7 +121,9 @@ function drawRadialChart(starttime, endtime, machine = undefined) {
     d3.selectAll("#radialline")
         .remove();
     d3.selectAll("#labels")
-        .remove();
+        .remove(); 
+    d3.selectAll("#conntext")
+        .remove(); 
     
     // TODO : remove/handle : Temp fix
     if (!starttime || !endtime) {
@@ -128,9 +132,18 @@ function drawRadialChart(starttime, endtime, machine = undefined) {
     }
 
     getData(starttime, endtime, machine);
-    // if(machine) {
-    //     console.log("The length is "+data2.length)
-    // }
+
+    if(machine) {
+        if (data2.length == 0) {
+            d3.selectAll("#radialbar").append('text')
+                .attr("id", "conntext")
+                .attr('x', (width-15) / 2.5)
+                .attr('y', height / 2)
+                //.style('font-size', '20px')
+                .text('No flags found for the selected machine')
+        return;
+    }
+    }
 
     let scale = d3.scaleLinear()
         .domain([0, d3.max(events, function (d) { 
