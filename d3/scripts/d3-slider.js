@@ -2,17 +2,30 @@
 var brush;
 var rangeMap = {};
 var gBrush;
+var x;
+var firstDayLabel;
+var secondDayLabel;
+var s;
+var height;
+var width;
+var labelL;
+var labelR;
+var g;
+var svg;
+var range;
+var w;
+var h;
+var margin;
 
 function slider(min, max, rangeData) {
 
-    var range = [min, max];
-    var dateRange = [];
+    range = [min, max];
     // console.log(rangeData)
 
     // set width and height of svg
-    var w = 656
-    var h = 100
-    var margin = {
+    w = 656
+    h = 100
+    margin = {
         top: 35,
         bottom: 30,
         left: 40,
@@ -20,32 +33,69 @@ function slider(min, max, rangeData) {
     }
 
     // dimensions of slider bar
-    var width = w - margin.left - margin.right;
-    var height = h - margin.top - margin.bottom - 10;
+    width = w - margin.left - margin.right;
+    height = h - margin.top - margin.bottom - 10;
 
     // create x scale
-    var x = d3.scaleLinear()
+    x = d3.scaleLinear()
         .domain(range)  // data space
         .range([0, width]);  // display space
 
     // create svg and translated g
-    var svg = d3.select("#eventhandler").append('svg').attr("width", w).attr("height", (height + 25))
+    svg = d3.select("#eventhandler").append('svg').attr("width", w).attr("height", (height + 25))
 
-    const g = svg.append('g').attr('transform', `translate(${30}, ${5})`)
+    g = svg.append('g').attr('transform', `translate(${30}, ${5})`)
 
+    var line = g.append("line").attr('id', 'line')
+        .style("stroke", "black")
+        // .style("stroke-width", 2)
+        .attr("x1", 288)
+        .attr("y1", 0)
+        .attr("x2", 288)
+        .attr("y2", 25);
+
+    d3.selectAll("#labelright")
+        .remove();
+    d3.selectAll("#labelleft")
+        .remove();
+    // d3.selectAll("#brushX")
+    //     .remove();
     // labels
-    var labelL = g.append('text')
+    labelL = g.append('text')
         .attr('id', 'labelleft')
         .attr('x', 0)
         .attr('y', height + 5)
-        .style('fill', '#fff')
+
+    // d3.selectAll("#datelabel1")
+    //     .remove();
+    // d3.selectAll("#datelabel2")
+    //     .remove();
+
+    firstDayLabel = g.append('text')
+        .attr('id', 'datelabel1')
+        .attr('x', 150)
+        .attr('y', height - 8.5)
+        .text("2012/04/05")
+        .style("font-size", "12px")
+        .style("font-weight", "bold");
+
+    secondDayLabel = g.append('text')
+        .attr('id', 'datelabel2')
+        .attr('x', 360)
+        .attr('y', height - 8.5)
+        .text("2012/04/06")
+        // dominant-baseline: hanging;
+        // .style("dominant-baseline", "hanging")
+        .style("font-size", "12px")
+        .style("font-weight", "bold")
+        .style("fill", "black");
 
     // var line = g.append('line')
     // .attr('id', 'datelabel')
     // .attr('x', 270)
     // .attr('y', 1);
 
-    var labelR = g.append('text')
+    labelR = g.append('text')
         .attr('id', 'labelright')
         .attr('x', 0)
         .attr('y', height + 5)
@@ -55,16 +105,19 @@ function slider(min, max, rangeData) {
 
     // define brush
     brush = d3.brushX()
+        // .attr("id", "brushX")
         .extent([[0, 0], [width, height]])
         .on('brush', function (e) {
-            var s = e.selection;
+            s = e.selection;
             // console.log("The selection is "+String(s).split(",")[0])
             // console.log("x val is "+rangeData[String(s).split(",")[0]])
             // console.log("y val is "+rangeData[String(s).split(",")[1]])
             // update and move labels
             labelL.attr('x', s[0])
+                // .attr("id", "leftlabel")
                 .text(rangeData[String(s).split(",")[0]].split(" ")[1])
             labelR.attr('x', s[1])
+                // .attr("id", "rightlabel")
                 .text(rangeData[String(s).split(",")[1]].split(" ")[1])
             // move brush handles      
             handle.attr("display", null).attr("transform", function (d, i) { return "translate(" + [s[i], - height / 4] + ")"; });
@@ -82,16 +135,6 @@ function slider(min, max, rangeData) {
       ]);
 
     // brush.attr("d", rightRoundedRect(-240, -120, 480, 240, 20));
-
-      function rightRoundedRect(x, y, width, height, radius) {
-        return "M" + x + "," + y
-             + "h" + (width - radius)
-             + "a" + radius + "," + radius + " 0 0 1 " + radius + "," + radius
-             + "v" + (height - 2 * radius)
-             + "a" + radius + "," + radius + " 0 0 1 " + -radius + "," + radius
-             + "h" + (radius - width)
-             + "z";
-      }
 
     // append brush to g
     gBrush = g.append("g")
@@ -175,32 +218,53 @@ function slider(min, max, rangeData) {
 
 //slider(0,25)
 
-export function setTime(start, end) {
+export function setTime(start, end, eventvalue) {
+    // portscan = 221, 248
+    //                 sshftpattack = 247, 257
+    //                 sqlattack = 261, 330
+    //                 dataoutage = 312, 504
+    //                 dnsattack = 497, 510
+    d3.selectAll("#brushX")
+        .remove();
+    var range1 = {"sqlattack": [1.30, 1.65], 
+    "portscan": [1.10, 1.24], 
+    "sshftpattack": [1.23, 1.28], 
+    "dataoutage": [1.56, 2.52], 
+    "dnsattack": [2.48, 2.55]}
+
+    d3.selectAll("#labelright")
+    .remove();
+    d3.selectAll("#labelleft")
+        .remove();
+
+    console.log("The value is " + start.split(" ")[1] + " " + end.split(" ")[1])
+    labelL = g.append('text')
+        .attr('id', 'labelleft')
+        .attr('x', 0)
+        .attr('y', height + 5)
+
+    labelR = g.append('text')
+        .attr('id', 'labelright')
+        .attr('x', 0)
+        .attr('y', height + 5)
+
+    labelL.attr('x', range1[eventvalue][0] * 200)
+        // .attr("id", "leftlabel")
+        .text(start.split(" ")[1])
+
+    labelR.attr('x', range1[eventvalue][1] * 200)
+        // .attr("id", "rightlabel")
+        .text(end.split(" ")[1])
+
     var startIndex = rangeMap[start];
     var endIndex = rangeMap[end];
-    var range1 = [startIndex, endIndex];
-    gBrush.call(brush.move, range1.map(x));
-    // brush = d3.brushX()
-    //     .extent([[0, 0], [width, height]])
-    //     .on('brush', function (e) {
-    //         var s = e.selection;
-    //         // console.log("The selection is "+String(s).split(",")[0])
-    //         // console.log("x val is "+rangeData[String(s).split(",")[0]])
-    //         // console.log("y val is "+rangeData[String(s).split(",")[1]])
-    //         // update and move labels
-    //         labelL.attr('x', s[0])
-    //             .text(rangeData[String(s).split(",")[0]].split(" ")[1])
-    //         labelR.attr('x', s[1])
-    //             .text(rangeData[String(s).split(",")[1]].split(" ")[1])
-    //         // move brush handles      
-    //         handle.attr("display", null).attr("transform", function (d, i) { return "translate(" + [s[i], - height / 4] + ")"; });
-    //         // update view
-    //         // if the view should only be updated after brushing is over, 
-    //         // move these two lines into the on('end') part below
-    //         svg.node().value = s.map(function (d) { var temp = x.invert(d); return +temp.toFixed(2) });
-    //         var elem = document.querySelector('#eventhandler');
-    //         d3.select("#eventhandler").dispatch('change', { detail: { first: rangeData[String(s).split(",")[0]], second: rangeData[String(s).split(",")[1]] } })
-    //     })
+
+    console.log("The test check value is "+ s[0]+" "+s[1]);
+    // var range1 = [startIndex * 0.01, endIndex * 0.01];
+    
+    // var range1 = [1.10, 1.24]
+    gBrush.call(brush.move, range1[eventvalue].map(x));
+   
 }
 
 
@@ -273,7 +337,7 @@ export function initTimeSlider() {
     rangeData.push("2012-04-07 00:00");
     rangeMap["2012-04-07 00:00"] = count;
     count++;
-    
+    console.log(rangeData);
     slider(0, 2.89, rangeData);
     // slider(0, max)
 

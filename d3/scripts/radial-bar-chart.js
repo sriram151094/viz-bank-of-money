@@ -55,7 +55,7 @@ function initRadialChart(starttime, endtime) {
 function getData(starttime, endtime) {
     dnsupdateexternal = data.filter(function (d) { return (d.label.includes("DNS Update From External net") && Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime) }).length;
     ircauth = data.filter(function (d) { return (d.label.includes("IRC authorization message") && Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime) }).length;
-    postgressql = data.filter(function (d) { return (d.label.includes("PostgreSQL") && Date.parse(d.datetime) >= starttime && Date.parse(d.date_time) <= endtime) }).length;
+    postgressql = data.filter(function (d) { return (d.label.includes("PostgreSQL") && Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime) }).length;
     mysql = data.filter(function (d) { return (d.label.includes("mySQL") && Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime) }).length;
     mssql = data.filter(function (d) { return (d.label.includes("MSSQL") && Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime) }).length;
     oraclesql = data.filter(function (d) { return (d.label.includes("Oracle SQL") && Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime) }).length;

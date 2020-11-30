@@ -51,12 +51,12 @@ function init() {
 
 }
 
-export function eventchange() {
-    var eventValue = d3.select("#y-attr-select").property('value');
+export function eventChange() {
+    var eventValue = d3.select("#eventType").property('value');
     console.log("The event val "+eventIntervals[eventValue]);
     var start = eventIntervals[eventValue].split(",")[0];
     var end = eventIntervals[eventValue].split(",")[1];
-    setTime(start, end);
+    setTime(start, end, eventValue);
 
 }
 
