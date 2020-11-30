@@ -22,7 +22,6 @@ var rangeData = [];
 function slider(min, max, rangeData) {
 
     range = [min, max];
-    // console.log(rangeData)
 
     // set width and height of svg
     w = 656
@@ -34,7 +33,7 @@ function slider(min, max, rangeData) {
         right: 40
     }
 
-    
+
 
     // dimensions of slider bar
     width = w - margin.left - margin.right;
@@ -73,7 +72,7 @@ function slider(min, max, rangeData) {
         .attr("x2", 288)
         .attr("y2", 25);
 
-    
+
     // d3.selectAll("#brushX")
     //     .remove();
     // labels
@@ -126,9 +125,6 @@ function slider(min, max, rangeData) {
         .extent([[0, 0], [width, height]])
         .on('brush', function (e) {
             s = e.selection;
-            console.log("The selection is "+s)
-            // console.log("x val is "+rangeData[String(s).split(",")[0]])
-            // console.log("y val is "+rangeData[String(s).split(",")[1]])
             // update and move labels
             labelL.attr('x', s[0])
                 // .attr("id", "leftlabel")
@@ -143,13 +139,16 @@ function slider(min, max, rangeData) {
             // move these two lines into the on('end') part below
             svg.node().value = s.map(function (d) { var temp = x.invert(d); return +temp.toFixed(2) });
             var elem = document.querySelector('#eventhandler');
+            //d3.select("#eventhandler").dispatch('change', { detail: { first: rangeData[String(s).split(",")[0]], second: rangeData[String(s).split(",")[1]] } })
+        })
+        .on('end', function(e) {
             d3.select("#eventhandler").dispatch('change', { detail: { first: rangeData[String(s).split(",")[0]], second: rangeData[String(s).split(",")[1]] } })
         })
 
     brush.move(d3.select(this), [
-        [0, 100], 
-        [2890, 1000] 
-      ]);
+        [0, 100],
+        [2890, 1000]
+    ]);
 
     // brush.attr("d", rightRoundedRect(-240, -120, 480, 240, 20));
 
@@ -181,11 +180,11 @@ function slider(min, max, rangeData) {
     // override default behaviour - clicking outside of the selected area 
     // will select a small piece there rather than deselecting everything
     gBrush.selectAll(".overlay")
-    .style("rx", "5")
-    .style("fill", "#fff")
+        .style("rx", "5")
+        .style("fill", "#fff")
         // .attr("d", rightRoundedRect(-500, -620, 880, 1240, 120))
         .each(function (d) { d.type = "selection"; })
-        
+
         .on("mousedown touchstart", brushcentered)
 
     gBrush.selectAll(".selection")
@@ -223,7 +222,7 @@ function slider(min, max, rangeData) {
         .style("font-size", "12px")
         .style("font-weight", "bold")
         .style("fill", "black");
-    
+
     var line = g.append("line").attr('id', 'line')
         .style("stroke", "black")
         // .style("stroke-width", 2)
@@ -234,71 +233,15 @@ function slider(min, max, rangeData) {
 
 }
 
-//slider(0,25)
-export function setTime1(start, end, eventvalue) {
-    var range1 = {"sqlattack": [1.30, 1.65], 
-    "portscan": [1.10, 1.24], 
-    "sshftpattack": [1.23, 1.28], 
-    "dataoutage": [1.56, 2.52], 
-    "dnsattack": [2.48, 2.55]}
-    slider(range1[eventvalue][0], range1[eventvalue][1], rangeData);
-}
-
-
 export function setTime(start, end, eventvalue) {
-    // portscan = 221, 248
-    //                 sshftpattack = 247, 257
-    //                 sqlattack = 261, 330
-    //                 dataoutage = 312, 504
-    //                 dnsattack = 497, 510
-    d3.selectAll("#brushX")
-        .remove();
-    var range1 = {"sqlattack": [1.30, 1.65], 
-    "portscan": [1.10, 1.24], 
-    "sshftpattack": [1.23, 1.28], 
-    "dataoutage": [1.56, 2.52], 
-    "dnsattack": [2.48, 2.55]}
-
-    d3.selectAll("#labelright")
-        .remove();
-    d3.selectAll("#labelleft")
-        .remove();
-
-    console.log("The value is " + start.split(" ")[1] + " " + end.split(" ")[1])
-    labelL = g.append('text')
-        .attr('id', 'labelleft')
-        .attr('x', 0)
-        .attr('y', height + 5)
-        .style('fill', '#fff')
-
-    labelR = g.append('text')
-        .attr('id', 'labelright')
-        .attr('x', 0)
-        .attr('y', height + 5)
-        .style('fill', '#fff')
-
-    labelL.attr('x', range1[eventvalue][0] * 200)
-        // .attr("id", "leftlabel")
-        .text(start.split(" ")[1])
-
-    labelR.attr('x', range1[eventvalue][1] * 200)
-        // .attr("id", "rightlabel")
-        .text(end.split(" ")[1])
-
-    s = [range1[eventvalue][0] * 200, range1[eventvalue][1] * 200]
-
-    handle.attr("display", null).attr("transform", function (d, i) { return "translate(" + [s[i], - height / 4] + ")"; });
-    svg.node().value = s.map(function (d) { var temp = x.invert(d); return +temp.toFixed(2) });
-    // d3.select("#eventhandler").dispatch('change', { detail: { first: rangeData[String(s).split(",")[0]], second: rangeData[String(s).split(",")[1]] } })
-
-    var startIndex = rangeMap[start];
-    var endIndex = rangeMap[end];
-
-    console.log("The test check value is "+ s[0]+" "+s[1]);
-    // var range1 = [startIndex * 0.01, endIndex * 0.01];
-    
-    // var range1 = [1.10, 1.24]
-    gBrush.call(brush.move, range1[eventvalue].map(x));    
+    var range1 = {
+        "sqlattack": [1.31, 1.66],
+        "portscan": [1.11, 1.245],
+        "sshftpattack": [1.24, 1.29],
+        "dataoutage": [1.57, 2.53],
+        "dnsattack": [2.495, 2.56]
+    }
+    gBrush.call(brush.move, [range1[eventvalue][0], range1[eventvalue][1]].map(x).map(d => Math.floor(d)))
 }
 
 
@@ -367,12 +310,11 @@ export function initTimeSlider() {
             k = k + 5;
         }
     }
-    rangeData.push("2012-04-07 00:00");
+    rangeData.push("2012-04-06 23:59");
     rangeMap["2012-04-07 00:00"] = count;
     count++;
-    console.log(rangeData);
+
     slider(0, 2.89, rangeData);
-    // slider(0, max)
 
 };
 
