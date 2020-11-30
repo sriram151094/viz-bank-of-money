@@ -104,14 +104,10 @@ function storyTellingChart() {
     /*Initiate the SVG*/
     const svgScreenWidth = +d3.select("[id='storyContainer']").style("width").slice(0, -2);
     width = svgScreenWidth - margin.left - margin.right;
-    console.log("width" + width)
     height = window.innerHeight - 250
 
     innerRadius = (Math.min(width, height) - 100) * .30,
         outerRadius = innerRadius * 1.04;
-
-    console.log(innerRadius)
-    console.log(outerRadius)
 
     arc = d3.arc()
         .innerRadius(innerRadius)
@@ -129,8 +125,6 @@ function storyTellingChart() {
         .attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
         .datum(chord(matrix));
 
-
-    console.log(svg)
     svg.append('circle')
         .attr('cx', 0)
         .attr('cy', 0)
@@ -286,8 +280,6 @@ function storyTellingChart() {
 //Introduction
 ///////////////////////////////////////////////////////////*/
 function Draw1() {
-    console.log("Draw1 function")
-
     /*First disable click event on clicker button*/
     stopClicker();
 
@@ -310,7 +302,6 @@ function Draw1() {
 //Show Arc of Port Scanning
 //////////////////////////////////////////////////////////*/
 function Draw2() {
-    console.log("Draw2 function")
 
     /*First disable click event on clicker button*/
     stopClicker();
@@ -341,20 +332,9 @@ function Draw2() {
 
     // Call other charts changes from here on click of a chord/event    
     g.on('click', (event, d) => {
-        console.log(d);
         document.getElementById("chartsContainer").scrollIntoView();
         drawCharts(eventTimes[0].startTime, eventTimes[0].endTime);
     })
-
-    // g.on('mouseover', (event, d) => {
-    //     d3.select("#arc" + d.index)
-    //         .attr("stroke-width", "6")
-    // });
-
-    // g.on('mouseout', (event, d) => {
-    //     d3.select("#arc" + d.index)
-    //         .attr("stroke-width", "1")
-    // });
 
     /*Show the tick around the arc*/
     d3.selectAll("g.group").selectAll("line")
@@ -376,7 +356,6 @@ function Draw2() {
 //Draw arc for FTP/SSH Attack
 //////////////////////////////////////////////////////////*/
 function Draw3() {
-    console.log("Draw3 function")
     /*First disable click event on clicker button*/
     stopClicker();
 
@@ -428,7 +407,6 @@ function Draw3() {
 //Draw arc for SQL Attack
 //////////////////////////////////////////////////////////*/
 function Draw4() {
-    console.log("Draw4 function")
     /*First disable click event on clicker button*/
     stopClicker();
 
@@ -481,7 +459,6 @@ function Draw4() {
 //Draw arc for Data Outage
 //////////////////////////////////////////////////////////*/
 function Draw5() {
-    console.log("Draw5 function")
     /*First disable click event on clicker button*/
     stopClicker();
 
@@ -531,7 +508,6 @@ function Draw5() {
 //Draw arc for DNS attack
 //////////////////////////////////////////////////////////*/
 function Draw6() {
-    console.log("Draw6 function")
     /*First disable click event on clicker button*/
     stopClicker();
 
@@ -610,10 +586,12 @@ function finalChord() {
         svg.selectAll("g.group").select("path")
             .transition().duration(1000)
             .style("opacity", 1)
-            .on('click', (event, d) => {
-                document.getElementById("chartsContainer").scrollIntoView();
-                drawCharts(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"))
-            });
+        // .on('click', (event, d) => {
+        //     document.getElementById("chartsContainer").scrollIntoView();
+        //     drawCharts(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"))
+        // });
+        document.getElementById("chartsContainer").scrollIntoView();
+        drawCharts(Date.parse("2012-04-05 20:30"), Date.parse("2012-04-05 21:30"))
     };
 
     /*Make mouse over and out possible*/
@@ -750,7 +728,6 @@ function changeBottomText(newText, loc, delayDisappear, delayAppear, w) {
         .attr("id", "bottomText")
         /*New text appear*/
         .call(endall, function () {
-            console.log(d3.select(this))
             middleTextBottom.text(newText)
 
                 .attr("y", 24 * loc + "px")
@@ -882,8 +859,9 @@ function drawCluster(data) {
     }
 }
 
-
+var glyphs = []
 function drawNetworkGlyph(data, forceX, forceY, id) {
+    glyphs = []
     let _data = data.map(datum => {
         return { Name: datum.Name + id, Type: datum.Type }
     })
@@ -903,14 +881,22 @@ function drawNetworkGlyph(data, forceX, forceY, id) {
     var g = svg.append('g')
         .attr('id', "cluster" + id)
         .attr('opacity', id == 0 ? 1 : 0.5)
-        .on('mouseover', function (event, d) {
+
+    if (id == 0)
+        g.on('mouseover', function (event, d) {
+            d3.select(this).selectAll('circle').attr('stroke-width', 6)
             d3.select(this).style("cursor", "pointer");
         })
-        .on('click', function (event, d) {
-            document.getElementById("chartsContainer").scrollIntoView();
-            //call for event 1
-            drawCharts(eventTimes[id].startTime, eventTimes[id].endTime);
-        });
+            .on('click', function (event, d) {
+                document.getElementById("chartsContainer").scrollIntoView();
+                //call for event 1
+                drawCharts(eventTimes[id].startTime, eventTimes[id].endTime);
+            })
+            .on('mouseout', function (event, d) {
+                d3.select(this).selectAll('circle').attr('stroke-width', 3)
+            })
+
+    glyphs.push(g)
 
     var elements = g.selectAll('.bubble')
         .data(_data)
@@ -947,17 +933,29 @@ function drawNetworkGlyph(data, forceX, forceY, id) {
                 })
             bg.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")" })
         })
-        .on("end", function (d) {
-            console.log("Simulation done")
-        })
 }
 
 
 function animateCluster(clusterid, nodes, newcolor) {
 
-    d3.select("[id='" + clusterid + "']")
-        .transition(100)
+    let g = d3.select("[id='" + clusterid + "']")
+    let id = +clusterid.slice(-1)
+    g.transition(100)
         .attr('opacity', 1)
+
+    g.on('mouseover', function (event, d) {
+        d3.select(this).selectAll('circle').attr('stroke-width', 6)
+        d3.select(this).style("cursor", "pointer");
+    })
+        .on('click', function (event, d) {
+            document.getElementById("chartsContainer").scrollIntoView();
+            //call for event 1
+            drawCharts(eventTimes[id].startTime, eventTimes[id].endTime);
+        })
+        .on('mouseout', function (event, d) {
+            d3.select(this).selectAll('circle').attr('stroke-width', 3)
+        })
+
 
     nodes.map(nodeid => {
         d3.select("[id='" + nodeid + "']")
