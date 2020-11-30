@@ -43,12 +43,12 @@
                             <div class="input-group-text" id="btnGroupAddon">Event</div>
                         </div>
                         <select id='eventType' class="form-control" onchange="eventChange()">
-                            <option value='' disabled selected="selected">Select..</option>
-                            <option value='sqlattack'>SQL Attack</option>
-                            <option value='sshftpattack'>SSH and FTP Attack</option>
-                            <option value='dnsattack'>DNS Attack</option>
-                            <option value='dataoutage'>Data Outage</option>
-                            <option value='portscan'>Port Scanning</option>
+                            <option value='' disabled>Select..</option>
+                            <option value='SQL Attack'>SQL Attack</option>
+                            <option value='FTP/SSH Attack'>SSH and FTP Attack</option>
+                            <option value='DNS Attack'>DNS Attack</option>
+                            <option value='Data Outage'>Data Outage</option>
+                            <option value='Port Scanning' selected="selected">Port Scanning</option>
                         </select>
                         <div class="input-group-text">
                             <button type="button" class="close" aria-label="Close" onclick="reset('eventType')">

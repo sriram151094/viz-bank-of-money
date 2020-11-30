@@ -3,6 +3,7 @@ import { drawNetworkChart } from "./networkchart.js"
 import { Heatmap } from "./heatmap.js"
 import { drawLineChart } from "./lineChart.js"
 import { drawRadialChart } from "./radial-bar-chart.js"
+import { setTime } from "./d3-slider.js"
 
 var NameProvider = ["Port Scanning", "FTP/SSH Attack", "SQL Attack", "Data Outage", "DNS Attack"];
 
@@ -14,6 +15,12 @@ var eventTimes = [
     { event: "DNS Attack", startTime: Date.parse("2012-04-06 17:26"), endTime: Date.parse("2012-04-06 18:27") }
 ]
 
+var eventIntervals = {'Port Scanning':"2012-04-05 18:27,2012-04-05 20:36",
+                      'FTP/SSH Attack':"2012-04-05 20:37,2012-04-05 21:21",
+                      'SQL Attack':"2012-04-05 21:47,2012-04-06 03:27",
+                      'Data Outage':"2012-04-06 02:00,2012-04-06 18:00",
+                      'DNS Attack':"2012-04-06 17:26,2012-04-06 18:27",
+                    };
 
 var matrix = [
     [0, 0, 0, 1, 1],
@@ -334,6 +341,7 @@ function Draw2() {
     g.on('click', (event, d) => {
         document.getElementById("chartsContainer").scrollIntoView();
         drawCharts(eventTimes[0].startTime, eventTimes[0].endTime);
+        setTime(eventIntervals["Port Scanning"].split(",")[0], eventIntervals["Port Scanning"].split(",")[1], "Port Scanning");
     })
 
     /*Show the tick around the arc*/
@@ -389,6 +397,7 @@ function Draw3() {
     // Call other charts changes from here on click of a chord/event    
     g.on('click', (event, d) => {
         calldrawCharts(d.index)
+        setTime(eventIntervals["FTP/SSH Attack"].split(",")[0], eventIntervals["FTP/SSH Attack"].split(",")[1], "FTP/SSH Attack");
     });
 
 
@@ -440,6 +449,7 @@ function Draw4() {
     // Call other charts changes from here on click of a chord/event    
     g.on('click', (event, d) => {
         calldrawCharts(d.index)
+        setTime(eventIntervals["SQL Attack"].split(",")[0], eventIntervals["SQL Attack"].split(",")[1], "SQL Attack");
     });
 
 
@@ -492,6 +502,7 @@ function Draw5() {
     // Call other charts changes from here on click of a chord/event    
     g.on('click', (event, d) => {
         calldrawCharts(d.index)
+        setTime(eventIntervals["Data Outage"].split(",")[0], eventIntervals["Data Outage"].split(",")[1], "Data Outage");
     });
 
     appendTextLabels("#cluster3 #DNS3", -50, 50, "Data Outage", eventTimes[3])
@@ -541,6 +552,7 @@ function Draw6() {
     // Call other charts changes from here on click of a chord/event    
     g.on('click', (event, d) => {
         calldrawCharts(d.index)
+        setTime(eventIntervals["DNS Attack"].split(",")[0], eventIntervals["DNS Attack"].split(",")[1], "DNS Attack");
     });
 
     appendTextLabels("#cluster4 #DNS4", -50, 50, "DNS Attack", eventTimes[4])
@@ -577,6 +589,7 @@ function finalChord() {
             .style("opacity", 0)
             .on('click', (event, d) => {
                 calldrawCharts(d.index)
+                setTime(eventIntervals[eventTimes[d.index].event].split(",")[0], eventIntervals[eventTimes[d.index].event].split(",")[1], eventTimes[d.index].event);
             })
             .transition().duration(1000)
             .style("opacity", 1);
@@ -983,6 +996,7 @@ function animateCluster(clusterid, nodes, newcolor) {
             document.getElementById("chartsContainer").scrollIntoView();
             //call for event 1
             drawCharts(eventTimes[id].startTime, eventTimes[id].endTime);
+            setTime(eventIntervals[eventTimes[id].event].split(",")[0], eventIntervals[eventTimes[id].event].split(",")[1], eventTimes[id].event);
         })
         .on('mouseout', function (event, d) {
             d3.select(this).selectAll('circle').attr('stroke-width', 3)
@@ -1019,6 +1033,7 @@ function appendTextLabels(id, xoffset, yoffset, text, eventdetail) {
         .on('click', function (event, d) {
             document.getElementById("chartsContainer").scrollIntoView();
             drawCharts(eventdetail.startTime, eventdetail.endTime);
+            setTime(eventIntervals[text].split(",")[0], eventIntervals[text].split(",")[1], text);
         })
         .transition(2000)
         .attr("opacity", 1)

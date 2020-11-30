@@ -196,12 +196,13 @@ function slider(min, max, rangeData) {
             cx = d3.mouse(this)[0],
             x0 = cx - dx / 2,
             x1 = cx + dx / 2;
-        // console.log("Printing values "+ cx + " "+ x0 + " " + x1);
         d3.select(this.parentNode).call(brush.move, x1 > width ? [width - dx, width] : x0 < 0 ? [0, dx] : [x0, x1]);
     }
     //var range2 = [1.00, 2.01]
     // select entire range
-    gBrush.call(brush.move, range.map(x))
+    // gBrush.call(brush.move, range.map(x))
+
+    gBrush.call(brush.move, [1.11, 1.245].map(x).map(d => Math.floor(d)))
 
     var firstDayLabel = g.append('text')
         .attr('id', 'datelabel')
@@ -235,11 +236,11 @@ function slider(min, max, rangeData) {
 
 export function setTime(start, end, eventvalue) {
     var range1 = {
-        "sqlattack": [1.31, 1.66],
-        "portscan": [1.11, 1.245],
-        "sshftpattack": [1.24, 1.29],
-        "dataoutage": [1.57, 2.53],
-        "dnsattack": [2.495, 2.56]
+        "SQL Attack": [1.31, 1.66],
+        "Port Scanning": [1.11, 1.245],
+        "FTP/SSH Attack": [1.24, 1.29],
+        "Data Outage": [1.57, 2.53],
+        "DNS Attack": [2.495, 2.56]
     }
     gBrush.call(brush.move, [range1[eventvalue][0], range1[eventvalue][1]].map(x).map(d => Math.floor(d)))
 }
@@ -247,20 +248,14 @@ export function setTime(start, end, eventvalue) {
 
 export function initTimeSlider() {
 
-    let count = 0;
-
     for (let j = 0; j < 10; j++) {
         let k = 0;
         while (k < 10) {
             rangeData.push("2012-04-05 0" + j + ":0" + k);
-            rangeMap["2012-04-05 0" + j + ":0" + k] = count;
-            count++;
             k = k + 5;
         }
         while (k < 60) {
             rangeData.push("2012-04-05 0" + j + ":" + k);
-            rangeMap["2012-04-05 0" + j + ":" + k] = count;
-            count++;
             k = k + 5;
         }
     }
@@ -268,14 +263,10 @@ export function initTimeSlider() {
         let k = 0;
         while (k < 10) {
             rangeData.push("2012-04-05 " + j + ":0" + k);
-            rangeMap["2012-04-05 " + j + ":0" + k] = count;
-            count++;
             k = k + 5;
         }
         while (k < 60) {
             rangeData.push("2012-04-05 " + j + ":" + k);
-            rangeMap["2012-04-05 " + j + ":" + k] = count;
-            count++;
             k = k + 5;
         }
     }
@@ -284,14 +275,10 @@ export function initTimeSlider() {
         let k = 0;
         while (k < 10) {
             rangeData.push("2012-04-06 0" + j + ":0" + k);
-            rangeMap["2012-04-06 0" + j + ":0" + k] = count;
-            count++;
             k = k + 5;
         }
         while (k < 60) {
             rangeData.push("2012-04-06 0" + j + ":" + k);
-            rangeMap["2012-04-06 0" + j + ":" + k] = count;
-            count++;
             k = k + 5;
         }
     }
@@ -299,20 +286,14 @@ export function initTimeSlider() {
         let k = 0;
         while (k < 10) {
             rangeData.push("2012-04-06 " + j + ":0" + k);
-            rangeMap["2012-04-06 " + j + ":0" + k] = count;
-            count++;
             k = k + 5;
         }
         while (k < 60) {
             rangeData.push("2012-04-06 " + j + ":" + k);
-            rangeMap["2012-04-06 " + j + ":" + k] = count;
-            count++;
             k = k + 5;
         }
     }
     rangeData.push("2012-04-06 23:59");
-    rangeMap["2012-04-07 00:00"] = count;
-    count++;
 
     slider(0, 2.89, rangeData);
 

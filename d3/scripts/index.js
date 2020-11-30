@@ -6,11 +6,11 @@ import { initRadialChart, drawRadialChart } from './radial-bar-chart.js'
 import { initTimeSlider, setTime } from './d3-slider.js'
 
 
-var eventIntervals = {'portscan':"2012-04-05 18:27,2012-04-05 20:36",
-                      'sshftpattack':"2012-04-05 20:37,2012-04-05 21:21",
-                      'sqlattack':"2012-04-05 21:47,2012-04-06 03:27",
-                      'dataoutage':"2012-04-06 02:00,2012-04-06 18:00",
-                      'dnsattack':"2012-04-06 17:26,2012-04-06 18:27",
+var eventIntervals = {'Port Scanning':"2012-04-05 18:27,2012-04-05 20:36",
+                      'FTP/SSH Attack':"2012-04-05 20:37,2012-04-05 21:21",
+                      'SQL Attack':"2012-04-05 21:47,2012-04-06 03:27",
+                      'Data Outage':"2012-04-06 02:00,2012-04-06 18:00",
+                      'DNS Attack':"2012-04-06 17:26,2012-04-06 18:27",
                     };
 
 var starttime;
@@ -18,11 +18,6 @@ var endtime;
 var machine;
 var applybutton;
 export function timechange(machine=undefined) {
-    // let startTime = d3.select('#starttime').property('value')
-    // let endTime = d3.select('#endtime').property('value')
-    // let date = d3.select('#date').property('value')
-    // console.log(Date.parse(date + ' ' + startTime));
-    // console.log(Date.parse(date + ' ' + endTime));
 
     drawNetworkChart(starttime, endtime, machine);
     Heatmap(Date.parse("2012-04-05 01:27"), Date.parse("2012-04-05 20:36"), machine);
