@@ -32,7 +32,7 @@ export function timechange(machine=undefined) {
     drawNetworkChart(starttime, endtime, machine);
     Heatmap(Date.parse("2012-04-05 01:27"), Date.parse("2012-04-05 20:36"), machine);
     drawLineChart(starttime, endtime, machine);
-    drawRadialChart(starttime, endtime);
+    drawRadialChart(starttime, endtime, machine);
 }
 
 export function reset(id) {

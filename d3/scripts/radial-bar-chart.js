@@ -1,4 +1,5 @@
 export { initRadialChart, drawRadialChart }
+import {getIPBucket} from './utils.js';
 var width = 960, height = 450, chartRadius = height / 2 - 40;
 var events;
 
@@ -23,6 +24,10 @@ var dnsupdateexternal = 0;
 var ircauth = 0;
 var portscan5800 = 0;
 var portscan5900 = 0;
+var startTime = '02:30';
+var endTime = '21:30';
+var startDate = '2012-04-05';
+var endDate = '2012-04-05';
 
 var sshscan = 0;
 var sshscanoutbound = 0;
@@ -52,17 +57,23 @@ function initRadialChart(starttime, endtime) {
         });
 }
 
-function getData(starttime, endtime) {
-    dnsupdateexternal = data.filter(function (d) { return (d.label.includes("DNS Update From External net") && Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime) }).length;
-    ircauth = data.filter(function (d) { return (d.label.includes("IRC authorization message") && Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime) }).length;
+function getData(starttime, endtime, machine) {
+    data = data.filter(function (d) { return Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime });
+    
+    if(machine) {
+        data = data.filter(record => getIPBucket(record['source_ip']).machine.toLowerCase() == machine.toLowerCase())
+    console.log(data)
+    }
+    dnsupdateexternal = data.filter(function (d) { return d.label.includes("DNS Update From External net") }).length;
+    ircauth = data.filter(function (d) { return (d.label.includes("IRC authorization message") ) }).length;
     postgressql = data.filter(function (d) { return (d.label.includes("PostgreSQL") && Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime) }).length;
-    mysql = data.filter(function (d) { return (d.label.includes("mySQL") && Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime) }).length;
-    mssql = data.filter(function (d) { return (d.label.includes("MSSQL") && Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime) }).length;
-    oraclesql = data.filter(function (d) { return (d.label.includes("Oracle SQL") && Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime) }).length;
-    portscan5800 = data.filter(function (d) { return (d.label.includes("VNC Scan 5800-5820") && Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime) }).length;
-    portscan5900 = data.filter(function (d) { return (d.label.includes("VNC Scan 5900-5920") && Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime) }).length;
-    sshscan = data.filter(function (d) { return (d.label.includes("[1:2001219:18] ET SCAN Potential SSH Scan") && Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime) }).length;
-    sshscanoutbound = data.filter(function (d) { return (d.label.includes("SSH Scan OUTBOUND") && Date.parse(d.date_time) >= starttime && Date.parse(d.date_time) <= endtime) }).length;
+    mysql = data.filter(function (d) { return (d.label.includes("mySQL") ) }).length;
+    mssql = data.filter(function (d) { return (d.label.includes("MSSQL") ) }).length;
+    oraclesql = data.filter(function (d) { return (d.label.includes("Oracle SQL") ) }).length;
+    portscan5800 = data.filter(function (d) { return (d.label.includes("VNC Scan 5800-5820") ) }).length;
+    portscan5900 = data.filter(function (d) { return (d.label.includes("VNC Scan 5900-5920") ) }).length;
+    sshscan = data.filter(function (d) { return (d.label.includes("[1:2001219:18] ET SCAN Potential SSH Scan") ) }).length;
+    sshscanoutbound = data.filter(function (d) { return (d.label.includes("SSH Scan OUTBOUND") ) }).length;
 
     events = [
         { name: "Port Scan 5800-5820", value: portscan5800 },
@@ -80,7 +91,7 @@ function getData(starttime, endtime) {
 }
 
 
-function drawRadialChart(starttime, endtime) {
+function drawRadialChart(starttime, endtime, machine = undefined) {
     d3.selectAll("#aaxis")
         .remove();
     d3.selectAll("#radialaxis")
@@ -91,8 +102,14 @@ function drawRadialChart(starttime, endtime) {
         .remove();
     d3.selectAll("#labels")
         .remove();
+    
+    // TODO : remove/handle : Temp fix
+    if (!starttime || !endtime) {
+        starttime = Date.parse(startDate + ' ' + startTime);
+        endtime = Date.parse(endDate + ' ' + endTime);
+    }
 
-    getData(starttime, endtime);
+    getData(starttime, endtime, machine);
 
     let scale = d3.scaleLinear()
         .domain([0, d3.max(events, function (d) { return d.value; }) * 1.1])
