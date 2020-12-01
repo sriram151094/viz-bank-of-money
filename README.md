@@ -1,6 +1,6 @@
 
 # Application Homescreen
-![Application Homescreen - D3](img/dashboard.png)
+![Application Homescreen - D3](https://github.com/asu-cse578-f2020/VAST-2012-MC2-Akshaya/tree/main/d3/img/dashboard.png)
 
 # Steps to run the project
 1) Clone the project through git clone
