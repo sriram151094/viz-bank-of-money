@@ -6,6 +6,11 @@
 live-server --port=8000
 4) This will open up the project home.
 
+# Required Software
+  D3.js
+  CSS
+  JavaScript
+
 # Hosted Url
 https://dv-bankofmoney-vis.firebaseapp.com/
 
