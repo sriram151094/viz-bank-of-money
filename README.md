@@ -1,6 +1,7 @@
 
 # Application Homescreen
-![Application Homescreen](https://github.com/asu-cse578-f2020/VAST-2012-MC2-Akshaya/tree/main/d3/img/dashboard.png)
+![Application Homescreen](github.com/asu-cse578-f2020/VAST-2012-MC2-Akshaya/tree/main/d3/img/dashboard.png)
+![alt text](https://github.com/sriram151094/soviet-space-dogs/blob/main/images/spacedogs.gif)
 
 # Steps to run the project
 1) Clone the project through git clone
