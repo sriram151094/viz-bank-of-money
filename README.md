@@ -1,4 +1,7 @@
 
+# Application Homescreen
+![Application Homescreen - D3](img/dashboard.png)
+
 # Steps to run the project
 1) Clone the project through git clone
 2) Navigate to d3 folder (this is where index.html is)
