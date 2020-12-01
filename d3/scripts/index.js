@@ -29,6 +29,10 @@ export function reset(id) {
     document.getElementById(id).selectedIndex = 0;
     machine = undefined;
     timechange();
+    if(id.includes('eventType')) {
+        let times = eventIntervals['Port Scanning'].split(",");
+        setTime(times[0], times[1], 'Port Scanning')
+    }
 }
 
 
